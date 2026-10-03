@@ -1,0 +1,69 @@
+/* A single selection-and-placement workspace, separate from live combat. */
+.unified-loadout {
+  position: absolute;
+  inset: max(8px, env(safe-area-inset-top), var(--preview-safe-top, 0px)) max(8px, env(safe-area-inset-right), var(--preview-safe-right, 0px)) max(8px, env(safe-area-inset-bottom), var(--preview-safe-bottom, 0px)) max(8px, env(safe-area-inset-left), var(--preview-safe-left, 0px));
+  max-width: 1000px; margin-inline: auto; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px; overflow: hidden;
+}
+.unified-loadout, .unified-loadout * { box-sizing: border-box }
+.unified-loadout button { min-width: 44px; min-height: 44px }
+.loadout-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none }
+.loadout-header .eyebrow { font-size: 8px; margin: 0 0 2px }
+.loadout-header h2 { margin: 0; font-size: 27px; color: #f3dba5 }
+.loadout-header > button { flex: none }
+.loadout-resources { flex: none; font-size: 11px; margin: 0; color: #d7c4a0 }
+.loadout-workspace { display: grid; grid-template-columns: 144px minmax(0,1fr); gap: 12px; flex: 1; min-height: 0; overflow: hidden }
+.loadout-inventory { min-height: 0; display: flex; flex-direction: column; gap: 5px }
+.loadout-inventory > h3 { flex: none; margin: 0; font: 600 11px system-ui, sans-serif; color: #d8c29a }
+.loadout-owned-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; padding: 2px }
+.loadout-owned-list > button { display: flex; align-items: center; gap: 6px; flex: none; padding: 5px 7px; text-align: left; font-size: 11px; min-height: 44px }
+.loadout-owned-list .skill-icon { font: 22px/1 Georgia, serif; flex: none }
+.loadout-owned-list small { display: block; color: #c9b48d; font-size: 9px; margin-top: 2px }
+.loadout-owned-list [aria-pressed="true"] { background: #713e4a; border-color: #eed092 }
+.loadout-placement { min-width: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px; container-type: inline-size; container-name: loadout-placement }
+.loadout-selected-card { display: flex; gap: 9px; align-items: start; padding: 8px; border: 1px solid #b392575c; border-radius: 5px; background: #1913157a }
+.loadout-selected-card > .skill-icon { width: 26px; flex: none; padding-top: 2px; color: #efd5a2; font: 26px/1 Georgia, serif }
+.loadout-selected-card h3 { font: 650 13px/1.2 system-ui, sans-serif; color: #f0dba9; margin: 0 0 3px }
+.loadout-selected-card p { margin: 0; font: 11px/1.25 system-ui, sans-serif }
+#selectedSkillDetails { font-size: 10px; margin-top: 3px; color: #cdb892 }
+.loadout-pages { display: flex; gap: 4px; margin: 7px 0; align-items: center }
+.loadout-pages button { flex: 1; padding: 5px 7px; font-size: 11px }
+.loadout-pages [aria-pressed="true"] { border-color: #f0d397; background: #683646 }
+.loadout-instruction { font-size: 10px; color: #d9c49b; margin: 0 0 5px }
+.loadout-slot-grid { display: grid; grid-template-columns: repeat(10,44px); gap: 2px; width: max-content; max-width: 100% }
+.loadout-slot { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 2px !important; gap: 1px; overflow: hidden }
+.loadout-slot .skill-icon { font: 21px/1 Georgia, serif; color: #ead4a5 }
+.loadout-slot-key { position: absolute; top: 2px; left: 3px; font: 8px/1 system-ui, sans-serif; color: #f5d99d }
+.loadout-slot-label { max-width: 100%; overflow: hidden; white-space: nowrap; font: 8px/10px system-ui, sans-serif }
+.loadout-slot[data-current="true"] { border-color: #f0d79b; box-shadow: inset 0 0 0 1px #f0d79b }
+.loadout-slot[data-empty="true"] { background: #231a1adb; border-style: dashed; opacity: .85 }
+.loadout-assignment-actions { display: flex; align-items: center; gap: 10px; margin-top: 7px }
+.loadout-assignment-actions > button { flex: none; font-size: 10px; padding: 6px 9px }
+.loadout-assignment-actions p { font-size: 10px; margin: 0; color: #ddbd8d }
+.loadout-footer { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #a8834b55 }
+.loadout-footer button { font-size: 12px }
+.loadout-footer .primary { min-width: 156px }
+@container loadout-placement (max-width: 457px) { .loadout-slot-grid { grid-template-columns: repeat(5,44px) } }
+@media (orientation: portrait) {
+  .loadout-workspace { display: flex; flex-direction: column; gap: 10px }
+  .loadout-inventory { flex: none; max-height: 82px }
+  .loadout-owned-list { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 2px 2px 5px }
+  .loadout-owned-list > button { width: 112px; min-width: 112px; min-height: 48px }
+  .loadout-placement { flex: 1; min-height: 0 }
+  .loadout-slot-grid { grid-template-columns: repeat(5,44px); margin-inline: auto }
+  .loadout-assignment-actions { align-items: start; flex-direction: column; gap: 5px }
+}
+
+.camp-actions { display:flex; gap:8px; justify-content:space-between; margin-top:18px }
+.loadout-footer { flex-wrap:wrap }
+.loadout-owned-list .skill-icon, .loadout-slot .skill-icon { display:block; width:24px; height:24px; line-height:0 }
+.loadout-selected-card > .skill-icon { display:block; width:30px; height:30px; line-height:0 }
+@media (min-width:1100px) and (min-height:600px) {
+  .unified-loadout { padding:24px; gap:14px }
+  .loadout-workspace { grid-template-columns:220px minmax(0,1fr); gap:24px }
+  .loadout-owned-list > button { min-height:52px; font-size:13px }
+  .loadout-selected-card { padding:15px }
+  .loadout-selected-card h3 { font-size:18px }
+  .loadout-selected-card p { font-size:13px; line-height:1.5 }
+  .loadout-resources { font-size:13px }
+}

@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {loadGameUI} from './helpers/game-ui-harness.mjs';
+for(const [id,kind,color]of[['fireArrow','fire_arrow','#f3b263'],['iceArrow','ice_arrow','#a5e1e3'],['fireWave','fire_wave_arrow','#f3b263']])test(`existing Basic projectile retains identity and own rendered color after ${id} selection and launch`,async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testUnlock');ui.click('closeTesting');ui.click('start');ui.click('nextBar');ui.click('quick-arrow');ui.frames(31);
+ const shot=pointer=>{const o={...ui.battle.hero.launchPosition};ui.pointer('pointerdown',pointer,o);ui.frames();ui.pointer('pointerup',pointer,{x:o.x-110,y:o.y+170});ui.frames();};
+ shot(1);const basic=ui.battle.projectiles.find(p=>p.kind==='hero_arrow');assert.ok(basic?.active);const rank=basic.skillRank,damage=basic.impactDamage;ui.click('quick-'+id);ui.frames();assert.equal(basic.kind,'hero_arrow');assert.equal(basic.skill.id,'arrow');shot(2);const elemental=ui.battle.projectiles.find(p=>p.kind===kind);assert.ok(elemental?.active);assert.equal(basic.active,true);assert.equal(basic.skillRank,rank);assert.equal(basic.impactDamage,damage);assert.equal(basic.kind,'hero_arrow');
+ const canvas=ui.get('battlefield');canvas.captureDraws=true;canvas.drawCalls=[];ui.frames();
+ const colors=p=>{const pose=p.draw??p,at=canvas.drawCalls.findIndex(c=>c.name==='translate'&&Math.abs(c.args[0]-pose.x)<1e-8&&Math.abs(c.args[1]-pose.y)<1e-8);assert.ok(at>=0,'projectile drawn at its own pose');const end=canvas.drawCalls.findIndex((c,i)=>i>at&&c.name==='restore');return canvas.drawCalls.slice(at,end).filter(c=>['set:strokeStyle','set:fillStyle'].includes(c.name)).map(c=>c.args[0]);};
+ assert.ok(colors(basic).includes('#f2ddb0'));assert.equal(colors(basic).includes(color),false);assert.ok(colors(elemental).includes(color));
+});

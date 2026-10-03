@@ -1,0 +1,29 @@
+.quiet-paused-details { display: grid; gap: 5px; margin: 14px 0; padding: 12px; text-align: left; background: #170f1666; border: 1px solid #a783484d }
+.quiet-paused-details p { margin: 0; font-size: 12px }
+.quiet-paused-details .experience-line { margin: 0 }
+.quiet-skills-panel { max-width: 780px; margin-inline: auto }
+.quiet-skills-panel .panel-head { position: sticky; top: -18px; background: #36212deb; z-index: 2 }
+.quiet-skill-summary { display: flex; flex-wrap: wrap; gap: 7px 12px; align-items: center; margin-bottom: 12px }
+.quiet-skill-summary .meter { width: 100%; height: 4px; order: 5 }
+.quiet-skill-summary #activeName { font-size: 15px }
+.quiet-skill-summary #activeProgress { font-size: 11px }
+.quiet-skill-summary #reloadText { font-size: 11px }
+.quiet-skill-groups, .quiet-panel-actions, .quiet-page-nav { display: flex; gap: 6px; align-items: center; margin: 12px 0; flex-wrap: wrap }
+.quiet-skill-groups [aria-pressed="true"] { border-color: #f7d799; background: #713e4a }
+.quiet-owned-skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px }
+.quiet-owned-skills button { min-height: 56px; text-align: left; display: flex; gap: 8px; align-items: center; font-size: 12px }
+.quiet-owned-skills .skill-icon { font-size: 23px }
+.quiet-owned-skills small { display: block; font-size: 10px; color: #d7c4a1; margin-top: 3px }
+.quiet-keyboard-details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer }
+.quiet-page-nav #barLabel { font: 12px system-ui, sans-serif }
+.quiet-precision-controls { display: grid; gap: 12px; position: static; width: auto; padding: 0; transform: none; border: 0; background: none; box-shadow: none }
+.quiet-precision-controls label { display: grid; grid-template-columns: 52px minmax(80px, 1fr) 45px; align-items: center; gap: 10px }
+.quiet-precision-controls input { min-height: 44px; width: 100%; margin: 0 }
+.quiet-precision-controls output { text-align: right }
+/* Paused panels keep Close outside the scrollable choices. */
+.quiet-skills-panel { display:flex; flex-direction:column; overflow:hidden }
+.quiet-skills-panel .panel-head { position:static; flex:none; margin-bottom:8px; padding-bottom:8px }
+.skills-scroll { min-height:0; overflow:auto; overscroll-behavior:contain; padding:2px; scrollbar-width:thin }
+
+.panel { inset:max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)) max(12px,env(safe-area-inset-right),var(--preview-safe-right,0px)) max(12px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) max(12px,env(safe-area-inset-left),var(--preview-safe-left,0px)); width:auto; max-width:1120px }
+.veil { padding:max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)) max(12px,env(safe-area-inset-right),var(--preview-safe-right,0px)) max(12px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) max(12px,env(safe-area-inset-left),var(--preview-safe-left,0px)) }

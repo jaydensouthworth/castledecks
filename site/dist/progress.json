@@ -1,0 +1,34 @@
+{
+  "updated": "2026-10-03T03:50:49.033390+00:00",
+  "stage": "campaign-prototype",
+  "internal_tests_passing": 717,
+  "campaign_layouts": 30,
+  "skill_families": 25,
+  "reference_runtime_verified": false,
+  "browser_ui_verified": false,
+  "original_assets_included": false,
+  "save_mode": "manual own-format profile files",
+  "pending": [
+    "original-runtime comparison",
+    "build36 desktop/portrait/short-landscape native acceptance",
+    "Android touch and orientation",
+    "extended browser stability"
+  ],
+  "historical_tests_passing": 554,
+  "historical_test_suite_available": false,
+  "original_reference_available": true,
+  "browser_verified_flows": [
+    "profile and start",
+    "drag firing",
+    "moving enemies and advancing waves",
+    "visible pause and nested menus",
+    "403px narrow layout",
+    "natural defeat, unaffordable armory, retry"
+  ],
+  "latest_gameplay_fix": "Castledecks working title; finite reactive squad director and keep-supply cutoff; bounded Auto range assistance; redesigned storefront, comparison and inline equipment.",
+  "build": 36,
+  "regular_recruit_types": 12,
+  "companions": 1,
+  "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
+  "extension_scope": "New regular enemy recruits and companion mechanics use provisional recreation balance."
+}

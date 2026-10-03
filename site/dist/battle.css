@@ -1,0 +1,314 @@
+/* BOWMASTER — one live battlefield, edge to edge.
+   The camera owns the scene. HUD containers never fit or resize the world. */
+:root {
+  color-scheme: dark;
+  --brass: #ac884c; --gilt: #efd49b; --ivory: #f6e8c8;
+  --muted: #ccb58e; --ink: #170e0c; --velvet: #572437;
+  --hud-top: max(12px, env(safe-area-inset-top));
+  --hud-right: max(12px, env(safe-area-inset-right));
+  --hud-bottom: max(12px, env(safe-area-inset-bottom));
+  --hud-left: max(12px, env(safe-area-inset-left));
+  --plate-width: 234px; --arsenal-width: min(920px, calc(100% - 264px));
+}
+* { box-sizing: border-box }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #273d35 }
+body { color: var(--ivory); font: 14px/1.4 system-ui, sans-serif; overscroll-behavior: none }
+button, input, select, textarea { font: inherit }
+button, select, input[type=text] {
+  min-width: 44px; min-height: 44px; color: var(--ivory); padding: 9px 13px;
+  border: 1px solid #ad894c; border-radius: 4px;
+  background: linear-gradient(#584029, #2c1c14);
+  box-shadow: inset 0 1px #edca7970, inset 0 -3px #100c0a80, 0 3px 8px #0004;
+}
+button { cursor: pointer; touch-action: manipulation; user-select: none }
+button:hover { border-color: #f5d494; background: linear-gradient(#705131, #3e291a) }
+button:active:not(:disabled) { box-shadow: inset 0 2px 6px #0009 }
+button:disabled { opacity: .44; cursor: default }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, canvas:focus-visible { outline: 3px solid #ffe8a2; outline-offset: 3px }
+a { color: #ecd194; text-decoration: none }
+h1, h2, h3, p { margin: 0 }
+h1, h2, h3 { font-family: Georgia, serif; line-height: 1.15 }
+h1, h2 { font-size: 38px; font-weight: 400 }
+p { color: #d7c5a4 }
+.hidden { display: none !important }
+.primary { color: #2e1a10; font-weight: 750; border-color: #f8e0a1; background: linear-gradient(#f4e2af, #c39850); box-shadow: inset 0 1px #fff6d5, 0 3px #4d311b }
+.primary:hover { background: linear-gradient(#fff1c2, #e4bd73) }
+.large { min-width: 190px; min-height: 52px; font-size: 16px }
+
+/* No frame, fitting wrapper, backdrop copy, reserved strip, or safe-area gutter. */
+.game-shell { position: fixed; inset: 0; isolation: isolate; width: 100%; height: 100%; height: 100dvh; margin: 0; padding: 0; overflow: hidden; background: #273d35 }
+.battle-screen, .world-window, .arena { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: transparent }
+.battle-screen { isolation: isolate }
+.world-window { z-index: 0 }
+#battlefield { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; background: #738677; outline: none }
+.aim-tip { position: absolute; top: 38%; left: 50%; transform: translateX(-50%); max-width: min(70%, 390px); pointer-events: none; color: #fff0ca; text-shadow: 0 1px 2px #000; font-size: 12px; text-align: center; background: #201e17c7; border: 1px solid #bc9b5eaa; padding: 7px 13px; border-radius: 20px; box-shadow: 0 4px 16px #0004 }
+
+/* The top-level layer is transparent; only the small instruments have material. */
+.topbar { position: absolute; inset: var(--hud-top) var(--hud-right) auto var(--hud-left); z-index: 4; height: 60px; pointer-events: none }
+.game-brand { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 256px; text-align: center; padding: 9px 18px 16px; color: var(--gilt); background: repeating-linear-gradient(90deg, #ffffff03 0 2px, transparent 2px 6px), linear-gradient(90deg, #331620eb, #74344bea 50%, #331620eb); border-top: 2px ridge #d6b36e; border-bottom: 1px solid #a9804a; clip-path: polygon(0 0, 100% 0, 97% 76%, 50% 100%, 3% 76%); filter: drop-shadow(0 5px 4px #0006) }
+.game-brand strong { display: block; font: 700 17px Georgia, serif; letter-spacing: .16em; text-shadow: 0 2px #28150f }
+.game-brand > span:last-child { display: block; font-size: 10px; margin-top: 3px; color: #ead6b0 }
+.crown-ornament { display: none }
+.top-actions { position: absolute; top: 0; right: 0; display: flex; flex-direction: column; gap: 6px; align-items: end; pointer-events: none }
+.top-actions button { pointer-events: auto }
+#battlePause { min-width: 80px; font: 700 12px Georgia, serif; border: 2px ridge #d2ad63; background: linear-gradient(#67334a, #301521); text-shadow: 0 1px #100 }
+.testing-control { font-size: 11px; padding: 5px 10px }
+.test-mode-badge { max-width: 130px; color: #ffe7a6; background: #312013de; border: 1px solid #9d7942; padding: 3px 5px; font-size: 8px; text-align: right; letter-spacing: .04em }
+.gamehud { position: absolute; top: var(--hud-top); left: var(--hud-left); right: var(--hud-right); display: flex; justify-content: space-between; align-items: start; gap: 20px; z-index: 3; pointer-events: none }
+.heraldic-plate { width: var(--plate-width); padding: 9px 11px; color: #f1e2bc; background: repeating-linear-gradient(90deg, #ffffff02 0 2px, transparent 2px 7px), linear-gradient(130deg, #472d1be8, #211914da); border: 1px solid #c19b59; border-radius: 5px 5px 13px 5px; box-shadow: inset 0 0 0 2px #110d0b70, inset 0 1px #f4d99c5c, 0 5px 13px #0004; text-shadow: 0 1px 2px #0d0907 }
+.hero-summary { display: flex; gap: 8px; align-items: center }
+.hero-seal { display: grid; place-items: center; flex: none; width: 33px; height: 43px; padding-bottom: 5px; font: 27px Georgia, serif; color: #f1d292; background: linear-gradient(120deg, #2c5970, #152b3a); border: 2px ridge #dfbd73; clip-path: polygon(0 0, 100% 0, 94% 76%, 50% 100%, 6% 76%) }
+.hero-vitals { min-width: 0; flex: 1 }
+.gamehud strong { display: block; font-size: 12px; font-weight: 700 }
+.gamehud span { font-size: 10px }
+.gamehud .hero-seal { font-size: 27px }
+.health-track, .experience-track, .meter { overflow: hidden; background: #140e0bdc; border: 1px solid #755433; box-shadow: inset 0 1px 3px #000 }
+.health-track { height: 9px; margin: 4px 0 3px; border-radius: 6px }
+.health-track > span { display: block; height: 100%; width: 100%; background: linear-gradient(#d7dc95, #75965c 55%, #547644); box-shadow: inset 0 1px #e6f5b1 }
+#goldHud { display: block; font-size: 10px; color: #ead391; white-space: nowrap }
+.experience-line { margin-top: 5px; display: flex; align-items: center; gap: 6px }
+#heroXpHud { font-size: 9px; color: #d4cce3; white-space: nowrap }
+.experience-track { flex: 1; height: 4px }
+.experience-track > span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #7061a0, #c8bfe9) }
+.stronghold-line { display: flex; align-items: center; gap: 4px; margin-top: 5px; padding-top: 5px; border-top: 1px solid #a5864a66; color: #e4d1aa; line-height: 1.2 }
+.stronghold-line span { font-size: 9px }
+.stronghold-line .stronghold-icon, .stronghold-line .flag-icon { font: 14px Georgia, serif; color: #a5cad7 }
+.stronghold-line .flag-icon { margin-left: auto }
+.hud-enemy { width: 213px; margin-right: 94px; border-radius: 5px 5px 5px 13px; background: repeating-linear-gradient(90deg, #ffffff02 0 2px, transparent 2px 7px), linear-gradient(130deg, #4d2722e6, #2d1818dd) }
+.hud-eyebrow { display: block; color: #e0b796; letter-spacing: .14em; font-size: 8px !important; margin-bottom: 3px }
+.hud-enemy strong { font-size: 11px }
+#waveHud { display: block; color: #e2c5a7; margin-top: 3px; font-size: 10px }
+.hud-enemy .stronghold-icon, .hud-enemy .flag-icon { color: #e1a482 }
+.flag-ribbon { position: absolute; z-index: 3; top: calc(var(--hud-top) + 72px); left: 50%; transform: translateX(-50%); width: min(29%, 330px); text-align: center; color: #fff1c7; font: 11px/1.4 Georgia, serif; text-shadow: 0 1px 2px #000, 0 2px 5px #000, 0 0 10px #0009; pointer-events: none }
+.flag-ribbon[data-alert="true"] { color: #ffe0a1; background: #64202de8; border: 1px solid #d8a15d; border-radius: 3px; padding: 5px 8px }
+
+/* Full-scene hit-transparent group. There is deliberately no command belt. */
+.command-deck { position: absolute; inset: var(--hud-top) var(--hud-right) var(--hud-bottom) var(--hud-left); z-index: 4; pointer-events: none; background: none; border: 0; box-shadow: none; padding: 0 }
+.movement { position: absolute; left: 0; bottom: 22px; display: grid; grid-template-columns: repeat(2, 48px); gap: 6px; pointer-events: none }
+.movement button { width: 48px; min-height: 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: auto; padding: 4px 2px; line-height: 1.1; font: 11px Georgia, serif; border: 2px ridge #bd995b; border-radius: 7px; background: linear-gradient(140deg, #5d422eea, #21180feb); box-shadow: inset 0 0 0 2px #25180e, 0 4px 8px #0005 }
+.movement button > span { line-height: 1.1 }
+.movement small { font: 8px system-ui, sans-serif; color: #e0c28d; margin-top: 4px }
+.arsenal { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: var(--arsenal-width); min-width: 0; pointer-events: none }
+.deck-heading { display: flex; align-items: end; justify-content: space-between; gap: 8px; margin-bottom: 7px; min-height: 44px }
+.selected-ability { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px 8px; width: min(310px, calc(100% - 157px)); min-width: 0; padding: 6px 9px; background: linear-gradient(110deg, #282118e0, #32251dbe); border: 1px solid #a7874ca0; border-radius: 5px; box-shadow: inset 0 1px #e5c58725, 0 3px 10px #0003 }
+#activeName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 12px Georgia, serif; color: #f2dfac }
+.reload { font-size: 8px; color: #e0cb9d; white-space: nowrap }
+.meter { grid-column: 1 / -1; height: 4px; border-radius: 3px }
+.meter > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #9a6d2f, #f1d181) }
+.skill-xp { grid-column: 1 / -1; font-size: 8px; color: #dfcba6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.bar-navigation { display: grid; grid-template-columns: 44px 53px 44px; gap: 4px; align-items: center; flex: none }
+.bar-step { pointer-events: auto; padding: 0; width: 44px; height: 44px; min-width: 44px; min-height: 44px; font: 29px Georgia, serif; color: #efd7a4; border: 1px solid #bc9858; border-radius: 8px; background: linear-gradient(140deg, #5b422de8, #241810e8); box-shadow: inset 0 0 0 2px #27190f, 0 4px 9px #0004 }
+#barLabel { text-align: center; font: 9px/1.2 Georgia, serif; color: #fff0c7; text-shadow: 0 1px 2px #000, 0 0 5px #000 }
+.hotbar-rail { width: 100%; min-width: 0; pointer-events: none }
+.hotbar { display: grid; grid-template-columns: repeat(10, minmax(44px, 1fr)); gap: 6px; min-width: 0; pointer-events: none }
+.hotbar > div { display: flex; flex-direction: column; position: relative; min-width: 0; gap: 5px; pointer-events: none }
+.skill-button { position: relative; width: 100%; min-width: 44px; min-height: 65px; padding: 3px 2px; border: 2px ridge #b99152; border-radius: 7px; background: radial-gradient(ellipse at 50% 8%, #654a31ed, #261b14ed 85%); box-shadow: inset 0 0 0 2px #29190e, inset 0 0 0 3px #b1843955, 0 5px 10px #0005; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; overflow: hidden; font-size: 9px; line-height: 1.13; pointer-events: auto }
+.skill-button.active { border-color: #ffdfa0; background: radial-gradient(ellipse at top, #813e54ef, #351a28f2); box-shadow: inset 0 0 0 2px #a47d41, inset 0 0 15px #e2b4592b, 0 0 0 1px #f7d1916e, 0 4px 15px #30111b77 }
+.skill-button.empty { opacity: .46; background: #211b14b5; border-color: #7f754d; box-shadow: inset 0 0 0 2px #20181080, 0 3px 8px #0002 }
+.skill-button .key { position: absolute; top: 3px; left: 4px; color: #edd6a0; font-size: 8px }
+.skill-icon { flex: none; font: 22px/1 Georgia, serif; color: #f9dfa4; text-shadow: 0 2px 2px #000 }
+.skill-button > span:nth-child(3) { flex: none; max-width: 100%; max-height: 20px; overflow: hidden; overflow-wrap: anywhere; line-height: 10px }
+.skill-button .cd { flex: none; color: #e6d3ac; font-size: 8px; line-height: 9px }
+.skill-button .skill-fill { position: absolute; bottom: 0; left: 0; height: 3px; background: #e5bc69 }
+.auto-button { display: none; min-height: 44px; min-width: 44px; width: 100%; padding: 4px 2px; pointer-events: auto; font-size: 9px; color: #e3ce99; border-color: #997240; background: linear-gradient(#443823ed, #242415ed) }
+.deck-footer { display: flex; justify-content: center; gap: 10px; min-height: 15px; margin-top: 5px; color: #f2dfb3; font-size: 9px; text-shadow: 0 1px 3px #000, 0 0 6px #000 }
+#battleStatus { padding: 1px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; background: #201b13a8; border-radius: 8px }
+.keyboard-tip { flex: none; color: #e0d1ac }
+.tactical-controls { position: absolute; right: 0; bottom: 22px; width: 88px; display: flex; flex-direction: column; gap: 6px; pointer-events: none }
+.tactical-controls button { min-height: 48px; width: 100%; padding: 5px 3px; font-size: 11px; line-height: 1.1; pointer-events: auto; border-radius: 7px }
+.activation-button { display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(#7d5730ee, #3c2818ed); border: 2px ridge #d8ae63 }
+.activation-button small { font-size: 8px; color: #e0c58e; margin-top: 3px }
+.queue-button { display: flex; justify-content: center; align-items: center; gap: 6px; background: linear-gradient(#324951ef, #172c34ed); border: 2px ridge #a88c56 }
+.queue-button > span:first-child { font: 20px Georgia, serif; color: #b8dbe2 }
+.army-readout { position: absolute; right: 0; bottom: 136px; width: 100px; font-size: 9px; line-height: 1.5; color: #ffedc5; text-align: right; text-shadow: 0 1px 3px #000, 0 0 5px #000 }
+.assist-controls { position: absolute; top: 114px; left: 0; display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 216px; padding: 9px; pointer-events: auto; border: 1px solid #ac884ccc; border-radius: 6px; background: linear-gradient(135deg, #35251ddd, #241720dd); box-shadow: 0 4px 12px #0004 }
+.assist-controls label { display: grid; grid-template-columns: 35px minmax(0, 1fr) 36px; align-items: center; gap: 5px; font-size: 10px }
+.assist-controls input { width: 100%; min-width: 44px; height: 44px; accent-color: #e2bc70; margin: 0 }
+.assist-controls output { min-width: 36px; font-size: 10px; text-align: right }
+.assist-controls button { min-height: 44px; font-size: 11px }
+.rotate-hint { display: none }
+
+@media (min-width: 1280px) and (min-height: 740px) {
+  .auto-button { display: block }
+}
+
+@media (max-width: 1100px) and (orientation: landscape) {
+  :root { --plate-width: 190px; --arsenal-width: calc(100% - 232px) }
+  .game-brand { left: 45%; width: 214px; padding: 7px 12px 13px }
+  .game-brand strong { font-size: 14px }
+  .game-brand > span:last-child { font-size: 9px }
+  .hud-enemy { width: 176px; margin-right: 88px }
+  .heraldic-plate { padding: 7px 8px }
+  .hero-seal { display: none }
+  .gamehud strong { font-size: 10px }
+  #goldHud, #waveHud { font-size: 9px }
+  #battlePause { min-width: 76px; padding: 6px 8px }
+  .flag-ribbon { left: 45%; top: calc(var(--hud-top) + 62px); width: 28%; font-size: 10px }
+  .hotbar { display: flex; overflow-x: auto; overflow-y: hidden; padding: 1px 1px 6px; scroll-snap-type: x proximity; overscroll-behavior-inline: contain; scrollbar-width: thin; scrollbar-color: #d2b172 #1e211767; pointer-events: auto; touch-action: pan-x }
+  .hotbar > div { flex: 1 0 52px; scroll-snap-align: start }
+  .hotbar::-webkit-scrollbar { height: 4px }
+  .hotbar::-webkit-scrollbar-thumb { background: #bfa268; border-radius: 2px }
+  .hotbar::-webkit-scrollbar-track { background: #20221866 }
+  .skill-button { min-height: 58px; font-size: 8px }
+  .skill-button .cd { display: none }
+  .keyboard-tip { display: none }
+  .army-readout { font-size: 8px }
+  .assist-controls { top: 102px; width: 190px }
+}
+
+/* Height pressure changes instrument size and location only, never the scene. */
+@media (max-height: 600px) and (orientation: landscape) {
+  :root { --hud-top: max(8px, env(safe-area-inset-top)); --hud-bottom: max(8px, env(safe-area-inset-bottom)); --hud-left: max(10px, env(safe-area-inset-left)); --hud-right: max(10px, env(safe-area-inset-right)); --plate-width: 174px; --arsenal-width: calc(100% - 220px) }
+  .game-brand { padding: 5px 10px 10px; width: 200px }
+  .game-brand strong { font-size: 12px }
+  .game-brand > span:last-child { font-size: 8px; margin-top: 2px }
+  .heraldic-plate { padding: 5px 7px }
+  .hud-enemy { width: 166px; margin-right: 82px }
+  .gamehud strong { font-size: 10px }
+  .hud-enemy strong { font-size: 9px }
+  #goldHud, #waveHud, #heroXpHud { font-size: 8px }
+  .health-track { height: 6px; margin: 3px 0 }
+  .experience-line { margin-top: 3px; gap: 4px }
+  .stronghold-line { margin-top: 3px; padding-top: 3px; gap: 3px }
+  .stronghold-line span { font-size: 8px }
+  .stronghold-line .stronghold-icon, .stronghold-line .flag-icon { font-size: 12px }
+  .hud-eyebrow { font-size: 7px !important; margin-bottom: 2px }
+  #battlePause { min-width: 72px; font-size: 11px }
+  .flag-ribbon { top: calc(var(--hud-top) + 57px); font-size: 9px }
+  .movement { bottom: 16px; grid-template-columns: repeat(2, 44px); gap: 5px }
+  .movement button { width: 44px; min-height: 44px; font-size: 10px }
+  .movement small, .activation-button small { display: none }
+  .tactical-controls { width: 82px; bottom: 16px; gap: 5px }
+  .tactical-controls button { min-height: 44px; font-size: 10px }
+  .deck-heading { margin-bottom: 5px }
+  .selected-ability { padding: 5px 7px }
+  #activeName { font-size: 11px }
+  .reload, .skill-xp { font-size: 8px }
+  .skill-button { min-height: 52px; height: 52px; gap: 1px; padding: 2px }
+  .skill-icon { font-size: 18px }
+  .skill-button .cd { display: none }
+  .hotbar { gap: 5px }
+  .auto-button { display: none }
+  .deck-footer { font-size: 8px; margin-top: 2px; min-height: 12px }
+  .army-readout { bottom: 112px; width: 88px; font-size: 8px }
+  .assist-controls { top: 86px; width: min(490px, calc(100% - 160px)); left: 50%; transform: translateX(-50%); flex-direction: row; gap: 8px; padding: 4px 7px; align-items: center }
+  .assist-controls label { grid-template-columns: 28px minmax(44px, 1fr) 31px; flex: 1; font-size: 9px; gap: 3px }
+  .assist-controls output { min-width: 31px; font-size: 9px }
+  .assist-controls button { flex: none; padding: 4px 8px; font-size: 10px }
+  .aim-tip { top: 43%; font-size: 10px; padding: 5px 9px }
+  .large { min-height: 44px }
+}
+
+@media (orientation: landscape) and (max-width: 740px) {
+  :root { --plate-width: 149px; --arsenal-width: calc(100% - 204px) }
+  .game-brand { left: 45%; width: 150px; padding-left: 7px; padding-right: 7px }
+  .game-brand strong { font-size: 10px; letter-spacing: .11em }
+  .game-brand > span:last-child { font-size: 8px }
+  .hud-enemy { width: 142px; margin-right: 66px }
+  #battlePause { min-width: 60px; font-size: 10px; padding: 5px }
+  .flag-ribbon { width: 25%; left: 45%; font-size: 8px }
+  .heraldic-plate { padding: 5px 6px }
+  .gamehud strong { font-size: 9px }
+  .stronghold-line { flex-wrap: wrap }
+  .tactical-controls { width: 78px }
+  .bar-navigation { grid-template-columns: 44px 39px 44px; gap: 3px }
+  #barLabel { font-size: 8px }
+  .selected-ability { width: calc(100% - 141px); grid-template-columns: 1fr; gap: 2px }
+  .reload { display: none }
+  #activeName { font-size: 10px }
+  .skill-xp { font-size: 7px }
+  .meter { grid-column: 1 }
+  .hotbar > div { flex-basis: 48px }
+  .top-actions .testing-control { font-size: 9px; width: 60px; padding: 4px }
+  .test-mode-badge { font-size: 7px; max-width: 65px }
+}
+
+/* Portrait: two status plates above, two rows of five ability targets below.
+   Both are overlays. The living scene remains 100% wide and 100% tall. */
+@media (orientation: portrait) {
+  :root { --hud-top: max(10px, env(safe-area-inset-top)); --hud-bottom: max(10px, env(safe-area-inset-bottom)); --hud-left: max(10px, env(safe-area-inset-left)); --hud-right: max(10px, env(safe-area-inset-right)) }
+  .game-brand { top: 0; left: 0; transform: none; width: min(260px, calc(100% - 89px)); padding: 6px 10px 12px }
+  .game-brand strong { font-size: 14px }
+  .game-brand > span:last-child { font-size: 9px }
+  #battlePause { min-width: 78px; padding: 6px 8px; font-size: 11px }
+  .gamehud { top: calc(var(--hud-top) + 62px); gap: 9px }
+  .heraldic-plate { width: calc(50% - 4.5px); padding: 6px 7px; border-radius: 5px 5px 10px 5px }
+  .hud-enemy { margin-right: 0; border-radius: 5px 5px 5px 10px }
+  .hero-seal { display: none }
+  .gamehud strong, .hud-enemy strong { font-size: 10px }
+  #goldHud, #heroXpHud, #waveHud { font-size: 8px }
+  .health-track { height: 6px; margin: 3px 0 }
+  .experience-line { gap: 5px; margin-top: 4px }
+  .stronghold-line { margin-top: 4px; padding-top: 4px; gap: 3px }
+  .stronghold-line span { font-size: 8px }
+  .stronghold-line .stronghold-icon, .stronghold-line .flag-icon { font-size: 11px }
+  .hud-eyebrow { font-size: 8px !important; margin-bottom: 3px }
+  .flag-ribbon { top: calc(var(--hud-top) + 151px); width: calc(100% - 40px); font-size: 10px }
+  .flag-ribbon[data-alert="true"] { padding: 3px 6px }
+  .arsenal { left: 0; bottom: 67px; width: 100%; transform: none }
+  .deck-heading { margin-bottom: 6px; gap: 7px }
+  .selected-ability { width: calc(100% - 154px); padding: 5px 7px }
+  #activeName { font-size: 11px }
+  .reload { font-size: 8px }
+  .skill-xp { font-size: 8px }
+  .hotbar { display: grid; grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 6px; overflow: visible }
+  .hotbar > div { gap: 0 }
+  .skill-button { height: 54px; min-height: 54px; padding: 2px; font-size: 9px; gap: 1px }
+  .skill-icon { font-size: 18px }
+  .skill-button .cd, .auto-button, .keyboard-tip { display: none }
+  .deck-footer { min-height: 14px; margin-top: 5px; font-size: 9px }
+  .movement { bottom: 0; grid-template-columns: repeat(4, 44px); gap: 5px }
+  .movement button { width: 44px; min-height: 44px; font-size: 10px }
+  .movement small, .activation-button small { display: none }
+  .tactical-controls { right: 0; bottom: 0; width: 98px; flex-direction: row; gap: 6px }
+  .tactical-controls button { min-width: 44px; min-height: 44px; padding: 4px 2px; font-size: 9px }
+  .queue-button { flex-direction: column; gap: 1px }
+  .queue-button > span:first-child { font-size: 16px }
+  .army-readout { bottom: 47px; right: 0; width: 100%; font-size: 8px; text-align: center; line-height: 1.4 }
+  .assist-controls { top: 178px; left: 50%; transform: translateX(-50%); width: min(100%, 370px); padding: 5px 7px; flex-direction: row; flex-wrap: wrap; gap: 2px 8px }
+  .assist-controls label { flex: 1 1 45%; grid-template-columns: 29px minmax(44px, 1fr) 33px; font-size: 9px; gap: 2px }
+  .assist-controls output { font-size: 9px; min-width: 33px }
+  .assist-controls button { width: 100%; padding: 5px 8px }
+  .aim-tip { top: 40%; width: max-content; max-width: 82%; font-size: 10px; padding: 5px 9px }
+  .rotate-hint { display: none }
+  .top-actions .testing-control { position: absolute; top: 172px; right: 0; font-size: 9px; padding: 5px 7px }
+  .test-mode-badge { position: absolute; top: 172px; right: 51px; max-width: 100px; font-size: 7px; padding: 2px 4px }
+  .battle-screen:has(#assistControls:not(.hidden)) .top-actions .testing-control, .battle-screen:has(#assistControls:not(.hidden)) .test-mode-badge { top: 282px }
+}
+
+@media (orientation: portrait) and (max-width: 360px) {
+  .game-brand strong { font-size: 12px }
+  .movement { gap: 4px }
+  .tactical-controls { width: 92px; gap: 4px }
+  .stronghold-line { gap: 2px; flex-wrap: wrap }
+  .stronghold-line span { font-size: 7px }
+  .bar-navigation { grid-template-columns: 44px 36px 44px; gap: 3px }
+  #barLabel { font-size: 8px }
+  .selected-ability { width: calc(100% - 136px); grid-template-columns: 1fr }
+  .reload { display: none }
+  .meter { grid-column: 1 }
+  .hotbar { gap: 5px }
+}
+
+@media (orientation: portrait) and (max-height: 680px) {
+  .game-brand { padding-top: 4px; padding-bottom: 9px }
+  .game-brand strong { font-size: 12px }
+  .gamehud { top: calc(var(--hud-top) + 53px) }
+  .heraldic-plate { padding-top: 5px; padding-bottom: 5px }
+  .flag-ribbon { top: calc(var(--hud-top) + 138px); font-size: 9px }
+  .arsenal { bottom: 61px }
+  .skill-button { height: 49px; min-height: 49px }
+  .skill-icon { font-size: 18px }
+  .deck-heading { margin-bottom: 5px }
+  .selected-ability { padding-top: 4px; padding-bottom: 4px }
+  .deck-footer { margin-top: 3px; min-height: 12px; font-size: 8px }
+  .army-readout { bottom: 46px }
+  .assist-controls { top: 158px; padding: 4px 5px }
+  .assist-controls label { flex: 1 1 44% }
+  .top-actions .testing-control, .test-mode-badge { top: 154px }
+  .battle-screen:has(#assistControls:not(.hidden)) .top-actions .testing-control, .battle-screen:has(#assistControls:not(.hidden)) .test-mode-badge { top: 268px }
+}
+
+@media (max-width: 700px) {
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important } }

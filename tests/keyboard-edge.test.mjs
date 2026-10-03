@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {loadGameUI} from './helpers/game-ui-harness.mjs';
+async function setup(t){const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testGoldLarge');ui.click('testUnlock');ui.click('closeTesting');ui.click('start');return ui;}
+test('short bow digit tap selects immediately and survives next tick',async t=>{const ui=await setup(t);ui.click('nextBar');ui.key('keydown','2');ui.key('keyup','2');assert.equal(ui.battle.hotbar.active.id,'fireArrow');ui.frames();assert.equal(ui.battle.hotbar.active.id,'fireArrow');});
+test('short summon digit tap preserves intent across immediate page change',async t=>{const ui=await setup(t);ui.click('nextBar');ui.click('nextBar');ui.key('keydown','5');ui.key('keyup','5');ui.click('nextBar');ui.frames();assert.equal(ui.battle.profile.gold,9980);assert.equal(ui.battle.hotbar.bar,2);});
+test('held summon digit does not double charge for initial edge plus engine poll',async t=>{const ui=await setup(t);ui.click('nextBar');ui.click('nextBar');ui.key('keydown','5');ui.frames();assert.equal(ui.battle.profile.gold,9980);ui.frames();assert.equal(ui.battle.profile.gold,9980);});
+test('paused digit tap remains inert',async t=>{const ui=await setup(t);ui.click('battlePause');const before=ui.battle.hotbar.active;ui.key('keydown','2');ui.key('keyup','2');assert.equal(ui.battle.hotbar.active,before);});

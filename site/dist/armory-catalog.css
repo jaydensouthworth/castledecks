@@ -1,0 +1,298 @@
+/* A card collection in the existing burgundy / aged-brass armory.
+   One bounded page of cards; browser scrolling, no virtual-focus tricks. */
+#shopPanel .catalog-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#shopPanel .armory-workspace{grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr)}
+#shopPanel .armory-catalog{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain;padding:2px 4px 4px 2px;scroll-padding:4px}
+#shopPanel .armory-search-row{display:flex;align-items:stretch;gap:8px;margin:0 0 10px;flex:none}
+#shopPanel .armory-search{min-width:0;flex:1;display:block}
+#shopPanel .armory-search input,#shopPanel .armory-refinements select,#shopPanel .armory-compact-category select{min-height:44px;width:100%;min-width:0;border:1px solid #b68c4980;border-radius:2px;padding:9px 10px;background:#1e141d;color:#f7e7c6;font:14px/1.3 system-ui,sans-serif;color-scheme:dark}
+#shopPanel .armory-search input::placeholder{color:#bfaa8d}
+#shopPanel input:focus-visible,#shopPanel select:focus-visible{outline:2px solid #fff0c8;outline-offset:2px}
+#shopPanel .armory-search-row button{font-size:14px;padding:9px 12px}
+#shopPanel .armory-compact-category{display:none}
+#shopPanel .armory-refinements{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;flex:none;padding:10px;margin-bottom:10px;border:1px solid #b68c4940;background:#190f18}
+#shopPanel .armory-refinements label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#dec69f;min-width:0}
+#shopPanel .armory-refinements>button{grid-column:1/-1;justify-self:start;font-size:14px;min-height:44px;padding:8px 12px}
+#shopPanel .armory-refinements.hidden{display:none}
+#shopPanel .ability-filters{flex-wrap:nowrap;overflow:auto;position:static;gap:6px;padding:2px;margin:0 0 8px;max-width:100%;background:none}
+#shopPanel .ability-filters>button{flex:none;white-space:nowrap;font-size:14px;padding:8px 10px;min-height:44px}
+#shopPanel .ability-filters>button span{font-size:12px}
+#shopPanel .armory-results-line{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:0 2px 8px;flex:none;min-height:25px}
+#shopPanel #shopResultCount{font-size:13px;color:#e1caa5}#shopPanel #shopFilterSummary{font-size:12px;color:#bdaa91}
+#shopPanel .armory-scroll{overflow:visible;flex:none;min-height:0;outline-offset:2px}
+#shopPanel .armory-catalog:focus-visible{outline:2px solid #fff0c8}
+#shopPanel .shop-grid{overflow:visible;grid-template-columns:repeat(2,minmax(0,1fr));padding:1px;gap:10px}
+#shopPanel .shop-card{padding:12px;gap:10px;border-radius:3px;box-shadow:inset 0 3px #b68c4929}
+#shopPanel .shop-card[data-selected=true]{box-shadow:inset 0 3px #e5be7d,0 0 0 1px #e5be7d33}
+#shopPanel .card-kicker{display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:space-between;color:#d2b98e;font-size:12px;line-height:1.25}
+#shopPanel .card-kicker>span:last-child{color:#bca78b}
+#shopPanel .shop-card .shop-inspect{min-height:64px;align-items:center;flex-direction:row;gap:10px;min-width:0}
+#shopPanel .shop-inspect strong{font:400 21px/1.15 Georgia,serif;overflow-wrap:anywhere}
+#shopPanel .shop-inspect small{font-size:12px;line-height:1.4;margin-top:6px}
+#shopPanel .shop-inspect .skill-icon{width:36px;height:36px}
+#shopPanel .shop-card-description{font-size:14px;line-height:1.45;min-height:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#shopPanel .card-state{font-size:13px;line-height:1.35;flex:none;color:#ccb896}
+#shopPanel .card-state[data-state=owned]{color:#bdd3a7}
+#shopPanel .card-state[data-state=available]{color:#f5d694}
+#shopPanel .shop-card .shop-buy{min-height:44px;padding:9px;font-size:14px;line-height:1.25}
+#shopPanel .shop-card .shop-buy:disabled{color:#c3ae91}
+#shopPanel .companion-catalog-card{background:linear-gradient(125deg,#3a463833,#302131);border-color:#acbe8a80}
+#shopPanel .armory-pagination{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 1px 2px}
+#shopPanel .armory-pagination button{min-height:44px;min-width:76px;font-size:14px;padding:9px 12px}
+#shopPanel .armory-pagination button[aria-disabled=true]{color:#a38e77;border-color:#9e7e442a;background:#241820;cursor:default}
+#shopPanel #shopPageLabel{font-size:13px;color:#d8c09a;text-align:center}
+#shopPanel .armory-empty{grid-column:1/-1;border:1px dashed #b68c4966;padding:20px;text-align:center}
+#shopPanel .armory-empty strong{font-size:16px;font-weight:600;color:#f0d6a4}
+#shopPanel .armory-empty p{font-size:14px;line-height:1.5;margin:10px 0}
+#shopPanel .armory-empty button{font-size:14px}
+#shopPanel .armory-detail-location{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 15px}
+#shopPanel .armory-detail-location>span{font-size:12px;color:#d0b48a}
+#shopPanel .armory-browse{display:inline-flex;font-size:14px;min-height:44px;margin:0;padding:8px 11px}
+#shopPanel .armory-details>p{font-size:14px;line-height:1.55}
+#shopPanel .armory-detail-title h3{font-size:28px;overflow-wrap:anywhere}
+#shopPanel .card-subtitle{font-size:14px;margin:4px 0 0;color:#cdb99a}
+#shopPanel .armory-traits{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}
+#shopPanel .armory-traits>span{font-size:12px;border:1px solid #b68c4944;border-radius:2px;padding:3px 7px;color:#e0c598}
+#shopPanel .armory-facts>div{font-size:13px;line-height:1.4;padding:9px 0;gap:12px}
+#shopPanel .armory-details>.armory-eligibility{font-size:14px;line-height:1.5}
+#shopPanel #shopDetailAction{font-size:14px;min-height:46px}
+#shopPanel .armory-details>.armory-price-note{font-size:12px;color:#c6b295;line-height:1.5}
+@media(max-height:600px) and (orientation:landscape){
+ #shopPanel .armory-workspace{grid-template-columns:minmax(0,1.7fr) minmax(205px,1fr);gap:12px;padding:6px 12px}
+ #shopPanel .armory-search-row{gap:6px;margin-bottom:7px}
+ #shopPanel .armory-compact-category{display:block;width:110px;flex:none}
+ #shopPanel .ability-filters{display:none}
+ #shopPanel .armory-search input{font-size:14px;padding-inline:8px}
+ #shopPanel .armory-search-row button{padding-inline:8px}
+ #shopPanel .shop-grid{gap:8px}
+ #shopPanel .shop-card{padding:10px;gap:8px}
+ #shopPanel .shop-inspect strong{font-size:20px}
+ #shopPanel .shop-inspect .skill-icon{width:30px;height:30px}
+ #shopPanel .armory-detail-title{margin-bottom:10px;gap:9px}
+ #shopPanel .armory-detail-title h3{font-size:25px}
+ #shopPanel .armory-detail-location{margin-bottom:10px}
+ #shopPanel .armory-facts{margin:12px 0}
+ #shopPanel .armory-refinements{grid-template-columns:1fr}
+ #shopPanel .armory-refinements label{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;font-size:12px}
+}
+@media(max-width:780px) and (orientation:landscape){#shopPanel .shop-grid{grid-template-columns:minmax(0,1fr)}#shopPanel .armory-compact-category{width:92px}#shopPanel .armory-search input{font-size:13px}}
+@media(max-width:620px) and (orientation:portrait){
+ #shopPanel .armory-workspace{display:flex;flex-direction:column;overflow:auto;padding:12px;gap:18px;scroll-padding:12px}
+ #shopPanel .armory-catalog{overflow:visible;flex:none;padding:2px}
+ #shopPanel .armory-details{overflow:visible;flex:none;padding:16px 2px 2px;scroll-margin-top:12px}
+ #shopPanel .armory-refinements{grid-template-columns:1fr}
+ #shopPanel .armory-refinements label{display:grid;grid-template-columns:85px minmax(0,1fr);align-items:center}
+ #shopPanel .shop-card{padding:11px;gap:8px}
+ #shopPanel .shop-card .shop-inspect{flex-direction:column;align-items:start;min-height:100px;gap:8px}
+ #shopPanel .shop-inspect strong{font-size:20px}
+ #shopPanel .shop-card-description{font-size:14px;-webkit-line-clamp:3}
+ #shopPanel .shop-card .shop-buy{font-size:14px;min-height:48px;padding:8px}
+ #shopPanel .card-kicker{min-height:32px}
+ #shopPanel .menu-footer>button{width:auto;font-size:13px;min-height:44px}
+}
+@media(max-width:360px) and (orientation:portrait){#shopPanel .shop-grid{grid-template-columns:minmax(0,1fr)}#shopPanel .shop-card .shop-inspect{flex-direction:row;min-height:64px;align-items:center}}
+@media(forced-colors:active){#shopPanel .shop-card[data-selected=true]{outline:2px solid Highlight}#shopPanel .card-state{color:CanvasText}}
+
+/* V36: a storefront, collection and card workspace, with one bounded catalog. */
+#shopPanel .armory-workspace{display:flex;flex-direction:column;padding:0;gap:0;overflow:hidden;min-height:0}
+#shopPanel .armory-mode-nav{display:flex;gap:6px;flex:none;border-bottom:1px solid #b68c4948;padding:7px 18px;background:#1c121b70;overflow:auto}
+#shopPanel .armory-mode-nav>button{font-size:14px;min-height:44px;white-space:nowrap;padding:8px 13px;border-color:transparent;background:transparent}
+#shopPanel .armory-mode-nav>button[aria-pressed=true]{border-color:#d4ae6c;background:#70404b55;color:#ffe8b3}
+#shopPanel #shopCompareOpen{margin-left:auto;border-color:#b68c4955}
+#shopPanel #shopCompareOpen[aria-disabled=true]{color:#aa9780}
+#shopPanel #shopCompareCount{padding:3px 6px;border:1px solid #b68c4944;font-size:12px}
+#shopPanel .armory-stage{display:grid;grid-template-columns:minmax(0,1fr);flex:1;min-height:0;overflow:hidden;position:relative}
+#shopPanel .armory-stage.detail-open{grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr)}
+#shopPanel .armory-browser{display:grid;grid-template-columns:170px minmax(0,1fr);min-height:0;min-width:0;overflow:hidden}
+#shopPanel .armory-departments{border-right:1px solid #b68c4944;padding:18px 12px;overflow:auto;min-height:0}
+#shopPanel .armory-rail-heading{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#c6ae85;margin:0 6px 10px}
+#shopPanel #shopDepartmentRail{display:grid;gap:5px}
+#shopPanel #shopDepartmentRail>button{justify-content:space-between;text-align:left;font-size:14px;min-height:48px;padding:9px;border-color:transparent;background:transparent}
+#shopPanel #shopDepartmentRail>button[aria-pressed=true]{background:#62324670;border-color:#b68c4977;color:#f7ddb0}
+#shopPanel #shopDepartmentRail span{font-size:12px;color:#c7b394}
+#shopPanel .armory-department-hint{font-size:12px;line-height:1.5;padding:14px 6px;color:#bca587}
+#shopPanel .armory-subtypes{display:grid;gap:4px;padding-top:12px;border-top:1px solid #b68c4933}
+#shopPanel .armory-subtypes button{justify-content:start;padding:9px;font-size:13px;background:transparent;border-color:transparent}
+#shopPanel .armory-subtypes button[aria-pressed=true]{color:#ffdfa0;border-color:#b68c4955}
+#shopPanel .armory-catalog{padding:18px;min-height:0;overflow:auto;scroll-padding:12px}
+#shopPanel .armory-browser-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+#shopPanel .armory-browser-heading h3{font-size:27px}
+#shopPanel .armory-browser-heading>button{padding:8px;font-size:13px;background:transparent}
+#shopPanel .armory-compact-category{display:none}
+#shopPanel .shop-grid{grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:13px}
+#shopPanel .shop-card{gap:11px;padding:14px}
+#shopPanel .shop-card-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-top:auto}
+#shopPanel .shop-card .shop-compare-card{font-size:13px;min-height:44px;margin:0;padding:7px;background:transparent;border-color:#b68c4944;color:#d7bd90}
+#shopPanel .shop-card .shop-compare-card[aria-pressed=true]{color:#fbe8b8;border-color:#e0b776;background:#643342}
+#shopPanel .shop-card-description{min-height:41px}
+#shopPanel .armory-pinned-tray{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+#shopPanel .armory-pinned-tray:empty{display:none}
+#shopPanel .armory-pinned-tray>button{font-size:12px;min-height:44px;padding:7px 10px;gap:10px;background:#4c2e3d;border-color:#b68c4966}
+#shopPanel .armory-pinned-tray span{font-size:18px}
+#shopPanel .armory-refinements{grid-template-columns:repeat(2,minmax(0,1fr))}
+#shopPanel .armory-refinements label.hidden{display:none}
+#shopPanel .armory-details{padding:14px 18px;border-left:1px solid #b68c4966;overflow:auto;min-width:0;min-height:0;scroll-padding:12px;background:linear-gradient(135deg,#442737d9,#241922);box-shadow:inset 3px 0 #e7c6860a}
+#shopPanel .armory-detail-nav{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+#shopPanel .armory-detail-nav>button{font-size:13px;padding:8px 10px;min-height:44px}
+#shopPanel .armory-detail-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding-bottom:10px;margin-bottom:15px;border-bottom:1px solid #b68c4944}
+#shopPanel .armory-detail-tabs>button{font-size:13px;padding:7px 5px;min-height:44px;background:transparent;border-color:transparent}
+#shopPanel .armory-detail-tabs>button[aria-pressed=true]{border-color:#c19958;background:#552c3c;color:#f5dba4}
+#shopPanel #shopDetails>p{font-size:14px;line-height:1.55}
+#shopPanel #shopDetails>.armory-eligibility{margin-bottom:12px;color:#e4c795}
+#shopPanel #shopDetails .card-description-full{margin-top:16px}
+#shopPanel #shopDetails .armory-price-note{font-size:12px;line-height:1.6;color:#c3ad8b;margin:15px 0}
+#shopPanel .armory-detail-location{gap:7px;margin-bottom:10px}
+#shopPanel .armory-browse{font-size:12px;padding:6px 8px;min-height:44px}
+#shopPanel h4{font:400 21px/1.25 Georgia,serif;color:#f4ddae;margin:0 0 10px}
+#shopPanel .armory-tactics{padding:16px 0;border-top:1px solid #b68c4944}
+#shopPanel .armory-tactics ul,#shopPanel .armory-stat-notes{padding-left:19px;margin:0;display:grid;gap:10px;font-size:14px;color:#cdbb9f;line-height:1.6}
+#shopPanel .armory-section-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:20px 0 8px}
+#shopPanel .armory-section-title>span{font-size:12px;color:#c9b18b}
+#shopPanel .armory-rank-preview>p,#shopPanel .armory-equip>p{font-size:14px;line-height:1.6;margin-bottom:12px}
+#shopPanel .armory-preview-select,#shopPanel .armory-compare-rank{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:#e6cd9e;margin:14px 0 8px}
+#shopPanel .armory-preview-select select,#shopPanel .armory-compare-rank select{min-height:44px;font-size:14px;background:#211620;color:#f6dfae;border:1px solid #b68c4977;border-radius:2px;padding:8px;max-width:60%;min-width:0;color-scheme:dark}
+#shopPanel .armory-preview-note{font-size:12px!important;color:#c1aa89!important;margin-bottom:15px!important}
+#shopPanel .armory-stat-table,#shopPanel .armory-comparison-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.4;color:#e8d3af}
+#shopPanel .armory-stat-table th,#shopPanel .armory-stat-table td,#shopPanel .armory-comparison-table th,#shopPanel .armory-comparison-table td{padding:10px 7px;text-align:left;vertical-align:top;border-bottom:1px solid #b68c4944;overflow-wrap:anywhere;font-weight:400}
+#shopPanel .armory-stat-table thead th,#shopPanel .armory-comparison-table thead th{color:#ffe3a7;border-bottom-color:#c2955666;font-weight:650}
+#shopPanel .armory-stat-table th:first-child{width:40%}
+#shopPanel .armory-stat-table small,#shopPanel .armory-comparison-table small{display:block;font-size:12px;color:#bba486;line-height:1.4;margin-top:4px;font-weight:400}
+#shopPanel .armory-stat-table .stat-delta{color:#e1c189}
+#shopPanel .armory-stat-notes{margin-top:17px;font-size:12px}
+#shopPanel .armory-equip-pages{display:flex;gap:6px;margin:12px 0}
+#shopPanel .armory-equip-pages>button{flex:1;min-height:44px;font-size:14px;padding:8px}
+#shopPanel .armory-equip-pages>button[aria-pressed=true]{border-color:#e5bd77;background:#68374a}
+#shopPanel .armory-quick-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#shopPanel .armory-quick-slots>button{display:flex;flex-direction:column;gap:5px;min-height:93px;min-width:0;padding:6px 3px;position:relative;border-color:#b68c4955;background:#251922}
+#shopPanel .armory-quick-slots>button[aria-pressed=true]{border-color:#f3cd86;background:#744050}
+#shopPanel .armory-quick-slots b{font-size:12px;line-height:1;color:#f0cb88;align-self:start}
+#shopPanel .armory-quick-slots .skill-icon{width:24px;height:24px;display:block}
+#shopPanel .armory-quick-slots small{font-size:10px;line-height:1.25;color:#d3bf9e;overflow-wrap:anywhere}
+#shopPanel .armory-equip-review{padding:12px;margin:13px 0;background:#1c131d;border:1px solid #b68c4955}
+#shopPanel .armory-equip-review p{font-size:14px;line-height:1.5;margin-bottom:10px}
+#shopPanel .armory-equip-review>div{display:flex;flex-wrap:wrap;gap:6px}
+#shopPanel .armory-equip-review button{font-size:13px;min-height:44px;padding:8px 11px}
+#shopPanel #shopEquipConfirm:not(:disabled){background:#dfbc80;color:#261b15;border-color:#edce93}
+#shopPanel #shopOpenFullLoadout{font-size:13px;min-height:44px;width:100%;margin:4px 0 10px}
+#shopPanel .armory-autocast{display:flex;align-items:center;gap:10px;font-size:14px;color:#e4cfae;padding:12px 0;min-height:44px}
+#shopPanel .armory-autocast input{width:22px;height:22px;accent-color:#cca05e;flex:none}
+#shopPanel .armory-autocast small{font-size:12px;display:block;line-height:1.5;margin-top:4px;color:#bda98c}
+#shopPanel .armory-discover{overflow:auto;padding:24px;min-height:0;min-width:0}
+#shopPanel .armory-discover-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+#shopPanel .armory-discover-heading h3{font-size:34px;margin-bottom:8px}
+#shopPanel .armory-discover-heading p{font-size:15px;max-width:500px}
+#shopPanel .armory-discover-heading button{font-size:14px;flex:none;min-height:44px}
+#shopPanel .armory-department-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+#shopPanel .armory-department-card{display:flex;flex-direction:column;align-items:start;justify-content:start;text-align:left;gap:12px;padding:20px;background:linear-gradient(130deg,#5a2e416b,#1d1620);border:1px solid #b68c4966;min-width:0;min-height:220px;box-shadow:inset 0 3px #b68c4933}
+#shopPanel .armory-department-card:hover{border-color:#e2b877;background:#5b3040}
+#shopPanel .armory-department-card>strong{font:400 27px/1.15 Georgia,serif;color:#f6dfb3}
+#shopPanel .armory-department-card>span:not(.department-art){font-size:14px;line-height:1.5;font-weight:400;color:#cbb697}
+#shopPanel .armory-department-card>small{font-size:12px;color:#e5c58c}
+#shopPanel .armory-department-card>b{font-size:12px;font-weight:500;color:#d7be95;margin-top:auto}
+#shopPanel .department-art{display:flex;gap:8px;align-items:center;min-height:45px;color:#e7bf77}
+#shopPanel .department-art .skill-icon{display:block;width:36px;height:36px;line-height:0}
+#shopPanel .department-art .skill-icon:first-child{width:48px;height:48px}
+#shopPanel .armory-discovery-shelves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:25px;padding-top:22px;border-top:1px solid #b68c4944}
+#shopPanel .armory-discovery-shelves p{font-size:14px;line-height:1.6;margin-bottom:13px}
+#shopPanel .armory-discovery-shelves button{min-height:44px;font-size:13px;padding:8px 11px}
+#shopPanel .armory-role-jumps{display:flex;flex-wrap:wrap;gap:6px}
+#shopPanel .armory-compare{overflow:auto;padding:22px;min-height:0;min-width:0;grid-column:1/-1}
+#shopPanel .armory-comparison-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}
+#shopPanel .armory-comparison-heading h3{font-size:32px}
+#shopPanel .armory-comparison-heading>button{font-size:14px;min-height:44px}
+#shopPanel .armory-compare-rank{max-width:550px}
+#shopPanel .armory-comparison-table{font-size:14px;table-layout:fixed;margin-top:18px}
+#shopPanel .armory-comparison-table th:first-child{width:27%}
+#shopPanel .armory-comparison-table thead .skill-icon{display:block;width:40px;height:40px;margin-bottom:9px}
+#shopPanel .armory-comparison-table strong{display:block;font:400 25px/1.2 Georgia,serif}
+#shopPanel .armory-comparison-table button{font-size:13px;min-height:44px;padding:8px 10px;margin-top:10px}
+#shopPanel .armory-comparison-table ul{padding-left:18px;margin:0;line-height:1.5}
+#shopPanel .armory-comparison-table li+li{margin-top:8px}
+#shopPanel .armory-comparison-notes{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+#shopPanel .armory-comparison-notes ul{padding-left:18px;font-size:13px;color:#c6b191;line-height:1.6}
+#shopPanel .armory-comparison-notes button{font-size:13px;min-height:44px}
+@media(max-width:1100px){
+ #shopPanel .detail-open .armory-browser{grid-template-columns:minmax(0,1fr)}
+ #shopPanel .detail-open .armory-departments{display:none}
+ #shopPanel .detail-open .armory-compact-category{display:block;width:120px}
+ #shopPanel .detail-open .shop-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+}
+@media(max-height:600px) and (orientation:landscape){
+ #shopPanel .armory-mode-nav{padding:3px 10px;gap:3px}
+ #shopPanel .armory-mode-nav>button{font-size:13px;padding:7px 10px}
+ #shopPanel .armory-browser{grid-template-columns:minmax(0,1fr)}
+ #shopPanel .armory-departments{display:none}
+ #shopPanel .armory-compact-category,#shopPanel .detail-open .armory-compact-category{display:block;width:115px}
+ #shopPanel .armory-catalog{padding:10px 12px}
+ #shopPanel .armory-browser-heading{display:none}
+ #shopPanel .armory-stage.detail-open{grid-template-columns:minmax(0,1fr) minmax(300px,.9fr)}
+ #shopPanel .armory-details{padding:10px 12px}
+ #shopPanel .armory-discover{padding:15px}
+ #shopPanel .armory-discover-heading{margin-bottom:14px}
+ #shopPanel .armory-discover-heading h3{font-size:27px}
+ #shopPanel .armory-discover-heading p{display:none}
+ #shopPanel .armory-department-card{min-height:170px;padding:14px;gap:8px}
+ #shopPanel .armory-department-card>strong{font-size:24px}
+ #shopPanel .armory-discovery-shelves{margin-top:18px;padding-top:17px;gap:15px}
+ #shopPanel .armory-refinements{grid-template-columns:1fr}
+ #shopPanel .armory-compare{padding:15px}
+}
+@media(max-width:780px){
+ #shopPanel .armory-browser{grid-template-columns:minmax(0,1fr)}
+ #shopPanel .armory-departments{display:none}
+ #shopPanel .armory-compact-category,#shopPanel .detail-open .armory-compact-category{display:block;width:115px}
+ #shopPanel .armory-stage.detail-open{grid-template-columns:minmax(0,1fr)}
+ #shopPanel .detail-open #shopBrowseView{display:none}
+ #shopPanel .armory-details{border-left:0;padding:14px 18px}
+ #shopPanel .armory-quick-slots{grid-template-columns:repeat(5,minmax(0,1fr))}
+ #shopPanel .armory-comparison-table{font-size:13px}
+}
+@media(max-width:620px) and (orientation:portrait){
+ #shopPanel .armory-workspace{display:flex;padding:0;gap:0;overflow:hidden}
+ #shopPanel .armory-mode-nav{padding:5px 8px;gap:2px}
+ #shopPanel .armory-mode-nav>button{font-size:12px;padding:7px 9px;min-width:0}
+ #shopPanel #shopCompareOpen{gap:5px}
+ #shopPanel #shopCompareCount{font-size:11px;padding:2px 3px}
+ #shopPanel .armory-catalog{overflow:auto;min-height:0;flex:1;padding:13px}
+ #shopPanel .armory-browser-heading{margin-bottom:11px}
+ #shopPanel .armory-browser-heading h3{font-size:25px}
+ #shopPanel .armory-search-row{flex-wrap:wrap;gap:6px}
+ #shopPanel .armory-search{flex:1 1 100%}
+ #shopPanel .armory-compact-category{flex:1;width:auto}
+ #shopPanel .armory-search-row #shopFilterToggle{flex:1}
+ #shopPanel .shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #shopPanel .shop-card{padding:11px;gap:9px}
+ #shopPanel .shop-card-actions{gap:5px}
+ #shopPanel .shop-card .shop-buy{font-size:13px}
+ #shopPanel .armory-details{overflow:auto;flex:1;min-height:0;padding:14px}
+ #shopPanel .armory-discover{padding:16px}
+ #shopPanel .armory-discover-heading{display:block;margin-bottom:17px}
+ #shopPanel .armory-discover-heading h3{font-size:30px}
+ #shopPanel .armory-discover-heading p{font-size:14px}
+ #shopPanel .armory-discover-heading button{margin-top:13px;width:100%}
+ #shopPanel .armory-department-cards{grid-template-columns:1fr;gap:12px}
+ #shopPanel .armory-department-card{min-height:0;padding:17px;gap:9px;display:grid;grid-template-columns:1fr 80px}
+ #shopPanel .armory-department-card .department-art{grid-column:2;grid-row:1/4;flex-wrap:wrap;justify-content:center;gap:0;align-self:center}
+ #shopPanel .armory-department-card>strong,#shopPanel .armory-department-card>span:not(.department-art),#shopPanel .armory-department-card>small{grid-column:1}
+ #shopPanel .armory-department-card>b{grid-column:1/-1;padding-top:8px;border-top:1px solid #b68c4933;width:100%}
+ #shopPanel .armory-discovery-shelves{grid-template-columns:1fr;gap:20px}
+ #shopPanel .armory-compare{padding:13px}
+ #shopPanel .armory-comparison-heading{align-items:start}
+ #shopPanel .armory-comparison-heading h3{font-size:27px}
+ #shopPanel .armory-comparison-heading button{font-size:12px;padding:7px 9px}
+ #shopPanel .armory-comparison-table th,#shopPanel .armory-comparison-table td{padding:9px 5px;font-size:12px}
+ #shopPanel .armory-comparison-table thead strong{font-size:19px}
+ #shopPanel .armory-comparison-table thead button{font-size:12px;padding:6px}
+ #shopPanel .armory-comparison-table th:first-child{width:29%}
+ #shopPanel .armory-comparison-notes{grid-template-columns:1fr;gap:18px}
+}
+@media(max-width:360px) and (orientation:portrait){#shopPanel .shop-grid{grid-template-columns:minmax(0,1fr)}#shopPanel .armory-mode-nav>button{font-size:11px;padding:7px}#shopPanel .shop-card .shop-inspect{flex-direction:row;min-height:64px}}
+#shopPanel .armory-detail-mode-compact{display:none;min-width:0;flex:1}
+#shopPanel .armory-detail-mode-compact select{width:100%;min-width:0;min-height:44px;font-size:13px;background:#241722;color:#f5dcac;border:1px solid #b68c4977;padding:6px;color-scheme:dark}
+@media(max-height:600px) and (orientation:landscape){
+ #shopPanel .armory-detail-mode-compact{display:block}
+ #shopPanel .armory-detail-tabs{display:none}
+ #shopPanel .armory-detail-nav{gap:5px;margin-bottom:11px}
+ #shopPanel .armory-detail-nav>button{max-width:88px;min-width:44px;padding:6px;font-size:12px}
+ #shopPanel .armory-detail-location.on-page{display:none}
+}

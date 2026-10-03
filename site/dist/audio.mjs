@@ -1,0 +1,6 @@
+/** Original procedural feedback sounds. No sampled or recovered game audio. */
+export class BattleAudio {
+ constructor(){this.enabled=false;this.context=null;this.last=new Map();}
+ async toggle(){if(this.enabled){this.enabled=false;return false;}const Context=globalThis.AudioContext??globalThis.webkitAudioContext;if(!Context)return false;this.context??=new Context();await this.context.resume();this.enabled=true;this.play('shot');return true;}
+ play(kind){if(!this.enabled||!this.context||this.context.state!=='running')return;const c=this.context,t=c.currentTime,last=this.last.get(kind)??-10;if(t-last<.075)return;this.last.set(kind,t);const blast=/bomb|blast|meteor|stomp|rumble/.test(kind),ice=/ice|comet/.test(kind),hit=/hit|impact|damage/.test(kind),heal=/heal/.test(kind);const duration=blast?.34:ice?.18:hit?.09:heal?.25:.12;const o=c.createOscillator(),g=c.createGain();o.type=blast?'triangle':hit?'sine':'triangle';o.frequency.setValueAtTime(blast?105:ice?620:heal?390:hit?160:280,t);o.frequency.exponentialRampToValueAtTime(blast?30:ice?280:heal?780:hit?55:85,t+duration);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(blast?.11:.045,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration+.01);o.onended=()=>{o.disconnect();g.disconnect();};}
+}

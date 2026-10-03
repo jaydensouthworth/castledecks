@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {PlayerProfile,SKILLS,summonSquad} from '../site/dist/engine/progression.mjs';import {FriendlyReinforcements} from '../site/dist/engine/campaign.mjs';
+test('source-verified Trebuchet uses one reserve recruit and70gold, with one queued engine',()=>{const p=new PlayerProfile();p.gold=70;const s=p.addSkill('trebuchet');s.cooldown=0;const q=new FriendlyReinforcements({population:1}),stats={goldSpent:0};assert.equal(SKILLS.trebuchet.summon.population,1);assert.equal(summonSquad(s,p,q,stats),true);assert.equal(p.gold,0);assert.equal(q.population,0);assert.equal(q.queue.length,1);assert.equal(q.queue[0].cost,1);assert.equal(stats.goldSpent,70);q.cancel(0);assert.equal(q.population,1);});

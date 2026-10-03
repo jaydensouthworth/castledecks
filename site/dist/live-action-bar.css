@@ -1,0 +1,278 @@
+/* Combat HUD, replacement stylesheet. The world remains edge-to-edge.
+   Landscape keeps one row below the troop lane; portrait uses two rows.
+   Only actual controls capture input. Engine hotbar order is unchanged. */
+.live-hud {
+  --lh-t: max(10px, env(safe-area-inset-top), var(--preview-safe-top, 0px));
+  --lh-r: max(12px, env(safe-area-inset-right), var(--preview-safe-right, 0px));
+  --lh-b: max(10px, env(safe-area-inset-bottom), var(--preview-safe-bottom, 0px));
+  --lh-l: max(12px, env(safe-area-inset-left), var(--preview-safe-left, 0px));
+  --lh-move: 118px; --lh-gap: 14px; --lh-cell: 58px;
+  --lh-ink: #20151c; --lh-velvet: #542538; --lh-gold: #ecd095; --lh-edge: #b68c49;
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  color: #f7e7c6; text-shadow: 0 1px 2px #110a0d;
+}
+.live-hud, .live-hud * { box-sizing: border-box }
+.live-hud button {
+  min-width: 44px; min-height: 44px; pointer-events: auto; touch-action: manipulation; user-select: none;
+  border: 1px solid var(--lh-edge); border-radius: 5px; color: #f7e7c6;
+  background: linear-gradient(150deg,#53362af7,#24161bf5 75%);
+  box-shadow: inset 0 0 0 2px #21151b, inset 0 0 0 3px #e0b76925, inset 0 1px #fff0bb66, 0 3px 0 #180e16cc, 0 5px 12px #0004;
+  font: 650 11px/1.1 system-ui,sans-serif; padding: 5px;
+  transition: border-color .12s, background-color .12s, box-shadow .12s;
+}
+.live-hud button:disabled { opacity: .45; cursor: default }
+.live-hud button:focus-visible { outline: 3px solid #fff0b8; outline-offset: 3px }
+.live-hud button:active:not(:disabled), .live-hud button[data-held="true"] {
+  background: #7d493d; border-color: #fff0b4; box-shadow: inset 0 0 0 2px #efcc8177, 0 0 0 3px #ecc98244;
+}
+.live-topbar { position: absolute; inset: var(--lh-t) var(--lh-r) auto var(--lh-l); height: 55px; pointer-events: none }
+.live-vitals { position: absolute; left:0; top:0; width:201px; min-height:55px; display:flex; align-items:center; gap:7px; padding:6px 9px 6px 7px; background:linear-gradient(115deg,#20383df5,#231b24ed); border:1px solid #c39b57; border-radius:4px 4px 12px 4px; box-shadow:inset 0 0 0 2px #0f141966,0 4px 10px #0004 }
+.live-hero-seal { width:30px; height:38px; flex:none; color:#f2d79b; filter:drop-shadow(0 2px 2px #0008) }
+.live-hero-seal svg { width:100%; height:100%; overflow:visible }
+.live-hero-seal path:first-child { fill:#315768; stroke:#d5ad64; stroke-width:1.5 }
+.live-hero-seal path:last-child { fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round }
+.live-vital-body { flex:1; min-width:0 }
+.live-vitals #heroHud { display:block; white-space:nowrap; font:650 12px/1.2 system-ui,sans-serif }
+.live-vitals .health-track { height:6px; margin:5px 0 4px; border:1px solid #536044; border-radius:1px; background:#090f15 }
+.live-vitals .health-track > span { display:block; height:100%; background:linear-gradient(#d7e0a1,#769662); box-shadow:0 0 6px #c5d88766; transition:width .15s }
+.live-keep-line { display:flex; gap:7px; justify-content:space-between; color:#d5c29e; font:9px/1.1 system-ui,sans-serif; white-space:nowrap }
+#combatHeroState { color:#a5c3c5 }
+.live-vitals #testModeBadge { position:absolute; left:7px; top:100%; margin-top:3px; padding:2px 4px; border:1px solid #c6a16988; background:#291d22dc; color:#efd292; font:700 8px/1.1 system-ui; letter-spacing:.08em }
+.live-battle-standard { position:absolute; top:0; left:50%; transform:translateX(-50%); min-width:165px; max-width:230px; padding:5px 17px 9px; text-align:center; color:#edcf96; background:linear-gradient(90deg,#311b28e6,#632e42ed,#311b28e6); border-top:2px solid #c79c55; border-bottom:1px solid #c79c5577; clip-path:polygon(0 0,100% 0,97% 80%,50% 100%,3% 80%); filter:drop-shadow(0 4px 3px #0005) }
+.live-battle-standard strong { display:block; font:700 13px/1.15 Georgia,serif; letter-spacing:.12em; text-transform:uppercase }
+.live-battle-standard span { display:block; margin-top:3px; color:#e0c4a9; font:10px/1.2 system-ui,sans-serif; white-space:nowrap }
+.live-hud #battlePause { position:absolute; right:0; top:0; width:76px; height:46px; min-width:76px; font:650 12px/1.1 Georgia,serif; border:1px solid #caa368; background:linear-gradient(#6a3547f2,#2a1825f2) }
+.live-hud .live-arc{position:absolute;right:86px;top:0;width:64px;height:46px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;background:linear-gradient(#435153f2,#1a292ff2)}
+.live-arc strong{font:650 11px/1.1 system-ui}.live-arc[aria-pressed="true"]{border-color:#f8dc99;background:linear-gradient(#626045f2,#303524f2)}
+@media(hover:hover) and (pointer:fine){.live-arc .live-key-hint{display:block}}
+.live-aim-lesson { position:absolute; left:50%; top:calc(var(--lh-t) + 54px); transform:translateX(-50%); width:max-content; max-width:calc(100% - 230px); text-align:center; color:#f5e7c6; font:11px/1.3 system-ui,sans-serif; text-shadow:0 1px 2px #071712,0 0 5px #11241c,0 0 8px #11241c; opacity:.93 }
+.live-hud[data-aiming="true"] .live-aim-lesson { color:#fff1b9 }
+.live-alert, .live-toast { position:absolute; left:50%; transform:translateX(-50%); width:max-content; max-width:360px; text-align:center; border:1px solid #cfa05c; border-radius:3px; padding:6px 12px; font:600 11px/1.3 system-ui,sans-serif; box-shadow:0 3px 12px #0005; pointer-events:none }
+.live-alert { top:calc(var(--lh-t) + 78px); color:#ffe3ab; background:#632c3ced }
+.live-toast { top:calc(var(--lh-t) + 78px); color:#f8e7be; background:#251c24f2 }
+.live-hud:has(.live-alert:not(.hidden)) .live-toast { top:calc(var(--lh-t) + 112px) }
+.live-deck { position:absolute; inset:var(--lh-t) var(--lh-r) var(--lh-b) var(--lh-l); pointer-events:none; background:none; border:0; padding:0; box-shadow:none }
+.live-movement { position:absolute; bottom:0; left:0; display:flex; gap:6px; align-items:end; pointer-events:none; width:var(--lh-move); }
+.live-movement-title { position:absolute; bottom:calc(100% + 7px); left:0; width:100%; color:#e8d8af; font:10px/1.2 system-ui,sans-serif; text-align:center; text-shadow:0 1px 3px #09140d,0 0 6px #14271b; white-space:nowrap }
+.live-movement button { position:relative; width:56px; height:56px; padding:3px; flex:none; touch-action:none }
+.live-movement button > span { display:block; font:38px/.8 Georgia,serif; margin-top:-4px }
+.live-key-hint { display:none; color:#ead59f; font:9px/1 system-ui,sans-serif; }
+.live-movement .live-garrison { width:64px; height:56px; margin-left:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border-radius:6px 6px 15px 15px; background:linear-gradient(145deg,#31535bed,#192831f5) }
+.live-garrison b { font:650 10px/1 system-ui,sans-serif }
+.live-movement .live-garrison > span { font:24px/1 Georgia,serif; margin:0 }
+.live-movement [data-requires="foot"], .live-movement [data-requires="near-garrison"] { display:none }
+.battle-screen[data-hero-mode="foot"] .live-movement [data-requires="foot"] { display:block }
+.battle-screen[data-hero-mode="foot"] .live-movement [data-requires="garrisoned"] { display:none }
+.battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"] { position:absolute; bottom:66px; left:27px; margin:0; width:64px; height:48px; display:flex }
+.battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement-title { display:none }
+.live-action-lane { position:absolute; bottom:0; left:calc(var(--lh-move) + var(--lh-gap)); right:0; display:flex; justify-content:flex-end; align-items:end; container-type:inline-size; container-name:live-lane; pointer-events:none; }
+.live-arsenal { max-width:100%; width:max-content; position:relative; padding:0; pointer-events:none; --lh-cell:clamp(44px,calc((100cqw - 104px)/10),58px) }
+.live-arsenal-caption { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:22px; padding:3px 5px 5px; pointer-events:none; color:#f2ddb0; text-shadow:0 1px 2px #0c190e,0 0 5px #101d16; }
+.live-selected-caption { display:flex; align-items:center; gap:9px; min-width:0 }
+#combatSkillName { font:600 12px/1.2 Georgia,serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#combatSkillState { font:600 9px/1.2 system-ui,sans-serif; color:#cce0b0; white-space:nowrap; }
+.live-hud[data-ready="false"] #combatSkillState { color:#edd0a1 }
+.live-resources { color:#dfc58e; font:10px/1.2 system-ui,sans-serif; white-space:nowrap; }
+.live-action-bar { display:flex; align-items:end; justify-content:flex-end; gap:8px; pointer-events:none; padding:2px 5px; position:relative; border:1px solid #a580465e; border-top-color:#ddbc7077; border-radius:5px; background:linear-gradient(180deg,#281c22b3,#160f17e0); box-shadow:0 5px 12px #0004,inset 0 -2px #dec48812; }
+.live-action-bar::before, .live-action-bar::after { content:'◆'; position:absolute; top:-4px; color:#cba566; font:7px/1 Georgia,serif; text-shadow:0 1px #20131a; }
+.live-action-bar::before { left:8px }
+.live-action-bar::after { right:8px }
+.live-slot-list { display:grid; grid-auto-flow:column; grid-auto-columns:var(--lh-cell); gap:4px; width:max-content; pointer-events:none; }
+.live-hud .live-slot { position:relative; width:var(--lh-cell); height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; overflow:visible; padding:3px; border-radius:3px; }
+.live-slot .skill-icon { display:block; position:relative; width:24px; height:24px; flex:none; line-height:0; color:#edcc8a; filter:drop-shadow(0 1px 1px #0009); z-index:1; }
+.skill-svg { display:block; width:100%; height:100%; }
+.live-short-name { display:block; position:relative; width:100%; min-height:10px; font:600 9px/9px system-ui,sans-serif; text-align:center; white-space:normal; overflow-wrap:normal; z-index:2; color:#f5e5c3; }
+.live-key { display:none; position:absolute; left:4px; top:4px; color:#d6c095; font:700 9px/1 system-ui,sans-serif; z-index:4; }
+.live-countdown { position:absolute; left:4px; right:4px; top:5px; height:30px; display:grid; place-items:center; background:#100e1fd1; color:#fff0ca; font:750 15px/1 system-ui,sans-serif; text-shadow:0 1px 2px #000; border-radius:2px; z-index:3; }
+.live-cooldown-fill { position:absolute; left:3px; bottom:0; height:2px; max-width:calc(100% - 6px); border-radius:1px; background:linear-gradient(90deg,#b18949,#f2d494); box-shadow:0 0 4px #e9c27f44; z-index:3; }
+.live-slot[data-cooling="true"] .skill-icon { opacity:.48 }
+.live-slot[data-kind="army"] { background:linear-gradient(145deg,#344c44f0,#172923f2); }
+.live-slot[aria-pressed="true"] { border:2px solid #f9da93; padding:2px; background:radial-gradient(ellipse at 50% 0,#985165f0,#482535f7 84%); box-shadow:inset 0 0 0 2px #2f1723,inset 0 0 12px #e8c3811f,0 0 0 1px #f9da9333,0 3px 0 #160d14; }
+.live-slot[aria-pressed="true"]::after { content:''; position:absolute; top:-6px; left:calc(50% - 4px); width:8px; height:8px; transform:rotate(45deg); background:#f4d794; border:1px solid #fff0b8; box-shadow:0 0 5px #e8bd6455; }
+.live-slot[data-affordable="false"] { border-bottom-color:#da9a75; }
+.live-slot[data-affordable="false"] .live-short-name { color:#eab69d }
+.live-auto { position:absolute; right:3px; top:3px; width:7px; height:7px; border:1px solid #cae2aa; border-radius:50%; background:#729455; box-shadow:0 0 4px #b4d48b66; z-index:4; }
+.live-hud .live-bar-cycle { position:relative; flex:none; width:48px; height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:5px 2px; border-radius:5px; background:linear-gradient(160deg,#472c36f2,#251822f2); }
+.live-bar-cycle > span:first-child { font:25px/.85 Georgia,serif; color:#ecd095 }
+.live-bar-cycle #barLabel { font:700 10px/1 system-ui,sans-serif; color:#e7cc9b; white-space:nowrap; }
+.live-page-word { font:650 7px/1 system-ui,sans-serif; letter-spacing:.13em; color:#beaa88; }
+.live-context { position:absolute; bottom:calc(100% + 10px); right:144px; display:flex; align-items:end; gap:8px; pointer-events:none; }
+.live-hud .live-fire, .live-hud .live-activation { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:3px; min-width:96px; min-height:58px; position:relative; padding:5px 10px 6px; font:700 12px/1.1 Georgia,serif; }
+.live-fire::before { content:'⊙'; color:#c8dadd; font:22px/1 Georgia,serif; }
+.live-fire::after, .live-activation::after { content:attr(data-detail); font:600 8px/1.1 system-ui,sans-serif; color:#c3d3d0; letter-spacing:.03em; }
+.live-hud .live-fire { border-color:#a8b9aa; background:linear-gradient(145deg,#31535bf2,#192c33f2); }
+.live-hud .live-activation { min-width:100px; min-height:68px; border:2px solid #f4d08e; border-radius:9px 9px 17px 17px; background:radial-gradient(ellipse at top,#9e6534,#512c21); box-shadow:inset 0 0 0 2px #432618,0 0 0 3px #d9b26922,0 5px 15px #0005; color:#fff1c9; }
+.live-activation::before { content:'✦'; font:23px/1 Georgia,serif; color:#ffe9a2; }
+.live-activation::after { color:#f6d7a0 }
+.battle-screen:has(.live-hud) .aim-tip { display:none }
+.sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important }
+/* Tight landscape prioritizes the marching lane. Every skill stays live. */
+@media (orientation:landscape) and (max-width:800px) {
+ .live-hud { --lh-move:96px; --lh-gap:10px; --lh-b:max(8px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)); }
+ .live-movement { gap:4px }
+ .live-movement button { width:46px; height:52px }
+ .live-movement .live-garrison { width:60px; height:52px; margin-left:18px }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"] { left:18px; bottom:59px; height:44px; width:60px; }
+ .live-vitals { width:183px; min-height:49px; padding:5px 7px; gap:5px }
+ .live-hero-seal { width:25px; height:32px }
+ .live-vitals #heroHud { font-size:11px }
+ .live-keep-line { font-size:8px }
+ .live-battle-standard { min-width:150px; padding:4px 12px 8px }
+ .live-battle-standard strong { font-size:12px }
+ .live-battle-standard span { font-size:9px }
+ .live-aim-lesson { top:calc(var(--lh-t) + 49px); font-size:10px }
+ .live-hud .live-slot, .live-hud .live-bar-cycle { height:52px }
+ .live-slot .skill-icon { width:23px; height:23px }
+ .live-short-name { font-size:9px; line-height:9px }
+ .live-countdown { top:4px; height:26px; font-size:14px }
+ .live-arsenal-caption { min-height:20px; padding-top:1px; padding-bottom:4px; gap:8px }
+ #combatSkillName { font-size:11px }
+ #combatSkillState { font-size:8px }
+ .live-resources { font-size:9px }
+ .live-hud .live-fire { min-width:88px; min-height:52px; }
+ .live-hud .live-activation { min-width:88px; min-height:60px; }
+}
+@container live-lane (max-width:548px) {
+ .live-arsenal { --lh-cell:44px }
+ .live-slot-list { gap:2px }
+ .live-action-bar { gap:6px; padding:2px 4px }
+ .live-hud .live-bar-cycle { width:44px }
+ .live-resources { max-width:180px; overflow:hidden; text-overflow:ellipsis }
+}
+/* Fine-pointer desktop is a deliberate keyboard hotbar. */
+@media (min-width:1050px) and (min-height:560px) and (hover:hover) and (pointer:fine) {
+ .live-hud { --lh-t:18px; --lh-l:20px; --lh-r:20px; --lh-b:20px; --lh-move:124px; }
+ .live-action-lane { left:140px; right:140px; justify-content:center }
+ .live-arsenal { --lh-cell:60px; }
+ .live-action-bar { gap:10px; padding:7px; }
+ .live-slot-list { gap:5px }
+ .live-hud .live-slot, .live-hud .live-bar-cycle { height:67px; }
+ .live-slot .skill-icon { width:32px; height:32px; margin-top:3px }
+ .live-short-name { font-size:10px; }
+ .live-key, .live-key-hint { display:block }
+ .live-key { padding:2px 3px; background:#180f1777; border-radius:2px; }
+ .live-countdown { top:10px; height:32px; font-size:17px; }
+ .live-hud .live-slot:hover:not(:disabled) { border-color:#ffe6aa; background:linear-gradient(145deg,#714b4bf7,#442436f7); }
+ .live-movement button { height:52px; width:56px; }
+ .live-movement button > span { font-size:31px }
+ .live-movement .live-garrison { height:64px; }
+ .live-movement .live-garrison > span { font-size:23px; }
+ .live-movement .live-key-hint { margin-top:3px; }
+ .live-arsenal-caption { padding:4px 8px 8px; min-height:27px; }
+ #combatSkillName { font-size:14px }
+ #combatSkillState, .live-resources { font-size:11px }
+ .live-context { right:-122px; bottom:6px; flex-direction:column; gap:8px; }
+ .live-hud .live-fire, .live-hud .live-activation { width:106px; }
+ .live-vitals { width:230px; min-height:63px; padding:8px 11px; gap:9px; }
+ .live-hero-seal { width:33px; height:43px }
+ .live-vitals #heroHud { font-size:13px }
+ .live-keep-line { font-size:10px }
+ .live-battle-standard { min-width:215px; padding:6px 18px 12px; }
+ .live-battle-standard strong { font-size:16px }
+ .live-battle-standard span { font-size:11px }
+ .live-aim-lesson { top:calc(var(--lh-t) + 64px); font-size:12px; }
+}
+/* Portrait uses a centered thumb arsenal. The world is still full-screen. */
+@media (orientation:portrait) {
+ .live-hud { --lh-t:max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)); --lh-l:max(12px,env(safe-area-inset-left),var(--preview-safe-left,0px)); --lh-r:max(12px,env(safe-area-inset-right),var(--preview-safe-right,0px)); }
+ .live-vitals { width:calc(100% - 86px); max-width:228px; }
+ .live-battle-standard { top:69px; min-width:178px; padding:5px 15px 10px; }
+ .live-battle-standard strong { font-size:14px }
+ .live-aim-lesson { top:calc(var(--lh-t) + 125px); max-width:calc(100% - 30px); font-size:11px; }
+ .live-alert, .live-toast { top:calc(var(--lh-t) + 148px); max-width:calc(100% - 24px); }
+ .live-hud:has(.live-alert:not(.hidden)) .live-toast { top:calc(var(--lh-t) + 182px); }
+ .live-action-lane { left:0; right:0; justify-content:center; }
+ .live-arsenal { --lh-cell:clamp(44px,calc((100cqw - 83px)/5),56px); }
+ .live-slot-list { grid-auto-flow:row; grid-auto-columns:auto; grid-template-columns:repeat(var(--live-columns,5),var(--lh-cell)); gap:5px; }
+ .live-action-bar { gap:7px; padding:5px; }
+ .live-hud .live-slot { height:59px; gap:2px; padding:4px 3px; }
+ .live-short-name { font-size:10px; line-height:10px; }
+ .live-slot .skill-icon { width:26px; height:26px; }
+ .live-hud .live-bar-cycle { width:44px; height:59px; }
+ .live-arsenal-caption { display:block; padding:5px 6px 7px; }
+ .live-selected-caption { justify-content:space-between; }
+ #combatSkillName { font-size:13px }
+ #combatSkillState { font-size:10px }
+ .live-resources { margin-top:5px; max-width:none; font-size:10px; text-align:left; }
+ .live-movement { bottom:177px; gap:6px; width:118px; }
+ .live-movement button { width:56px; height:56px; }
+ .live-movement .live-garrison { margin-left:0; width:64px; height:60px; }
+ .live-movement-title { text-align:left; font-size:10px; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"] { left:0; bottom:66px; }
+ .live-context { bottom:177px; right:0; gap:8px; }
+ .live-hud .live-fire { min-width:92px; min-height:58px; }
+ .live-hud .live-activation { min-width:94px; min-height:68px; }
+ .live-hud[data-army-page="true"] .live-movement, .live-hud[data-army-page="true"] .live-context { bottom:193px; }
+ /* A raised Enter button covered the on-foot hero ring at360×640.
+    Keep all three actions below the field. Make room for BOTH optional
+    precision and airborne action without going below44px touch targets. */
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement { width:140px; gap:4px; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement button { width:44px; min-width:44px; height:56px; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"] { position:static; left:auto; bottom:auto; width:44px; height:56px; margin:0; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-context { gap:6px; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-context button { width:86px; min-width:86px; max-width:86px; height:58px; min-height:58px; padding:4px 6px; font-size:11px; }
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-context button::before { font-size:18px; }
+}
+@media (orientation:landscape) and (max-height:330px) {
+ .live-hud { --lh-t:max(6px,env(safe-area-inset-top),var(--preview-safe-top,0px)); }
+ .live-vitals { min-height:46px; }
+ .live-aim-lesson { top:calc(var(--lh-t) + 47px); }
+ .live-context { bottom:calc(100% + 6px); }
+ .live-arsenal-caption { min-height:17px; padding-bottom:3px; }
+ .live-action-bar { padding-top:1px; padding-bottom:1px; }
+ .live-hud .live-slot, .live-hud .live-bar-cycle { height:48px; }
+ .live-slot .skill-icon { width:21px; height:21px; }
+ .live-countdown { top:3px; height:23px; }
+ .live-hud .live-fire { min-height:48px; }
+ .live-hud .live-activation { min-height:56px; }
+}
+@media (prefers-reduced-motion:reduce) { .live-hud *, .live-hud *::before, .live-hud *::after { transition:none !important; animation:none !important; } }
+
+/* Short-landscape instruments occupy the high central sky rather than
+   sitting over steep-terrain keeps at the two edges. No world gutter. */
+@media (orientation:landscape) and (min-width:700px) and (max-height:500px) {
+ .live-topbar {
+  --lh-cluster-shift:clamp(0px,calc(123px - 15vw),12px);
+  left:50%; right:auto; width:394px; height:49px;
+  transform:translateX(calc(-50% + var(--lh-cluster-shift)));
+  display:grid; grid-template-columns:160px 146px 64px; gap:12px; align-items:start;
+ }
+ .live-vitals { position:relative; top:auto; left:auto; width:160px; min-height:49px; padding:5px 7px; gap:5px; }
+ .live-hero-seal { width:25px; height:32px; }
+ .live-vitals #heroHud { font-size:11px; }
+ .live-vitals .health-track { margin:4px 0 3px; }
+ .live-keep-line { gap:4px; font-size:8px; }
+ .live-battle-standard { position:relative; top:auto; left:auto; transform:none; width:146px; min-width:146px; max-width:146px; padding:4px 9px 8px; }
+ .live-battle-standard strong { font-size:12px; }
+ .live-battle-standard span { font-size:9px; }
+ .live-hud #battlePause { position:relative; top:auto; right:auto; width:64px; min-width:64px; height:46px; font-size:11px; padding:5px; }
+ .live-aim-lesson { top:calc(var(--lh-t) + 56px); font-size:10px; }
+ .live-topbar:has(#liveArc:not(.hidden)){grid-template-columns:160px 96px 44px 64px;gap:10px}
+ .live-topbar:has(#liveArc:not(.hidden)) .live-battle-standard{width:96px;min-width:96px;max-width:96px;padding-left:3px;padding-right:3px}
+ .live-topbar:has(#liveArc:not(.hidden)) .live-battle-standard span{overflow:hidden;text-overflow:ellipsis}
+ .live-hud .live-arc{position:relative;right:auto;top:auto;width:44px;min-width:44px;height:46px;padding:3px}
+}
+
+@media(orientation:portrait){
+ .live-topbar:has(#liveArc:not(.hidden)) .live-vitals{width:calc(100% - 112px)}
+ .live-topbar:has(#liveArc:not(.hidden)) #battlePause{width:52px;min-width:52px;padding:3px;font-size:11px}
+ .live-hud .live-arc{right:60px;width:44px;min-width:44px;height:46px;padding:3px}
+}
+
+/* Portrait is a close-up view; a map provides deliberate horizontal navigation. */
+.portrait-view{display:none}
+@media(orientation:portrait){
+ .live-battle-standard{display:none}
+ .portrait-view{display:grid;grid-template-columns:minmax(72px,1fr) auto;gap:6px;position:absolute;top:calc(var(--lh-t) + 64px);left:var(--lh-l);right:var(--lh-r);pointer-events:auto;color:#ebd39f;}
+ .portrait-map{position:relative;height:44px;border:1px solid #b68c4980;border-radius:3px;overflow:hidden;background:#17232b;}
+ #battleOverview{display:block;width:100%;height:44px;}
+ .portrait-map input{position:absolute;inset:0;width:100%;height:44px;margin:0;padding:0;opacity:.16;accent-color:#f0cc83;cursor:ew-resize;touch-action:none;}
+ .portrait-map input:focus-visible{opacity:.7;outline:2px solid #f0cc83;outline-offset:-2px}
+ .portrait-view-actions{display:flex;align-items:center;gap:6px;margin:0;}
+ .portrait-view-actions>span{position:absolute;top:49px;left:0;right:0;pointer-events:none;text-align:center;font:11px/1.35 system-ui,sans-serif;color:#e0d0ad;text-shadow:0 1px 3px #10201a;}
+ .portrait-view-actions>button{height:44px;min-height:44px;padding:5px 10px;font:600 12px/1.1 system-ui,sans-serif;}
+ .portrait-view-actions>button[aria-pressed=true]{border-color:#f1d694;background:#63354a;}
+ .live-aim-lesson{top:calc(var(--lh-t) + 140px);font-size:11px;max-width:calc(100% - 28px);}
+ .live-alert,.live-toast{top:calc(var(--lh-t) + 165px);max-width:calc(100% - 28px);}
+ .live-hud:has(.live-alert:not(.hidden)) .live-toast{top:calc(var(--lh-t) + 197px);}
+}
