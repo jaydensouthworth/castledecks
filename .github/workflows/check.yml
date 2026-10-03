@@ -21,3 +21,5 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Validate source and run regressions
         run: npm run check
+      - name: Build and smoke-test the production container
+        run: bash scripts/check-container.sh
