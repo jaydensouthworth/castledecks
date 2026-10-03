@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T18:01:01.459956+00:00",
-  "stage": "shared-deck-workspace-and-ground-line-orders",
-  "internal_tests_passing": 1407,
+  "updated": "2026-10-03T20:40:00.669881+00:00",
+  "stage": "branching-route-board-and-readable-siege-tactics",
+  "internal_tests_passing": 1483,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -33,14 +33,17 @@
     "Imported QA Battle 13 opening checkpoint reload restores 1,556 gold / 70 reserve; restarting charges one 100-gold / 13-reserve recruitment cycle",
     "Build 52/53 shared Deck/Build, portrait visible cards and tabs, 915x360 complete horizontal card rows, actual mouse move/swap/cancel and keyboard placement/Escape",
     "Independent Wayfarer/Training preparation and session return, locked Crownroad inspection, live Rally/R quick toggle on bow bars and exact paused field retention",
-    "Player homepage/About load at 1165 and 485 native content pixels with no horizontal overflow"
+    "Player homepage/About load at 1165 and 485 native content pixels with no horizontal overflow",
+    "Build55\u201357 six-field Wayfarer board, locked inspection, reset focus, earned QA branch choice without reward replay and explicit Start",
+    "Build55\u201357 native Rear/Center/Forward selector, R release/reapply, paused Army orders, portrait/740x320 safe-inset aim, corrected route/Army/Build rails",
+    "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim"
   ],
-  "latest_gameplay_fix": "Shared full-viewport Deck and Build, readable equipped cards and actual card lifting, live preparation table, player frontpage/About, fuller allied field and quick Advance/Rally commands. Short-landscape card rows and first-Escape cancellation were repaired after native testing.",
-  "build": 54,
+  "latest_gameplay_fix": "Spatial Wayfarer route board; fixed Rear/Center/Forward rally lines with live control; recruited trebuchets attack distant hostile buildings when no distant troop target remains.",
+  "build": 59,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach, fuller allied field, optional fixed Rally line, and a separate branching Wayfarer charter use recreation rules.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,
@@ -55,5 +58,5 @@
     "doctrines": 3,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Exact-source Build 53 full sequential aggregate passes 1,407 checks. Build 54 changes build/status metadata only. Native 52 journeys plus 53 card/Escape rechecks cover desktop, portrait and short-landscape CSS viewports; physical touch and device performance remain separate."
+  "test_evidence": "Gameplay/UI/recruitment full gate1482 passed at58;59 changes build/status metadata only and adds one release-number consistency regression. Native55\u201358 verified branching choices, live fixed Rally, upper-right aim, paid siege recruits and shared navigation/status in portrait/short landscape. Physical Android, extended stability and native siege-to-victory remain unverified."
 }

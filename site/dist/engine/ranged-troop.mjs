@@ -388,6 +388,7 @@ export class FlagTrebuchet extends SpecialistTroop {
       const distance=this.distanceTo(target);
       if(Number.isFinite(distance)&&distance>best&&distance>700){selected=target;best=distance;}
     }
+    if(selected==null&&this.services.selectSiegeStructure)selected=this.services.selectSiegeStructure(this);
     this.rangedTarget=selected;return selected;
   }
   chooseNextAction() {
@@ -401,7 +402,8 @@ export class FlagTrebuchet extends SpecialistTroop {
   shootAtTarget() {
     const target=this.rangedTarget,dx=target.x-this.x,dy=target.y-25-(this.y-150);
     let vx=dx<0?-5*FLAG_GAME_SPEED:5*FLAG_GAME_SPEED;
-    const time=dx/(vx-target.vx);
+    const targetVx=this.services.canReleaseSiegeTarget?(target.vx??0):target.vx;
+    const time=dx/(vx-targetVx);
     let vy=(dy-.5*(this.world.gravity??.3)*time*time)/time;
     vy+=(this.randomInteger(400)-200)/100;
     vx+=(this.randomInteger(200)-100)/100;
@@ -413,7 +415,8 @@ export class FlagTrebuchet extends SpecialistTroop {
     if(this.actionMode===R.AIM){if(!(this.actionDuration>0))this.transition(R.RELEASE_AMMO);return;}
     if(this.actionMode===R.RELEASE_AMMO) {
       if(this.rangedTarget!=null&&!this.fired&&this.rangedTarget.x>0&&this.rangedTarget.x<2000&&this.actionDuration<132) {
-        this.fired=true;this.shootAtTarget();
+        this.fired=true;
+        if(!this.services.canReleaseSiegeTarget||this.services.canReleaseSiegeTarget(this,this.rangedTarget))this.shootAtTarget();
       }
       return;
     }

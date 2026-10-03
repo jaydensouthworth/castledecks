@@ -198,14 +198,15 @@
   .army-summary { margin-bottom:16px; padding-bottom:12px; }
 
   /* These footers are status/copy, not action bars. Let them flow inside one
-     panel scroll range rather than reserving up to a third of a short screen. */
-  #profilesPanel,#queuePanel,#savePanel,#testingPanel { display:block; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scroll-padding-top:calc(var(--menu-header-size) + 56px); }
-  #profilesPanel>.panel-head,#queuePanel>.panel-head,#savePanel>.panel-head,#testingPanel>.panel-head { position:sticky; top:0; z-index:3; background:#39232f; }
-  #profilesPanel>.menu-nav,#queuePanel>.menu-nav,#savePanel>.menu-nav { position:sticky; top:var(--menu-header-size); z-index:2; background:#241820; }
-  #profilesPanel>.menu-body,#queuePanel>.menu-body,#savePanel>.menu-body,#testingPanel>.menu-body { overflow:visible; }
-  #profilesPanel>.menu-footer,#queuePanel>.menu-footer,#savePanel>.menu-footer,#testingPanel>.menu-footer { min-height:0; padding:12px 16px; }
-  #profilesPanel>.menu-footer>.footnote,#queuePanel>.menu-footer>.footnote,#savePanel>.menu-footer>.footnote,#testingPanel>.menu-footer>.footnote { max-width:none; font-size:12px; }
-  #savePanel>.menu-footer:has(>.footnote:empty) { display:none; }
+     panel scroll range rather than reserving up to a third of a short screen.
+     Shared game workspaces own their responsive header/rail and scrollers. */
+  #profilesPanel:not(.game-management),#queuePanel:not(.game-management),#savePanel:not(.game-management),#testingPanel:not(.game-management) { display:block; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scroll-padding-top:calc(var(--menu-header-size) + 56px); }
+  #profilesPanel:not(.game-management)>.panel-head,#queuePanel:not(.game-management)>.panel-head,#savePanel:not(.game-management)>.panel-head,#testingPanel:not(.game-management)>.panel-head { position:sticky; top:0; z-index:3; background:#39232f; }
+  #profilesPanel:not(.game-management)>.menu-nav,#queuePanel:not(.game-management)>.menu-nav,#savePanel:not(.game-management)>.menu-nav { position:sticky; top:var(--menu-header-size); z-index:2; background:#241820; }
+  #profilesPanel:not(.game-management)>.menu-body,#queuePanel:not(.game-management)>.menu-body,#savePanel:not(.game-management)>.menu-body,#testingPanel:not(.game-management)>.menu-body { overflow:visible; }
+  #profilesPanel:not(.game-management)>.menu-footer,#queuePanel:not(.game-management)>.menu-footer,#savePanel:not(.game-management)>.menu-footer,#testingPanel:not(.game-management)>.menu-footer { min-height:0; padding:12px 16px; }
+  #profilesPanel:not(.game-management)>.menu-footer>.footnote,#queuePanel:not(.game-management)>.menu-footer>.footnote,#savePanel:not(.game-management)>.menu-footer>.footnote,#testingPanel:not(.game-management)>.menu-footer>.footnote { max-width:none; font-size:12px; }
+  #savePanel:not(.game-management)>.menu-footer:has(>.footnote:empty) { display:none; }
 
   /* Pause owns one scroll surface, including demo controls and expanded help.
      The sticky Resume header remains available above arbitrarily tall content. */

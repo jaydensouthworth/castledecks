@@ -124,11 +124,11 @@
  #skillsPanel .loadout-placement{position:static;max-height:none;overflow:visible}
  #skillsPanel:has(#cancelBinding:not(:disabled)) .loadout-placement{position:sticky;max-height:min(235px,36dvh);overflow-y:auto}
  #skillsPanel .loadout-placement:has(.loadout-companion-section[open]),#skillsPanel .loadout-placement:has(.loadout-help[open]){position:static;max-height:none;overflow:visible}
- #skillsPanel .menu-nav{display:none}
+ #skillsPanel:not(.game-management) .menu-nav{display:none}
 }
 @media(max-height:620px) and (orientation:landscape){
  #skillsPanel{--loadout-gap:4px}
- #skillsPanel .panel-head{padding:0 10px;min-height:44px}#skillsPanel .panel-head h2{font-size:25px}#skillsPanel .panel-head .eyebrow{display:none}#skillsPanel .menu-nav{display:none}
+ #skillsPanel .panel-head{padding:0 10px;min-height:44px}#skillsPanel .panel-head h2{font-size:25px}#skillsPanel .panel-head .eyebrow{display:none}#skillsPanel:not(.game-management) .menu-nav{display:none}
  #skillsPanel .loadout-resources{position:absolute;top:7px;left:115px;right:145px;padding:0;border:0;background:none;font-size:11px;line-height:1.35;max-height:34px;overflow:hidden}
  #skillsPanel .loadout-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(268px,.77fr);overflow:hidden;gap:0}
  #skillsPanel .loadout-inventory,#skillsPanel .loadout-placement{padding:8px;gap:8px;overflow:auto;min-height:0;max-height:none}

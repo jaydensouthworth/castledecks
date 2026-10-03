@@ -14,6 +14,12 @@ Skirmish descriptors are versioned seeds for bounded practice fields, finite com
 
 Named decks describe 30-key arrangements and a companion choice. Applying a deck validates ownership and combat-state restrictions; importing or naming a deck never grants resources. Preserve result-screen inspection/export while loadout mutations remain locked. The local checkpoint schema has forward-version guards so an older tab cannot overwrite newer deck metadata.
 
+## Route board and battlefield orders
+
+Wayfarer presents six fields in a branching route board; a run still contains four battles. Inspection is separate from taking an available road, and preparation remains separate from starting combat. Preserve locked-route guards, earned resources and session separation.
+
+Rally positions are fixed Rear/Center/Forward world landmarks, independent of hero movement and camera motion. Advance retains the ordinary AI path. Keep orders transient: no save schema, costs or combat values change. Allied recruited trebuchets may fall back to a living hostile keep or occupied hostile tower when normal distant-actor selection finds nothing. Validate live ownership both before release and at impact, retain actor priority/range limits, and preserve enemy siege behavior. The reviewed engine fingerprint changes with these deliberately tested extensions.
+
 ## Diagnostics
 
 Optional battle diagnostics are disabled initially and stay in bounded memory. They capture an explicit allowlist of gameplay facts, with no profile identity, save/replay payload, network transmission or automatic export. Keep enable/reset/export actions explicit and ensure diagnostics cannot consume gameplay RNG or mutate the engine.

@@ -1,4 +1,4 @@
-import {createArmyOrdersUI,drawArmyOrderMarker,armyOrderStatus} from './army-orders-ui.mjs';
+import {createArmyOrdersUI,createLiveRallyPositionUI,drawArmyOrderMarker,armyOrderStatus,armyRallyPositionLabel} from './army-orders-ui.mjs';
 import {drawAirFighter} from './flying-unit-art.mjs';
 import {createBattleReportRecorder} from './battle-report.mjs';
 import {createBattleReportUI} from './battle-report-ui.mjs';
@@ -109,7 +109,7 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='54';
+const GAME_BUILD='59';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null;
@@ -340,7 +340,7 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
    else if(['ground-crack','earth-shard','lightning-bolt','lightning-strike'].includes(event.kind))notices.push({x:event.x,y:event.y,radius:50,tick:event.tick,color:'#b3dfea'});
   }
   if(event.type==='aim-unreachable')status(autoAimFeedback(battle.hero.launchPosition,battle.shooter.pointer,battle.shooter).message??'That target is out of range at this power');
-  if(event.type==='army-order'){lineReleased=event.mode==='advance'?event.tick:null;visualDirty=true;status(event.mode==='rally'?'Ground line set. Your frontline will regroup ahead of your hero.':'Ground line released. Your army advances.');}
+  if(event.type==='army-order'){lineReleased=event.mode==='advance'?event.tick:null;visualDirty=true;status(event.mode==='rally'?`${armyRallyPositionLabel(event.position)} line set. Your frontline will regroup at the fixed banner.`:'Ground line released. Your army advances.');}
   if(event.type==='enemy-reserves-withdrawn'){status('Enemy keep destroyed. Reinforcements cut off. '+(lineReleased===event.tick?'Ground line released. ':'')+'Defeat the remaining army or capture their flag.');lineReleased=false;}
   if(event.type==='outcome')status(event.outcome==='victory'?'Victory! Counting the spoils…':battle.hero.dead?'Your hero fell':'The enemy captured your flag');
   if(event.type==='summary'){
@@ -364,6 +364,8 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
  syncPause();localCampaign?.checkpoint('ready');
 }
 localCampaign=createLocalCampaignUI({document,window,getState:()=>({profiles,battle,started,destination:activeDestination,deckPresets:profileDecks.snapshot(profiles)}),openVault:()=>showCampaignVault(),notify:status,onRestore:(manager,payload)=>{profileDecks.restore(manager,payload?.deckPresets);profiles=manager;profile=profiles.active;started=false;setup();if(!battle.summary?.campaignComplete)showHub();}});
+const liveRallyPositionUI=createLiveRallyPositionUI({root:$('#liveRallyPosition'),getState:()=>({battle,active:canIssueLiveArmyOrder(),started,readOnly:!!trainingRun,visible:hasCommandArmy()&&!trainingRun}),onChanged:()=>{visualDirty=true;renderLiveArmyOrder();status(armyOrderStatus(battle));canvas.focus?.();}});
+
 setup();
 $('#pauseAlliesDemo').onclick=()=>startMidgameDemo(true);$('#pauseDemo').onclick=startMidgameDemo;$('#demoReturn').onclick=returnFromDemo;$('#demoRestart').onclick=restartMidgameDemo;
 for(const button of document.querySelectorAll('[data-demo-action]'))button.onclick=button.getAttribute('data-demo-action')==='return'?returnFromDemo:restartMidgameDemo;
@@ -459,7 +461,7 @@ document.addEventListener('keydown',event=>{
  if(isControlComposition(event))return;
  if(openPanelId==='#controlsPanel'&&controlsUI.handleKey(event))return;
  if(hasControlModifier(event)&&key!=='tab')return;
- if(key==='escape'){if(event.repeat){event.preventDefault();return;}if(!$('#switchSessionConfirm').classList.contains('hidden'))cancelSessionSwitch();else if(!$('#restartConfirm').classList.contains('hidden'))$('#cancelRestart').onclick();else if(openPanelId){if(openPanelId==='#skirmishPanel')closeSkirmishWorkshop();else if(openPanelId==='#campaignPanel'&&campaignAtlas.back()){}else if(openPanelId==='#expeditionPanel'&&expeditionRoute.cancelReset()){}else if(openPanelId==='#queuePanel'&&armyCommand.back()){}else if(openPanelId==='#shopPanel'&&armoryCatalog.back()){}else if(openPanelId==='#skillsPanel'){if(!deckPresets.back()&&!loadoutCollection.back()&&!closeLoadoutRefine()&&!cancelLoadoutSelection())closeLoadout();}else if(openPanelId==='#aimPanel')closePrecision();else if(openPanelId==='#controlsPanel')closeControls();else if(openPanelId==='#battleReportPanel')battleReportUI.close();else if(openPanelId===loadoutReturnPanel)closeChildPanel(openPanelId);else panel(openPanelId,false);}else if(document.fullscreenElement){clearInput();pause(true,'Leaving full screen. Resume when you’re ready.');Promise.resolve(document.exitFullscreen?.()).catch(()=>displayModeMessage('Full screen could not close. Use the browser’s exit control.'));}else if(started&&!battle.outcome&&!hubOpen)pause();event.preventDefault();return;}
+ if(key==='escape'){if(event.repeat){event.preventDefault();return;}if(!$('#switchSessionConfirm').classList.contains('hidden'))cancelSessionSwitch();else if(!$('#restartConfirm').classList.contains('hidden'))$('#cancelRestart').onclick();else if(openPanelId){if(openPanelId==='#skirmishPanel')closeSkirmishWorkshop();else if(openPanelId==='#campaignPanel'&&campaignAtlas.back()){}else if(openPanelId==='#expeditionPanel'&&expeditionRoute.back()){}else if(openPanelId==='#queuePanel'&&armyCommand.back()){}else if(openPanelId==='#shopPanel'&&armoryCatalog.back()){}else if(openPanelId==='#skillsPanel'){if(!deckPresets.back()&&!loadoutCollection.back()&&!closeLoadoutRefine()&&!cancelLoadoutSelection())closeLoadout();}else if(openPanelId==='#aimPanel')closePrecision();else if(openPanelId==='#controlsPanel')closeControls();else if(openPanelId==='#battleReportPanel')battleReportUI.close();else if(openPanelId===loadoutReturnPanel)closeChildPanel(openPanelId);else panel(openPanelId,false);}else if(document.fullscreenElement){clearInput();pause(true,'Leaving full screen. Resume when you’re ready.');Promise.resolve(document.exitFullscreen?.()).catch(()=>displayModeMessage('Full screen could not close. Use the browser’s exit control.'));}else if(started&&!battle.outcome&&!hubOpen)pause();event.preventDefault();return;}
  const modal=!$('#switchSessionConfirm').classList.contains('hidden')?$('#switchSessionConfirm'):openPanelId?$(openPanelId):!$('#restartConfirm').classList.contains('hidden')?$('#restartConfirm'):!$('#pauseOverlay').classList.contains('hidden')?$('#pauseOverlay'):!$('#intro').classList.contains('hidden')?$('#intro'):!$('#ending').classList.contains('hidden')?$('#ending'):null;
  if(key==='tab'&&modal?.querySelectorAll){const items=modalFocusCandidates(modal);if(items.length){const i=items.indexOf(document.activeElement);if(event.shiftKey&&(i<=0)){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(i<0||i===items.length-1)){items[0].focus();event.preventDefault();}}return;}
  if(isControlTextTarget(event.target))return;
@@ -505,9 +507,10 @@ function hasEquippedBow(){return profile.skills.some(skill=>skill.binding>=0&&!S
 function hasCommandArmy(){return profile.skills.some(skill=>!!SKILLS[skill.id]?.summon)||battle.regularArmyCount>0;}
 function canIssueLiveArmyOrder(){return started&&!hubOpen&&!openPanelId&&!battle.paused&&!battle.outcome&&!battle.summary&&!trainingRun&&hasCommandArmy();}
 function renderLiveArmyOrder(){
- const button=$('#liveArmyOrder'),holding=battle.armyOrder.mode==='rally';
+ const button=$('#liveArmyOrder'),holding=battle.armyOrder.mode==='rally',line=armyRallyPositionLabel(battle.armyOrder.position);
  button.classList[hasCommandArmy()&&!trainingRun?'remove':'add']('hidden');button.disabled=!canIssueLiveArmyOrder()||!holding&&!(battle.badCastle.hp>0);button.setAttribute('aria-pressed',String(holding));
- $('#liveArmyOrderLabel').textContent=holding?'Rally':'Advance';button.setAttribute('aria-label',`Ground line ${holding?'holding':'advancing'}. ${holding?'Release and advance':'Rally ahead of your hero'} · ${controlLabel('armyOrder')}`);button.setAttribute('title',`${holding?'Release the rally line':'Rally the frontline ahead of your hero'} · ${controlLabel('armyOrder')}`);
+ $('#liveArmyOrderLabel').textContent=holding?'Rally':'Advance';button.setAttribute('aria-label',`Ground line ${holding?'holding':'advancing'}. ${holding?'Release and advance':`Rally at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);button.setAttribute('title',`${holding?'Release the rally line':`Rally the frontline at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);
+ liveRallyPositionUI.render();
 }
 function toggleLiveArmyOrder(){if(!canIssueLiveArmyOrder())return;if(battle.setArmyOrder(battle.armyOrder.mode==='rally'?'advance':'rally')){visualDirty=true;renderLiveArmyOrder();status(armyOrderStatus(battle));}}
 $('#liveArmyOrder').onclick=event=>{if(event.detail>1)return;toggleLiveArmyOrder();};

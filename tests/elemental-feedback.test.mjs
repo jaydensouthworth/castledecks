@@ -175,8 +175,11 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // after a purchase; purchase-roundtrip and armory-cart cover that exact boundary.
  // Impact events now expose immediate source and applied HP loss; the causal
  // training audit verifies unchanged combat state, legacy events and RNG.
+ // Build55 adds reviewed fixed named Rally positions and an allied-only siege
+ // building fallback with live-ownership release/impact guards. See army-rally-
+ // position and siege-targeting tests; costs, damage, enemy AI and artwork stay unchanged.
  // See the dedicated source, recruitment, and flying-friendly-fire regressions.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'7edba7cccf163bcfeff89491579800ad23e3abf635124f5b9f1f34c85aac30f4','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'c8e8904e9021b78f4c78683ed5a7ebf4d734b203851d7bb9494bbdd7720fd864','reviewed engine boundary');
 });

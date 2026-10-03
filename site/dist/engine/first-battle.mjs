@@ -1,3 +1,4 @@
+import {selectSiegeStructureTarget,canReleaseSiegeTarget} from './siege-targeting.mjs';
 import {ArmyOrders} from './army-orders.mjs';
 /** First CTF battle integration. Independent code and new presentation only.
  * Game-object scheduling is emulator-source-grounded, not a recorded Flash run.
@@ -125,7 +126,7 @@ export class FirstBattle {
     }});tower.regionKind='tower';this.assignGeometry(tower);this.objects.add(tower);this.structures.push(tower);this.garrisons.push(tower);this.neutralStructures.push(tower);return tower;
   }
   get armyOrder(){return this.armyOrders.snapshot;}
-  setArmyOrder(mode){return this.armyOrders.set(mode);}
+  setArmyOrder(mode,position){return this.armyOrders.set(mode,position);}
   get regularArmyCount(){return this.goodTeam.filter(unit=>unit!==this.hero&&!unit.isCompanion).length;}
   createUnit(type,{team='bad',rank=null,skill=null,companion=false,fieldEntry=false}={}){
     if(type==='gorath'&&team==='good'&&!companion)throw new RangeError('Bosses use the companion summon slot');
@@ -133,6 +134,7 @@ export class FirstBattle {
     if(!this.unitFactories[type])throw new RangeError(`Enemy behavior is not integrated: ${type}`);
     if(!COLLISION_REGIONS[kind])throw new RangeError(`Enemy geometry is not integrated: ${kind}`);
     const body=COLLISION_REGIONS[kind].hitbox,services={
+      ...(isGood&&type==='trebuchet'?{selectSiegeStructure:unit=>selectSiegeStructureTarget(unit,this.structures),canReleaseSiegeTarget:(unit,target)=>canReleaseSiegeTarget(unit,target,this.structures)}:{}),
       hitTestRegion:hitBossRegion,stepEffects:unit=>unit.effects.step(),queueImpact:request=>this.queueImpact(request),
       queueProjectile:request=>this.queueProjectile(request),queueSpell:request=>this.queueSpell(request),queueEffect:request=>request.target.effects.add(createSupportEffect(request,{random:this.random,onHeal:event=>this.emit({type:'heal',...event})})),
       // Disposal also releases a ranged troop's garrison slot after status-effect death.

@@ -2,6 +2,7 @@
  * statically sourced; original art, sounds, bytecode and source are not used.
  * Original-runtime edge cases remain unverified.
  */
+import {protectsFriendlySiegeStructure} from './siege-targeting.mjs';
 import {Arrow,containsPoint,PHYSICS} from './ballistics.mjs';
 import {ProjectileTargetCache} from './projectile-targets.mjs';
 import {impactEffect,TimedEffect} from './effects.mjs';
@@ -29,7 +30,7 @@ const slopeAt=(world,x,context='Ground spell')=>{
 };
 const isStructure=(target,world)=>target?.isStructure===true||(world.structures??[]).includes(target);
 function pointHit(object,target,point,region='hitbox') {
-  if(protectsAlliedFlyer(object,target))return false;
+  if(protectsAlliedFlyer(object,target)||protectsFriendlySiegeStructure(object,target,object.world))return false;
   if(hasService(object,'hitTest'))return !!emit(object,'hitTest',target,point,region,object);
   const rect=typeof target?.[region]==='function'?target[region]():target?.[region];
   return !!rect&&containsPoint(rect,point);
@@ -192,6 +193,7 @@ export class TrebuchetAmmo extends SpecialProjectile {
     return null;
   }
   impact(target){
+    if(protectsFriendlySiegeStructure(this,target,this.world))return;
     if(target!=null){
       const amount=multiplier(target,'blunt')*this.impactDamage;
       // Deliberately does not copy the projectile's critical flag to this effect.

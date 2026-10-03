@@ -114,8 +114,8 @@ export function getCardInsights(item,options={}){
     tactics.push('Place sword troops in front while Archers shoot or occupy a tower. Keep fire attacks away: Archers take 2× fire damage.');break;
    case 'trebuchet':
     add('perUnitProjectileDamage',stats.damage);add('blastDamageMax',30+2*r);add('blastRadius',30+2*r);add('shotAimTime',(500-20*r)/66);add('fireTaken',2);
-    notes.push('Favors distant targets beyond 700 world units. Its impact adds a small radial blast; aim time is only one attack phase.', 'A vehicle: immune to healing, poison, fear and daze. Priests cannot heal it.');
-    tactics.push('Protect its long loading cycle with infantry. Avoid fire attackers, which deal 2× fire damage to it.');break;
+    notes.push('Favors distant troops beyond 700 world units. Recruited trebuchets also target hostile keeps and occupied enemy towers at that range when no distant troop is available. Its impact adds a small radial blast; aim time is only one attack phase.', 'A vehicle: immune to healing, poison, fear and daze. Priests cannot heal it.');
+    tactics.push('Protect its long loading cycle with infantry. Keep an escort in front while it breaks distant walls; nearby targets are inside its 700-unit firing limit. Avoid fire attackers, which deal 2× fire damage to it.');break;
    case 'priest':
     add('healBasePower',50+2*r);add('healCooldown',(400-15*r)/33);add('healRangeMin',200+33*r);add('healRangeMax',249+33*r);
     notes.push('Prioritizes purging poisoned allies, then healing injured living allies. Actual healing varies and is capped at missing health. Cannot heal vehicles.');
