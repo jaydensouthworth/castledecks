@@ -1,0 +1,42 @@
+#skillsPanel .deck-presets{--card-accent:#e1c58e;--deck-pad:24px;display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden;background:radial-gradient(ellipse at 20% 15%,#382335,#211721 65%)}
+#skillsPanel .deck-presets h3{font:400 26px/1.1 Georgia,serif;color:#f4d9a5;margin:4px 0 10px}
+#skillsPanel .deck-presets p{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+#skillsPanel .deck-explanation{max-width:800px;color:#d8c4a2}
+#skillsPanel .deck-name-form{display:flex;gap:10px;align-items:end;margin:12px 0 20px;flex-wrap:wrap}
+#skillsPanel .deck-name-form label{display:flex;flex-direction:column;gap:6px;flex:1;min-width:150px;font-size:12px}
+#skillsPanel .deck-presets input,#skillsPanel .deck-presets textarea{box-sizing:border-box;border:1px solid #b6945666;border-radius:4px;background:#18121bcc;color:#eddcbb;padding:10px;width:100%;font:14px system-ui,sans-serif}
+#skillsPanel .deck-columns{display:grid;grid-template-columns:minmax(190px,.65fr) minmax(0,1.35fr);gap:22px;align-items:start;margin:20px 0}
+#skillsPanel .deck-list{display:grid;gap:8px;align-content:start}
+#skillsPanel .deck-list button{text-align:left;display:flex;flex-direction:column;gap:7px;padding:14px;min-width:0;background:#271c27;border:1px solid #b6945655;overflow-wrap:anywhere;white-space:normal}
+#skillsPanel .deck-list strong{font:400 21px/1.1 Georgia,serif}
+#skillsPanel .deck-list span{font-size:12px;color:#c9b28a}
+#skillsPanel .deck-list [aria-pressed=true]{background:#63364a;border-color:#f4d9a5}
+#skillsPanel .deck-detail{min-width:0;background:#17121b55;padding:18px;border:1px solid #b6945644;border-radius:6px}
+#skillsPanel .deck-changes{margin:15px 0;padding:0;list-style:none;display:grid;gap:1px;max-height:270px;overflow:auto}
+#skillsPanel .deck-changes li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;background:#44303b55;padding:10px;font-size:12px}
+#skillsPanel .deck-warning{color:#ffd59c}
+#skillsPanel .deck-actions{display:flex;gap:8px;flex-wrap:wrap}
+#skillsPanel .deck-transfer{border-top:1px solid #b6945644;padding:15px 0}
+#skillsPanel .deck-transfer summary{cursor:pointer;color:#e8ce9c;font-size:14px;display:list-item;padding:10px 0}
+#skillsPanel .deck-transfer label{display:block;font-size:12px;margin:15px 0 5px}
+#skillsPanel .deck-transfer textarea{min-height:110px;resize:vertical;display:block;margin-bottom:10px;font-family:monospace}
+#skillsPanel #deckStorageNote{color:#bba585;font-size:12px}
+#skillsPanel #deckConfirm{padding:16px;border:1px solid #dcb478;background:#51313c;margin:18px 0}
+#skillsPanel #deckStatus{color:#f1d197;min-height:22px}
+@media(max-width:700px){#skillsPanel .deck-columns{grid-template-columns:1fr;gap:15px}#skillsPanel .deck-name-form{align-items:stretch}#skillsPanel .deck-name-form>button{flex:1}#skillsPanel .deck-presets input{font-size:16px}#skillsPanel .deck-detail{padding:12px}#skillsPanel .deck-presets h3{font-size:24px}#skillsPanel .deck-changes{max-height:none}}
+@media(max-height:620px) and (orientation:landscape){#skillsPanel .deck-presets{--deck-pad:12px}#skillsPanel .deck-columns{grid-template-columns:minmax(150px,.65fr) minmax(0,1.35fr)}}
+
+#skillsPanel .deck-bow-recovery{padding:10px 12px;margin:10px 0;border:1px solid #dcb47880;background:#51313c;color:#ffe1af;border-radius:5px}
+#skillsPanel .deck-bow-recovery p{margin:0 0 8px;font-size:12px;line-height:1.5}
+#skillsPanel .deck-bow-recovery button{white-space:normal;min-height:44px}
+
+/* Keep the exit outside the content scroller at every viewport size. */
+#skillsPanel .deck-presets-header{flex:0 0 auto;margin:0;padding:var(--deck-pad);background:#211721;border-bottom:1px solid #b6945655}
+#skillsPanel .deck-presets-header button{flex-shrink:0;min-height:44px;max-width:50%;white-space:normal}
+#skillsPanel .deck-presets-body{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;padding:var(--deck-pad);scrollbar-width:thin}
+#skillsPanel .deck-detail-head{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+#skillsPanel .deck-detail-head h3{min-width:0;overflow-wrap:anywhere}
+#skillsPanel #deckBackToList{min-height:44px;white-space:normal}
+#skillsPanel #deckTitle:focus{outline:2px solid #e1c58e;outline-offset:4px}
+@media(max-width:700px){#skillsPanel .deck-presets{--deck-pad:15px}}
+@media(max-height:620px) and (orientation:landscape){#skillsPanel .deck-presets{--deck-pad:12px}}

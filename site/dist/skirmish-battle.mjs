@@ -1,0 +1,43 @@
+/** Disposable practice adapter. Every attempt gets its own profile and RNG.
+ * Ordinary combat/economy remain active; no supplied kit can become a campaign.
+ */
+import {CampaignBattle} from './engine/first-battle.mjs';
+import {PlayerProfile} from './engine/progression.mjs';
+import {HeightField} from './engine/terrain.mjs';
+import {CampaignProfiles} from './engine/profile-manager.mjs';
+import {createSkirmish,SKIRMISH_KIT,skirmishCombatRandom} from './skirmish-model.mjs';
+class SkirmishHeightField extends HeightField{elevationAt(x){return x===this.interval*(this.samples.length-1)?this.samples.at(-1):super.elevationAt(x);}}
+const suppliedProfiles=new WeakMap(),usedProfiles=new WeakSet();
+const progressionKeys=['level','scene','highestLevel','highestScene'];
+export function createSkirmishProfile(scenario,{shootingMode='classic'}={}){
+ scenario=createSkirmish(scenario?.descriptor);
+ if(!['classic','anywhere','point_aim','auto_aim'].includes(shootingMode))throw new RangeError('Unknown aiming mode');
+ const profile=new PlayerProfile('Skirmish Practice'),kit=SKIRMISH_KIT;
+ Object.assign(profile,{rank:kit.rank,gold:kit.gold,difficulty:scenario.difficulty,shootingMode,cheated:true});
+ for(const id of kit.skills){const skill=profile.skills.find(item=>item.id===id)??profile.addSkill(id);skill.rank=id==='arrow'?kit.basicRank:kit.skillRank;skill.threshold=(skill.rank+1)*100;skill.cooldown=0;skill.autocast=kit.autoRecruit.includes(id);}
+ suppliedProfiles.set(profile,scenario.code);return profile;
+}
+export class SkirmishProfiles extends CampaignProfiles{
+ constructor(scenario,options={}){super({profiles:[createSkirmishProfile(scenario,options)],defaultName:'Skirmish Practice'});}
+ get canCreate(){return false;}
+ get canDelete(){return false;}
+ exportBundle(){throw new Error('Skirmish has no campaign save. Copy the seed code from the workshop.');}
+ importBundle(){throw new Error('Campaign saves cannot be loaded into Skirmish practice.');}
+ create(){return null;}
+ deleteCurrent(){return null;}
+ retireCurrent(){throw new Error('Skirmish attempts are not campaign records.');}
+}
+export class SkirmishBattle extends CampaignBattle{
+ constructor({descriptor,profile=null,shootingMode='classic',onEvent=()=>{}}={}){
+  const scenario=createSkirmish(descriptor),liveProfile=profile??createSkirmishProfile(scenario,{shootingMode});
+  if(!(liveProfile instanceof PlayerProfile)||!liveProfile.cheated||suppliedProfiles.get(liveProfile)!==scenario.code||usedProfiles.has(liveProfile))throw new TypeError('Skirmish requires its own assisted practice profile.');
+  liveProfile.difficulty=scenario.difficulty;
+  const progress=Object.fromEntries(progressionKeys.map(key=>[key,liveProfile[key]]));
+  super({profile:liveProfile,level:scenario.level,random:skirmishCombatRandom(scenario.descriptor),encounter:scenario.encounter,onEvent});
+  this.terrain=new SkirmishHeightField(this.encounter.heights);
+  usedProfiles.add(liveProfile);this.skirmish=scenario;Object.assign(liveProfile,progress);
+  if(this.hotbar.bar!==0)this.hotbar.change(1);this.activeSkill=this.hotbar.active;
+ }
+ finishOutcome(outcome){const progress=Object.fromEntries(progressionKeys.map(key=>[key,this.profile[key]])),accepted=super.finishOutcome(outcome);Object.assign(this.profile,progress);return accepted;}
+ applyOptions({shootingMode=this.profile.shootingMode}={}){super.applyOptions({difficulty:this.skirmish.difficulty,shootingMode});}
+}

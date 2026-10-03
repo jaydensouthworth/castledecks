@@ -1,6 +1,8 @@
 /** Device-local safe checkpoints. No account, network, live battlefield, or schema migration. */
 import {CampaignProfiles,MAX_PROFILE_BUNDLE_BYTES} from './engine/profile-manager.mjs';
+import {validateProfileDecks} from './deck-presets-model.mjs';
 export const LOCAL_CHECKPOINT_SCHEMA='castledecks-local-checkpoint-1';
+export const LOCAL_DECK_CHECKPOINT_SCHEMA='castledecks-local-checkpoint-2';
 export const LOCAL_SLOT_COUNT=3;
 export const LOCAL_STORAGE_PREFIX='castledecks:campaign:checkpoint:v1:';
 export const MAX_LOCAL_CHECKPOINT_BYTES=MAX_PROFILE_BUNDLE_BYTES*2+8192;
@@ -12,10 +14,11 @@ const integer=(value,min,max,label)=>{if(!Number.isSafeInteger(value)||value<min
 export function checkpointSlotKey(slot,bank){integer(slot,1,LOCAL_SLOT_COUNT,'local slot');if(bank!=='a'&&bank!=='b')throw new TypeError('Invalid local bank');return `${LOCAL_STORAGE_PREFIX}${slot}:${bank}`;}
 export function campaignProvenance(manager){const all=[...manager.profiles,...manager.retired],assisted=all.filter(p=>p.cheated===true).length;return assisted===0?'earned':assisted===all.length?'assisted':'mixed';}
 export function validateLocalPayload(value){
- shape(value,['bundle','activeIndex','resume'],'checkpoint payload');
+ shape(value,Object.hasOwn(value??{},'deckPresets')?['bundle','activeIndex','resume','deckPresets']:['bundle','activeIndex','resume'],'checkpoint payload');
  if(typeof value.bundle!=='string')throw new TypeError('Invalid checkpoint bundle');
  const manager=CampaignProfiles.fromBundle(value.bundle,{defaultName:'Castledecks'});
  integer(value.activeIndex,0,manager.profiles.length-1,'checkpoint selection');manager.select(value.activeIndex);
+ if(Object.hasOwn(value,'deckPresets'))validateProfileDecks(value.deckPresets,manager);
  shape(value.resume,['phase','level','outcome'],'checkpoint resume');
  if(!phases.has(value.resume.phase))throw new TypeError('Invalid checkpoint phase');integer(value.resume.level,1,30,'checkpoint battle');
  if(![null,'victory','defeat'].includes(value.resume.outcome)||(value.resume.phase==='result')!==(value.resume.outcome!==null))throw new TypeError('Invalid checkpoint result');
@@ -26,12 +29,13 @@ export function validateLocalPayload(value){
 export function parseLocalCheckpoint(text){
  if(typeof text!=='string'||text.length>MAX_LOCAL_CHECKPOINT_BYTES||utf8(text)>MAX_LOCAL_CHECKPOINT_BYTES)throw new TypeError('Checkpoint is too large');
  const value=JSON.parse(text);shape(value,['schema','revision','writtenAt','transaction','reason','payload'],'local checkpoint');
- if(value.schema!==LOCAL_CHECKPOINT_SCHEMA)throw new TypeError('Unsupported local checkpoint');
+ if(![LOCAL_CHECKPOINT_SCHEMA,LOCAL_DECK_CHECKPOINT_SCHEMA].includes(value.schema))throw new TypeError('Unsupported local checkpoint');
+ if((value.schema===LOCAL_DECK_CHECKPOINT_SCHEMA)!==Object.hasOwn(value.payload??{},'deckPresets'))throw new TypeError('Checkpoint deck metadata does not match its version');
  integer(value.revision,1,Number.MAX_SAFE_INTEGER,'checkpoint revision');integer(value.writtenAt,0,8640000000000000,'checkpoint date');
  if(typeof value.transaction!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(value.transaction)||!reasons.has(value.reason))throw new TypeError('Invalid checkpoint metadata');
  const {manager,provenance}=validateLocalPayload(value.payload);return {...value,manager,provenance};
 }
-export function snapshotCampaign({profiles,battle,started=false,destination='campaign'},reason='ready'){
+export function snapshotCampaign({profiles,battle,started=false,destination='campaign',deckPresets},reason='ready'){
  if(destination!=='campaign')return null;
  if(!(profiles instanceof CampaignProfiles)||!battle||battle.profile!==profiles.active)throw new TypeError('Invalid checkpoint session');
  // An outcome is not settled until summary: its victory count may have changed
@@ -39,13 +43,14 @@ export function snapshotCampaign({profiles,battle,started=false,destination='cam
  if((started||battle.outcome)&&!battle.summary)return null;
  if(!reasons.has(reason))throw new TypeError('Invalid checkpoint reason');
  const payload={bundle:profiles.exportBundle(),activeIndex:profiles.activeIndex,resume:{phase:battle.summary?'result':reason==='battle-start'?'opening':'ready',level:Math.min(30,Math.max(1,profiles.active.highestLevel)),outcome:battle.summary?.outcome??null}};
+ if(deckPresets!==undefined)payload.deckPresets=validateProfileDecks(deckPresets,profiles);
  // Earned atlas replays preserve their frontier. Reload returns to that frontier,
  // matching the existing portable export; practice destinations never enter here.
  validateLocalPayload(payload);return payload;
 }
 // An older open tab must never mistake a newer envelope for corrupt data.
 // Recognize its advertised family/version without interpreting future payloads.
-const supportedCheckpointVersion=1;
+const supportedCheckpointVersion=2;
 const newerEnvelope=text=>{
  if(typeof text!=='string')return false;
  try{const version=/^castledecks-local-checkpoint-(\d+)$/.exec(JSON.parse(text)?.schema??'');return !!version&&Number(version[1])>supportedCheckpointVersion;}catch{return false;}
@@ -87,7 +92,7 @@ export function createLocalCampaignStore({storage,locks,now=()=>Date.now(),id=lo
    if(expected){if(!Array.isArray(expected)||expected.length!==2||expected.some((raw,i)=>raw!==current.raw[i]))return {ok:false,code:'conflict',message:'Another tab changed this local campaign. Autosave paused. Export your session or use a new slot.'};}
    else if(current.status!=='empty')return {ok:false,code:'occupied',message:'This local slot already has a campaign. Choose Continue, or use an empty slot.'};
    if(!current.latest&&current.status!=='empty')return {ok:false,code:'corrupt',message:'This slot contains unreadable data. It has been kept; choose another slot or export your session.'};
-   const bank=current.latest?.bank==='a'?'b':'a',value={schema:LOCAL_CHECKPOINT_SCHEMA,revision:(current.latest?.revision??0)+1,writtenAt:now(),transaction:id(),reason,payload};
+   const bank=current.latest?.bank==='a'?'b':'a',value={schema:Object.hasOwn(payload,'deckPresets')?LOCAL_DECK_CHECKPOINT_SCHEMA:LOCAL_CHECKPOINT_SCHEMA,revision:(current.latest?.revision??0)+1,writtenAt:now(),transaction:id(),reason,payload};
    const text=JSON.stringify(value);parseLocalCheckpoint(text);
    const source=getStorage();source.setItem(checkpointSlotKey(slot,bank),text);
    // setItem atomically replaces one bank. Read it back before claiming success;

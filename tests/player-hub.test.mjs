@@ -10,7 +10,7 @@ const switchTo=(ui,id)=>{select(ui,id);ui.click('start');if(ui.visible('switchSe
 const snapshot=b=>JSON.stringify({tick:b.tick,level:b.level,profile:b.profile,stats:b.stats,good:b.goodTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),bad:b.badTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),wave:b.wave.countdown,population:b.friendlyQueue.population,queue:b.friendlyQueue.queue,projectiles:b.projectiles.map(p=>[p.x,p.y,p.vx,p.vy]),outcome:b.outcome,summary:b.summary});
 
 test('registry distinguishes the real campaign from implemented practice destinations',()=>{
- assert.deepEqual(PLAY_DESTINATIONS.map(d=>[d.id,d.kind]),[['campaign','CAMPAIGN'],['expedition','EXPEDITION'],['midgame','PRACTICE'],['allies','PRACTICE'],['training','PRACTICE']]);
+ assert.deepEqual(PLAY_DESTINATIONS.map(d=>[d.id,d.kind]),[['campaign','CAMPAIGN'],['expedition','EXPEDITION'],['skirmish','PRACTICE'],['midgame','PRACTICE'],['allies','PRACTICE'],['training','PRACTICE']]);
  assert.equal(playDestinationURL('allies','point_aim'),'./battle?mode=demo&showcase=companions&aim=point_aim');
  assert.throws(()=>playDestinationURL('pvp'),/Unknown/);
  assert.equal(canPurchaseInArmory({started:false}),true);assert.equal(canPurchaseInArmory({started:true}),false);assert.equal(canPurchaseInArmory({started:true,summary:{outcome:'victory'}}),true);assert.equal(canPurchaseInArmory({summary:{campaignComplete:true}}),false);

@@ -1,3 +1,4 @@
+import {drawElementalFlyer} from './flying-unit-art.mjs';
 /** Independently drawn combat feedback. Read-only presentation of existing
  * projectile events, reactive elements and resistance values; no simulation
  * mutations, random draws or new combat decisions. These are original shapes,
@@ -130,38 +131,8 @@ export function drawReactiveElement(ctx, element, scale = 1) {
   ctx.restore(); return true;
 }
 
-/** Local-space dragon art. Strongest contrast stays inside the measured torso
- * and head; translucent wing membranes remain visibly decorative. */
-export function drawElementalDragon(ctx, unit, motion = {}) {
+/** Delegate original local-space art without changing element semantics. */
+export function drawElementalDragon(ctx, unit, motion) {
   const element = dragonElement(unit);
-  if (!element) return false;
-  const c = ELEMENTS[element], flap = finite(motion.wingLift, Math.sin(finite(unit.animation?.frame) * .35) * 9), alpha = finite(ctx.globalAlpha, 1);
-  ctx.save();
-  ctx.globalAlpha = .36 * alpha;
-  path(ctx, [[7, -7], [33, -37 - flap], [3, -22], [-14, -35 - flap], [-7, -6]], c.body);
-  ctx.globalAlpha = .58 * alpha;
-  line(ctx, -6, -6, -14, -35 - flap, c.dark, 1.5); line(ctx, 5, -7, 33, -37 - flap, c.dark, 1.5);
-  line(ctx, 18, 11, 40, 19, c.body, 3);
-  ctx.globalAlpha = alpha;
-  path(ctx, [[26, 7], [10, -11], [-7, -13], [-18, -5], [-27, -2], [-27, 10], [-12, 12], [9, 16]], c.body, c.dark, 1.5);
-  path(ctx, [[-12, 8], [-6, -1], [11, 0], [20, 10], [8, 14]], c.dark);
-  circle(ctx, -19, 2, 8, c.body); circle(ctx, -23, 0, 2.5, c.light);
-  line(ctx, -27, 7, -16, 8, c.dark, 1.5);
-  if (element === 'fire') {
-    // Tall ember fins and a bright throat distinguish fire without hue alone.
-    path(ctx, [[-8, -11], [-7, -22], [-2, -13], [3, -23], [7, -10], [12, -17], [16, -5]], c.edge);
-    path(ctx, [[-16, 8], [-11, -1], [-8, 9], [-3, 11], [-12, 12]], c.light);
-  } else if (element === 'ice') {
-    // Broad crystalline plates and a forked crown.
-    path(ctx, [[-7, -11], [-10, -20], [-1, -17], [5, -24], [10, -12], [16, -11], [12, -4]], c.light, c.edge, 1);
-    path(ctx, [[-23, -4], [-25, -12], [-19, -7], [-14, -12], [-15, -3]], c.light);
-    line(ctx, -4, -12, 9, -3, c.edge, 1.5);
-  } else {
-    // Rounded venom sacs and a spotted ridge distinguish poison.
-    for (const [x, y, r] of [[-4, -12, 4], [6, -10, 4], [14, -4, 3], [-11, 8, 4]]) {
-      circle(ctx, x, y, r, c.dark); circle(ctx, x - .7, y - .8, r * .6, c.edge);
-    }
-    path(ctx, [[-19, 9], [-16, 15], [-14, 9]], c.light);
-  }
-  ctx.restore(); return true;
+  return element ? drawElementalFlyer(ctx,unit,motion,element) : false;
 }

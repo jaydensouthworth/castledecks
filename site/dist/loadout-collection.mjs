@@ -1,3 +1,4 @@
+import {defaultControlLabel} from './control-bindings.mjs';
 import {LoadoutCollection,LOADOUT_TYPES,LOADOUT_SORTS,loadoutPlacementPreview} from './loadout-collection-model.mjs';
 import {cardIdentity} from './armory-presentation.mjs';
 import {cardPortrait,bindCardPortraits} from './card-portraits.mjs';
@@ -6,7 +7,7 @@ import {slotToKey} from './keyboard-layout.mjs';
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const formatMetric=metric=>`${Number(metric.value).toLocaleString(undefined,{maximumFractionDigits:2})} ${metric.unit}`;
 const labels={frontline:'Frontline',ranged:'Ranged',support:'Support',siege:'Siege',fire:'Fire',ice:'Ice',poison:'Poison',lightning:'Lightning',explosive:'Explosive',healing:'Healing',airborne:'Airborne',ground:'Ground'};
-export function createLoadoutCollectionUI({root,records,getState,icon,bindingLabel,onSelect,onMove,onBar}){
+export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel,records,getState,icon,bindingLabel,onSelect,onMove,onBar}){
  const releasePortraits=bindCardPortraits(root);
  const $=selector=>root.querySelector(selector),doc=root.ownerDocument,model=new LoadoutCollection(records);
  let lastLayout=null,inspectedId=null,inspectReturn=null,gridSignature='',profileIdentity=null,selectedDestination=null;
@@ -41,7 +42,7 @@ export function createLoadoutCollectionUI({root,records,getState,icon,bindingLab
   const {layout,selected,armed,bar,message,profile}=getState();if(!layout||layout.closed)return;
   if(lastLayout!==layout){lastLayout=layout;gridSignature='';}
   if(profileIdentity!==profile){profileIdentity=profile;model.setView({type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped'});gridSignature='';selectedDestination=null;closeInspect();}
-  $('#loadoutCompanionSummary').textContent=profile.companionId?`${records.find(item=>item.id===profile.companionId)?.name??'Companion'} · separate slot · G`:'Companion · separate slot · G';
+  $('#loadoutCompanionSummary').textContent=profile.companionId?`${records.find(item=>item.id===profile.companionId)?.name??'Companion'} · separate slot · ${controlLabel('companion')}`:`Companion · separate slot · ${controlLabel('companion')}`;
   const result=model.query(layout.dragIcons),active=doc.activeElement?.id,list=$('#ownedSkillList'),scrollTop=list.scrollTop;
   $('#skillsResources').textContent=`${Math.floor(profile.gold).toLocaleString()} gold · ${result.owned} owned abilities · ${result.equipped}/30 equipped · ${result.reserve} in reserve`;
   $('#loadoutFilters').innerHTML=LOADOUT_TYPES.map(([id,label])=>`<button data-loadout-type="${id}" aria-pressed="${model.view.type===id}">${esc(label)}<span>${result.counts.get(id)}</span></button>`).join('');

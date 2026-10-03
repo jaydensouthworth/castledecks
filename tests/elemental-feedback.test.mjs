@@ -171,8 +171,12 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // plus recruitment/flyer protection, finite-ground safeguards the modern finite squad director, bounded Auto range assist, and validated
  // opt-in authored encounter data. expedition-engine-parity41.test.mjs compares
  // default Battle 1/16/30 simulation with the exact frozen41 constructor source.
+ // The intentional modern displayed-price purchase rule now permits zero gold
+ // after a purchase; purchase-roundtrip and armory-cart cover that exact boundary.
+ // Impact events now expose immediate source and applied HP loss; the causal
+ // training audit verifies unchanged combat state, legacy events and RNG.
  // See the dedicated source, recruitment, and flying-friendly-fire regressions.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'c64e07ec1fba62600d38363c336eaae2fb48f19740378603858fa73c562fcab2','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'c0b2932fe102a69a6a6f96df9a55bf609cf484859ce440d14dbec151f0415788','reviewed engine boundary');
 });

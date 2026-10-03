@@ -13,5 +13,5 @@ export function discoveryPlans(records,snapshot){
 }
 export function budgetPicks(records,snapshot,budget,limit=4){
  const ceiling=Math.max(0,Number(budget)||0);
- return records.filter(item=>item.storefront!==false&&!(item.kind==='companion'?snapshot.companionOwned:snapshot.owned).has(item.id)&&item.price<=ceiling&&(item.kind==='skill'?snapshot.gold>item.price:snapshot.gold>=item.price)).sort((a,b)=>a.price-b.price||a.order-b.order).slice(0,Math.min(12,Math.max(0,limit)));
+ return records.filter(item=>item.storefront!==false&&!(item.kind==='companion'?snapshot.companionOwned:snapshot.owned).has(item.id)&&item.price<=ceiling&&snapshot.gold>=item.price).sort((a,b)=>a.price-b.price||a.order-b.order).slice(0,Math.min(12,Math.max(0,limit)));
 }

@@ -23,6 +23,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   sessions.set(profiles,session);if(session.slot)reserved.set(session.slot,session);return session;
  }
  function message(){
+  if(state().destination==='skirmish')return 'Keep a seed code from the workshop to recreate this field. Practice attempts and their rewards are not saved.';
   if(state().destination==='expedition')return 'The Wayfarer Charter is independent, with its own supplied starting kit. Keep a charter file or code before closing; it has no local checkpoints.';
   if(!campaign())return 'Practice and showcase sessions stay separate. Export a file if you want to keep this assisted session.';
   const session=initialize();const newer=store.list().find(slot=>slot.status==='newer'&&(session.slot===slot.slot||session.decision==='pending'));if(newer)return newer.message;if(session.error)return session.error;

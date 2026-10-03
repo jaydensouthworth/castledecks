@@ -15,9 +15,9 @@ export function abilityCategory(id,catalog){return catalog[id]?.summon?'army':id
 export const ABILITY_CATEGORIES=[['all','All abilities'],['arrows','Arrows'],['waves','Waves'],['army','Army']];
 export function armoryEligibility(profile,id,catalog){
  const item=catalog[id],skill=profile.skills.find(skill=>skill.id===id),owned=profile.owned.has(id);
- // Preserve the recovered purchase rule: balance must be strictly above price.
- const shortfall=Math.max(0,item.price+1-Math.floor(profile.gold));
- return {owned,skill,price:item.price,eligible:!owned&&profile.gold>item.price,shortfall,category:abilityCategory(id,catalog),cooldownSeconds:item.cooldown/66};
+ // Match the modern displayed-price purchase rule, including exact balances.
+ const shortfall=Math.max(0,item.price-Math.floor(profile.gold));
+ return {owned,skill,price:item.price,eligible:!owned&&profile.gold>=item.price,shortfall,category:abilityCategory(id,catalog),cooldownSeconds:item.cooldown/66};
 }
 
 export function recoverDuplicateBindings(skills){

@@ -1,0 +1,23 @@
+/* A bounded, scrollable coach. Portrait practice reclaims the unused map row
+   and fits real launch/target geometry below the measured coach. No modal shield. */
+.training-coach{position:absolute;z-index:22;right:max(12px,env(safe-area-inset-right));top:88px;width:min(294px,calc(100% - 24px));color:#fff2d3;background:#1d242cf2;border:1px solid #c8a768;border-radius:10px;box-shadow:0 5px 18px #070a1040;padding:10px;pointer-events:auto;font:14px/1.35 system-ui,sans-serif;max-height:calc(100dvh - 190px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.training-coach summary{cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;padding-right:15px;position:relative}
+.training-coach summary::after{content:'−';position:absolute;right:0;top:10px;font-size:20px}
+.training-coach details:not([open]) summary::after{content:'+'}
+.training-coach summary span{font-size:12px;color:#e4c786}.training-coach summary strong{font-size:16px;line-height:1.25}
+.training-coach p{margin:5px 0 8px}.training-coach .training-feedback{font-size:12px;color:#d4d8d7;margin-bottom:0}
+.training-coach-actions{display:flex;flex-wrap:wrap;gap:5px}.training-coach button{font:inherit;font-size:14px;min-height:44px;padding:7px 10px;flex:1 1 auto;background:#2f3b46;color:#fff2d3;border:1px solid #899079;border-radius:7px}
+.training-coach button:focus-visible,.training-entry button:focus-visible{outline:3px solid #e1c46c;outline-offset:2px}
+.training-coach button:disabled{opacity:.55}.training-coach #trainingNext{background:#53664a}.training-coach #trainingAssist{flex-basis:100%}
+.training-coach #trainingExit{border-color:#77645b}
+/* Practice belongs to the selected launch choice, without another hall card. */
+.command-hall .training-entry{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;border:0;background:none;margin:6px 0 0;padding:0}
+.command-hall .training-entry p{margin:0!important;font:12px/1.35 system-ui,sans-serif!important;color:#dbc69e}
+.training-entry-actions{display:flex;gap:5px;flex-wrap:wrap}.command-hall .training-entry button{min-height:44px;padding:6px 10px;font-size:12px;flex:none;background:#251922;border-color:#b68c4970}
+.command-hall .training-entry .training-entry-note{flex-basis:100%;font-size:11px!important;color:#c8b99f}
+@media(orientation:landscape) and (max-height:600px){.command-hall .training-entry{gap:2px 8px;margin-top:3px}.command-hall .training-entry p{font-size:11px!important}.command-hall .training-entry button{font-size:11px;padding:5px 9px}.command-hall .training-entry .training-entry-note{font-size:10px!important}}
+#gameShell[data-guided-training="true"] #aimTip,#gameShell[data-guided-training="true"] #combatAimHint{display:none!important}
+@media(orientation:landscape) and (max-height:500px){.training-coach{top:calc(max(10px,env(safe-area-inset-top),var(--preview-safe-top,0px)) + 54px);right:max(8px,env(safe-area-inset-right),var(--preview-safe-right,0px));width:256px;padding:7px;max-height:min(160px,calc(100dvh - max(10px,env(safe-area-inset-top),var(--preview-safe-top,0px)) - 54px - max(10px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) - 90px))}.training-coach summary{min-height:44px}.training-coach summary strong{font-size:14px}.training-coach #trainingAssist{flex-basis:auto}.training-coach .training-feedback{display:none}.training-coach p{font-size:14px;line-height:1.25;margin:3px 0 6px}.training-coach button{padding:5px 7px}.training-coach-actions{gap:4px}}
+@media(orientation:portrait){.training-coach{top:calc(max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)) + 64px);left:max(12px,env(safe-area-inset-left),var(--preview-safe-left,0px));right:max(12px,env(safe-area-inset-right),var(--preview-safe-right,0px));width:auto;max-width:none;max-height:128px}#gameShell[data-guided-training="true"] #portraitView{display:none}.training-coach summary{min-height:44px}.training-coach-actions #trainingAssist{flex-basis:auto}.training-coach .training-feedback{font-size:12px}}
+@media(max-width:370px){.training-coach summary strong{font-size:14px}.training-coach p{font-size:14px}.training-coach button{padding:5px 6px}}
+@media(prefers-reduced-motion:reduce){.training-coach *{transition:none!important;animation:none!important}}

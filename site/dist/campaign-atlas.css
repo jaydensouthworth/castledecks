@@ -75,3 +75,30 @@
 /* Keep region progress readable without enlarging the compact map rail. */
 #campaignPanel .atlas-regions span{min-width:0;max-width:100%}
 #campaignPanel .atlas-regions small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:1.15}
+
+
+/* In narrow landscape, inspect deliberately; selection leaves the road open. */
+.atlas-inspector{display:contents}
+.atlas-inspector[hidden],.atlas-inspect-head,.atlas-inspect-actions,.atlas-inspect-note,.atlas-selection,#atlasInspect,.atlas-inspect-shade{display:none}
+@media(max-width:1000px) and (max-height:600px) and (orientation:landscape){
+ #campaignPanel .atlas-workspace{grid-template-columns:minmax(0,1fr);gap:0}
+ #campaignPanel .atlas-actions{height:55px;min-height:55px;max-height:55px}
+ #campaignPanel .atlas-actions>#atlasActionNote{display:none}
+ #campaignPanel .atlas-selection{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px;line-height:1.15}
+ #campaignPanel .atlas-selection span{font-size:12px;color:var(--menu-muted)}
+ #campaignPanel .atlas-selection strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--menu-text)}
+ #campaignPanel #atlasInspect{display:block;min-width:76px;min-height:44px;font-size:12px}
+ #campaignPanel .atlas-actions>#atlasPrepare{min-height:44px;font-size:12px}
+ #campaignPanel .atlas-inspect-shade{display:block;position:absolute;inset:0;z-index:5;background:#100c15aa;touch-action:none}
+ #campaignPanel .atlas-inspector{position:absolute;inset:0 0 0 auto;width:min(480px,100%);z-index:6;display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--menu-brass);background:linear-gradient(115deg,#392330,#211822);box-shadow:-12px 0 30px #09070c88}
+ #campaignPanel .atlas-inspector[hidden]{display:none}
+ #campaignPanel .atlas-inspect-head{display:flex;flex:none;align-items:center;justify-content:space-between;gap:12px;height:53px;padding:4px 12px;border-bottom:1px solid var(--menu-line)}
+ #campaignPanel .atlas-inspect-head strong{font:18px Georgia,serif;color:var(--menu-gold)}
+ #campaignPanel .atlas-inspect-head button{min-height:44px;font-size:12px}
+ #campaignPanel .atlas-inspector .atlas-brief{flex:1;min-height:0;overflow:auto;padding:10px 14px}
+ #campaignPanel .atlas-inspector .atlas-brief-title .eyebrow{font-size:12px}
+ #campaignPanel .atlas-inspector .atlas-objective h4,#campaignPanel .atlas-inspector .atlas-enemy h4 span,#campaignPanel .atlas-inspector .atlas-threats>span,#campaignPanel .atlas-inspector .atlas-threats small,#campaignPanel .atlas-inspector .atlas-terrain>div,#campaignPanel .atlas-inspector .atlas-advice,#campaignPanel .atlas-inspector .atlas-objective p,#campaignPanel .atlas-inspector .atlas-objective small,#campaignPanel .atlas-inspector summary span,#campaignPanel .atlas-inspector .atlas-stat-note,#campaignPanel .atlas-inspector .atlas-enemy>small,#campaignPanel .atlas-inspector .atlas-enemy details summary{font-size:12px!important}
+ #campaignPanel .atlas-inspect-actions{display:flex;flex:none;align-items:center;justify-content:flex-end;gap:12px;height:55px;min-height:55px;padding:5px 12px;border-top:1px solid var(--menu-line)}
+ #campaignPanel .atlas-inspect-note{display:block;margin:0 0 12px;font-size:12px;line-height:1.45;color:var(--menu-gold)}
+ #campaignPanel .atlas-inspect-actions button{flex:none;min-height:44px;font-size:12px}
+}

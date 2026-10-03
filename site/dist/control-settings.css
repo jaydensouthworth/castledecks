@@ -1,0 +1,14 @@
+/* Controls share existing panel chrome; only the reference/editor needs layout. */
+.controls-entry{margin-top:22px;padding-top:20px;border-top:1px solid #ccb57f35}
+.controls-entry p{max-width:70ch}.controls-entry button{margin:8px 0}
+.controls-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.8fr);gap:28px;align-items:start}
+.controls-bindings h3,.controls-reference h3{margin:0 0 8px;font-size:20px}.controls-bindings>p,.controls-reference>p{margin:0 0 16px}
+.control-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,145px);gap:15px;align-items:center;padding:12px 0;border-bottom:1px solid #c9b58626}
+.control-row strong{display:block;font-size:14px;line-height:1.4}.control-row small{display:block;color:var(--muted,#c3b69b);font-size:12px;line-height:1.45;margin-top:3px}
+.control-row button{display:flex;min-height:45px;justify-content:space-between;align-items:center;gap:7px;padding:8px 10px;text-align:left;white-space:normal}.control-row button>span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#c3b69b)}
+.control-row button[aria-pressed="true"]{outline:2px solid #e3c77a;outline-offset:2px}.control-row kbd{font-family:inherit;font-weight:600;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.control-editor-tools{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.control-status{min-height:3em;padding:12px 0;font-size:13px;line-height:1.55;color:#edcf8e}
+.controls-reference{background:#120e1033;border:1px solid #c9b58626;border-radius:8px;padding:18px}.controls-reference dl{margin:0}.controls-reference dt{font-weight:700;font-size:13px;margin:16px 0 5px}.controls-reference dd{margin:0;color:var(--muted,#c3b69b);font-size:13px;line-height:1.6}.controls-reference .footnote{margin:16px 0 0}
+.controls-footer-actions{display:flex;gap:9px;flex-wrap:wrap}.control-key-label{white-space:nowrap}
+@media(max-width:760px){.controls-layout{grid-template-columns:1fr;gap:22px}.control-row{grid-template-columns:minmax(0,1fr) 130px;gap:12px}.controls-reference{padding:15px}}
+@media(max-width:380px){.control-row{grid-template-columns:minmax(0,1fr) 105px;gap:8px}.control-row button{padding:7px}.control-row button>span{display:none}}

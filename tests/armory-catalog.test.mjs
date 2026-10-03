@@ -21,12 +21,16 @@ test('shipping records have exactly the real purchase inventory, explicit kinds 
  assert.deepEqual(records.filter(item=>item.alliedProtection).map(item=>item.id),['air','poisonDragon','fireDragon','iceDragon']);
  assert.ok(!records.some(item=>'rarity'in item||'pack'in item));
 });
-test('eligibility matches separate skill and companion boundaries and never scans owned skills per card',()=>{
- const p=new PlayerProfile();p.gold=1000;let snapshot=createArmorySnapshot(p);
- assert.equal(armoryCardState(records.find(item=>item.id==='fireArrow'),snapshot).eligible,false);
- p.gold=1001;snapshot=createArmorySnapshot(p);assert.equal(armoryCardState(records.find(item=>item.id==='fireArrow'),snapshot).eligible,true);
- p.gold=7500;snapshot=createArmorySnapshot(p);assert.equal(armoryCardState(records.find(item=>item.id==='gorath'),snapshot).eligible,true);
- assert.ok(snapshot.skills instanceof Map);
+test('eligibility matches exact-price engine rules for skills and companions using indexed ownership',()=>{
+ const p=new PlayerProfile();
+ for(const id of ['fireArrow','gorath']){
+  const item=records.find(item=>item.id===id);
+  for(const [offset,eligible,shortfall] of [[-1,false,1],[-0.5,false,1],[0,true,0],[0.5,true,0],[1,true,0]]){
+   p.gold=item.price+offset;const snapshot=createArmorySnapshot(p),state=armoryCardState(item,snapshot);
+   assert.equal(state.eligible,eligible);assert.equal(state.shortfall,shortfall);assert.ok(snapshot.skills instanceof Map);
+  }
+  const blocked=armoryCardState(item,{...createArmorySnapshot(p),purchaseBlockedReason:'Finish this battle'});assert.equal(blocked.eligible,false);assert.equal(blocked.purchaseBlockedReason,'Finish this battle');
+ }
 });
 test('query/filter/sort/page preserve selected stable ID, clamp pages and can reveal hidden selection',()=>{
  const catalog=new ArmoryCatalog(records),snapshot=state();catalog.select('iceDragon');
@@ -43,8 +47,8 @@ test('a purchase under Available keeps selected detail, next Arrange action and 
  assert.equal(ui.document.activeElement.id,'shopDetailAction');assert.ok(scrolled.includes('shopDetailAction'));ui.click('shopDetailAction');assert.equal(ui.visible('shopDetailDrawer'),true);assert.match(ui.get('shopDetails').textContent,/Place in your loadout/);assert.equal(ui.battle.profile.gold,9000);
 });
 test('stale affordability and repeated clicks are checked against current campaign state',async t=>{
- const ui=await armory(t,1001),oldButton=ui.get('buy-fireArrow');oldButton.focus();ui.battle.profile.gold=1000;oldButton.click();assert.equal(ui.document.activeElement,ui.get('inspect-fireArrow'));assert.match(ui.get('shopStatus').textContent,/Need 1 more gold/);assert.equal(ui.battle.profile.owned.has('fireArrow'),false);assert.equal(ui.battle.profile.gold,1000);
- ui.click('closeShop');ui.battle.profile.gold=1001;ui.click('endingShop');const purchase=ui.get('buy-fireArrow');purchase.click();purchase.click();assert.equal(ui.battle.profile.gold,1);assert.equal(ui.battle.profile.skills.filter(x=>x.id==='fireArrow').length,1);assert.equal(ui.visible('shopDetailDrawer'),true);
+ const ui=await armory(t,1000),oldButton=ui.get('buy-fireArrow');assert.equal(oldButton.disabled,false);oldButton.focus();ui.battle.profile.gold=999.5;oldButton.click();assert.equal(ui.document.activeElement,ui.get('inspect-fireArrow'));assert.match(ui.get('shopStatus').textContent,/Need 1 more gold/);assert.equal(ui.battle.profile.owned.has('fireArrow'),false);assert.equal(ui.battle.profile.gold,999.5);
+ ui.click('closeShop');ui.battle.profile.gold=1000;ui.click('endingShop');const purchase=ui.get('buy-fireArrow');purchase.click();purchase.click();assert.equal(ui.battle.profile.gold,0);assert.equal(ui.battle.profile.skills.filter(x=>x.id==='fireArrow').length,1);assert.equal(ui.visible('shopDetailDrawer'),true);
 });
 test('a changed source price is rejected before charging the campaign',async t=>{
  const ui=await armory(t,10000),price=SKILLS.fireArrow.price;t.after(()=>{SKILLS.fireArrow.price=price;});SKILLS.fireArrow.price=1200;ui.click('buy-fireArrow');assert.equal(ui.battle.profile.gold,10000);assert.equal(ui.battle.profile.owned.has('fireArrow'),false);assert.match(ui.get('shopStatus').textContent,/price changed/);

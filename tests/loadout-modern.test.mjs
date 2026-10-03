@@ -35,15 +35,15 @@ test('tapping filled bar selects first, second tap swaps; cancelling does not ch
  ui.click('assign-1');ui.click('assign-0');assert.equal(fire.binding,0);assert.equal(p.skills[0].binding,1);
  ui.click('assign-0');ui.click('assign-0');assert.equal(fire.binding,0);assert.match(ui.get('bindingStatus').textContent,/stays/);
 });
-test('armory categories, exact-price restriction, rank and visible purchase feedback reflect engine rules',async t=>{
+test('armory categories, exact-price purchases, rank and visible feedback reflect the modern rule',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testVictory');ui.frames(105);
- ui.battle.profile.gold=1000;ui.click('endingShop');assert.equal(ui.get('buy-fireArrow').disabled,true);assert.match(ui.get('shopGrid').textContent,/Need 1 more gold/);
- assert.match(ui.get('shopDetails').textContent,/No hero rank requirement/);
- ui.click('closeShop');ui.battle.profile.gold=1001;ui.click('endingShop');ui.click('buy-fireArrow');assert.equal(ui.battle.profile.gold,1);assert.match(ui.get('shopStatus').textContent,/Fire Arrow unlocked/);assert.match(ui.get('shopDetails').textContent,/Rank 0/);
+ ui.battle.profile.gold=999;ui.click('endingShop');assert.equal(ui.get('buy-fireArrow').disabled,true);assert.match(ui.get('shopGrid').textContent,/Need 1 more gold/);
+ assert.match(ui.get('shopDetails').textContent,/No hero rank requirement/);assert.doesNotMatch(ui.get('shopDetails').textContent,/Keep at least 1 gold/);
+ ui.click('closeShop');ui.battle.profile.gold=1000;ui.click('endingShop');assert.equal(ui.get('buy-fireArrow').disabled,false);ui.click('buy-fireArrow');assert.equal(ui.battle.profile.gold,0);assert.match(ui.get('shopStatus').textContent,/Fire Arrow unlocked/);assert.match(ui.get('shopDetails').textContent,/Rank 0/);
  ui.get('shopFilters').querySelector('[data-ability-filter="army"]').click();assert.equal(ui.get('shopGrid').querySelectorAll('article').length,12);assert.ok(!ui.document.querySelector('#buy-fireArrow'));assert.match(ui.get('shopDetails').textContent,/Fire Arrow/);assert.match(ui.get('shopDetails').textContent,/Selected outside these filters/);ui.click('inspect-grunt');assert.match(ui.get('shopDetails').textContent,/Per squad/);
  ui.click('shopLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);
 });
-test('category and eligibility helper stays catalog-grounded',()=>{const profile=new PlayerProfile();profile.gold=1000;assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).shortfall,1);profile.gold=1001;assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).eligible,true);assert.equal(abilityCategory('healWave',SKILLS),'waves');assert.equal(abilityCategory('priest',SKILLS),'army');});
+test('category and eligibility helper stays catalog-grounded',()=>{const profile=new PlayerProfile();profile.gold=999.5;assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).shortfall,1);assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).eligible,false);profile.gold=1000;assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).eligible,true);assert.equal(armoryEligibility(profile,'fireArrow',SKILLS).shortfall,0);assert.equal(abilityCategory('healWave',SKILLS),'waves');assert.equal(abilityCategory('priest',SKILLS),'army');});
 test('editor refresh and close preserve selected bow through swaps and never reset to last populated bar',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=test'});unlock(ui);const p=ui.battle.profile,fire=p.skills.find(s=>s.id==='fireArrow');
  ui.battle.activeSkill=fire;ui.battle.hotbar.active=fire;ui.battle.hotbar.bar=0;ui.battle.hotbar.glow=1;

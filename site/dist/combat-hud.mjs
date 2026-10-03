@@ -1,3 +1,4 @@
+import {defaultControlLabel} from './control-bindings.mjs';
 /** Read-only presentation state for the live combat HUD.
  * No input or engine mutation, listeners, timers, or side effects on import.
  */
@@ -6,7 +7,7 @@ import {SKILLS} from './engine/progression.mjs';
 
 export function enemyHudProgress(battle){
  const living=battle.badTeam.filter(unit=>unit.hp>0&&!unit.dead&&!unit.destroyed).length;
- if(!battle.enemies.finalStand)return `${living} enemies · ${battle.enemies.remaining} incoming`;
+ if(!battle.enemies.finalStand)return `${living} ${living===1?'enemy':'enemies'} · ${battle.enemies.remaining} incoming`;
  if(living&&shelteredEnemyCount(battle)===living)return `Final stand · ${living} in towers`;
  if(living)return `Final stand · ${living} ${living===1?'enemy':'enemies'}`;
  return battle.enemies.remaining?'Final stand · Gorath incoming':'Final stand · Clearing field';
@@ -18,8 +19,9 @@ const aimHints={
  point_aim:'Tap the battlefield to fire',
  auto_aim:'Lead moving targets · Tap to shoot'
 };
-export function combatHudState(battle,{aiming=false,angle=20,power=100,keyboard=false,autoAimStatus=null}={}) {
- const skill=battle.activeSkill,config=skill?SKILLS[skill.id]:null;
+export function combatHudState(battle,{aiming=false,angle=20,power=100,keyboard=false,autoAimStatus=null,controlLabel=defaultControlLabel}={}) {
+ const noBow=battle.profile.skills?.every(skill=>skill.binding<0||SKILLS[skill.id]?.summon)===true;
+ const skill=noBow?null:battle.activeSkill,config=skill?SKILLS[skill.id]:null;
  const seconds=skill?Math.max(0,Math.ceil(skill.cooldown/66)):0;
  const ready=!!skill&&seconds===0;
  const garrisoned=battle.hero.garrisoned();
@@ -28,19 +30,19 @@ export function combatHudState(battle,{aiming=false,angle=20,power=100,keyboard=
  const activationLabel=activationKinds.size===1&&activationKinds.has('flak_arrow')?'Burst'
   :activationKinds.size===1&&activationKinds.has('thunder_arrow')?'Storm':'Activate';
  return {
-  name:config?.name??'Choose a skill', ready,
-  status:seconds?`Ready in ${seconds}s`:config?.summon?'Squad ready':aiming&&['classic','anywhere'].includes(mode)?'Release to fire':'Ready',
+  name:noBow?'No bow equipped':config?.name??'Choose a skill', ready,
+  status:noBow?'Loadout · Basic Arrow is free':seconds?`Ready in ${seconds}s`:config?.summon?'Squad ready':aiming&&['classic','anywhere'].includes(mode)?'Release to fire':'Ready',
   mode,aiming,
-  aimHint:mode==='auto_aim'&&autoAimStatus?.hint?autoAimStatus.hint:aiming&&['classic','anywhere'].includes(mode)?'Release to fire your drawn shot':aimHints[mode]??aimHints.classic,
+  aimHint:noBow?'Use squad keys, or equip Basic Arrow in Loadout.':mode==='auto_aim'&&autoAimStatus?.hint?autoAimStatus.hint:aiming&&['classic','anywhere'].includes(mode)?'Release to fire your drawn shot':aimHints[mode]??aimHints.classic,
   title:`Battle ${battle.level}`,
   enemies:enemyHudProgress(battle),
   heroState:garrisoned?'Garrisoned':'On foot',
-  moveLabel:garrisoned?'Leave the keep':keyboard?'A / D · Move':'Hold to move',
-  precisionName:config?.summon?'Summon squad':'Precise shot',
-  precisionDetail:config?.summon?`${config.summon.cost} GOLD`:`${angle}° · ${power}%`,
-  precisionLabel:config?.summon?`Summon ${config.name}`:`Fire ${config?.name??'selected arrow'} at ${angle} degrees and ${power} percent power`,
+  moveLabel:garrisoned?'Leave the keep':keyboard?`${controlLabel('left',{compact:true})} / ${controlLabel('right',{compact:true})} · Move`:'Hold to move',
+  precisionName:noBow?'No bow equipped':config?.summon?'Summon squad':'Precise shot',
+  precisionDetail:noBow?'LOADOUT · FREE ARROW':config?.summon?`${config.summon.cost} GOLD`:`${angle}° · ${power}%`,
+  precisionLabel:noBow?'No bow equipped. Open Loadout to equip Basic Arrow for free.':config?.summon?`Summon ${config.name}`:`Fire ${config?.name??'selected arrow'} at ${angle} degrees and ${power} percent power`,
   activationLabel,
-  activationDetail:keyboard?'SPACE · AIRBORNE':'TAP · AIRBORNE',
+  activationDetail:keyboard?`${controlLabel('activate',{compact:true}).toUpperCase()} · AIRBORNE`:'TAP · AIRBORNE',
   activationAria:activationLabel==='Burst'?'Burst airborne flak bomb':activationLabel==='Storm'?'Activate airborne thunder arrow to create a storm':'Activate airborne abilities',
  };
 }

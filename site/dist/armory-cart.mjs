@@ -46,10 +46,8 @@ export class ArmoryCart {
 }
 
 /** Pure quote: the supplied lines and profile/snapshot are never changed.
- * Skills settle before companions, regardless of browse/add order. This keeps
- * each real skill purchase's strict gold > price check and permits exact-total
- * mixed carts when the companion spends the final gold. Skill-only carts must
- * leave a positive balance (one gold for integer campaign balances).
+ * Intentional modern rule: every cart may spend exactly its displayed total,
+ * matching single skill and companion purchases. No extra wallet reserve.
  */
 export function quoteArmoryCart(lines,profile){
  const empty={lines:[],errors:[],total:0,gold:profile?.gold??0,remainingGold:profile?.gold??0,requiredGold:0,shortfall:0};
@@ -57,7 +55,7 @@ export function quoteArmoryCart(lines,profile){
  if(lines.length>ARMORY_CART_CAPACITY)return fail('cart_full',`Your cart holds up to ${ARMORY_CART_CAPACITY} cards.`,empty);
  if(!validProfile(profile))return fail('invalid_profile','The campaign balance or collection could not be read.',empty);
  if(!lines.length)return fail('empty_cart','Add a card before checking out.',empty);
- const seen=new Set(),errors=[],quoted=[],ownedSkills=new Set(skillList(profile).map(skill=>skill?.id));let total=0,skillTotal=0;
+ const seen=new Set(),errors=[],quoted=[],ownedSkills=new Set(skillList(profile).map(skill=>skill?.id));let total=0;
  for(const line of lines){
   let error=null,item=null,owned=false;
   if(!validLine(line)){error=fail('invalid_line','A cart card is invalid. Remove it and add it again.');}
@@ -67,14 +65,13 @@ export function quoteArmoryCart(lines,profile){
    else if(!item||!safePrice(item.price))error=fail('missing_item','A cart card is no longer available.');
    else if(item.price!==line.quotedPrice)error=fail('price_changed',`${item.name??line.id} changed price. Remove it and add it again to review the new price.`);
    else if(owned)error=fail('already_owned',`${item.name??line.id} is already in your collection. Remove it from the cart.`);
-   seen.add(line.id);total+=line.quotedPrice;if(line.kind==='skill')skillTotal+=line.quotedPrice;
+   seen.add(line.id);total+=line.quotedPrice;
   }
   if(error)errors.push({id:line?.id??null,code:error.code,message:error.message});
   quoted.push(Object.freeze({id:line?.id??null,kind:line?.kind??null,quotedPrice:line?.quotedPrice??null,currentPrice:item?.price??null,name:item?.name??line?.id??'Unavailable card',owned,ok:!error,code:error?.code??'ready',message:error?.message??''}));
  }
- if(!Number.isSafeInteger(total)||!Number.isSafeInteger(skillTotal+(lines.some(line=>line?.kind==='skill')?1:0)))errors.push({id:null,code:'invalid_total',message:'The cart total is too large.'});
- const hasSkills=lines.some(line=>line?.kind==='skill'),requiredGold=Math.max(total,hasSkills?skillTotal+1:0);
- const affordable=profile.gold>=total&&(!hasSkills||profile.gold>skillTotal);
+ if(!Number.isSafeInteger(total))errors.push({id:null,code:'invalid_total',message:'The cart total is too large.'});
+ const requiredGold=total,affordable=profile.gold>=total;
  const quote={lines:Object.freeze(quoted),errors:Object.freeze(errors),total,gold:profile.gold,remainingGold:profile.gold-total,requiredGold,shortfall:affordable?0:Math.max(0,requiredGold-Math.floor(profile.gold))};
  if(errors.length)return fail(errors[0].code,errors[0].message,quote);
  if(!affordable)return fail('insufficient_gold',`Need ${quote.shortfall.toLocaleString()} more in-game gold to check out.`,quote);

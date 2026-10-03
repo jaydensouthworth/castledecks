@@ -142,7 +142,8 @@ export class PlayerProfile {
  addSkill(id){const skill=new SkillProgress(id),used=new Set(this.skills.map(s=>s.binding));for(let i=0;i<30;i++)if(!used.has(i)){skill.binding=i;break;}this.skills.push(skill);this.owned.add(id);return skill;}
  recruitCompanion(id){const item=COMPANIONS[id];if(!item||this.companionOwned.has(id)||this.gold<item.price)return false;this.gold-=item.price;this.companionOwned.add(id);this.companionId=id;return true;}
  equipCompanion(id){if(id!==null&&!this.companionOwned.has(id))return false;this.companionId=id;return true;}
- purchase(id){const item=SKILLS[id];if(!item||this.owned.has(id)||!(this.gold>item.price))return false;this.gold-=item.price;this.addSkill(id);return true;}
+ // Intentional modern rule: displayed-price purchases may spend the full balance.
+ purchase(id){const item=SKILLS[id];if(!item||this.owned.has(id)||!(this.gold>=item.price))return false;this.gold-=item.price;this.addSkill(id);return true;}
 }
 export function summonSquad(skill,profile,queue,levelStats={}){const config=SKILLS[skill.id]?.summon;if(!config||skill.cooldown>0||profile.gold<config.cost)return false;if(!queue.enqueueSquad({type:skill.id,cost:config.population,rank:skill.rank,skill},config.amount))return false;profile.gold-=config.cost;levelStats.goldSpent=(levelStats.goldSpent??0)+config.cost;skill.cooldown=skill.maximum;return true;}
 export function basicHitGold(difficulty){return ({easy:8,medium:10,med:10,hard:12,insane:16})[difficulty]??0;}

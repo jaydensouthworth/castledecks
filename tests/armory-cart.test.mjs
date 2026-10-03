@@ -11,9 +11,11 @@ const card=id=>({id,kind:Object.hasOwn(COMPANIONS,id)?'companion':'skill',...(CO
 const line=id=>{const item=card(id);return {id,kind:item.kind,quotedPrice:item.price};};
 const funded=(gold=20000)=>{const profile=new PlayerProfile('Cart fixture');profile.gold=gold;return profile;};
 const allow={canPurchase:()=>true};
-const tracked=profile=>({save:serializeProfile(profile),gold:profile.gold,skills:profile.skills,owned:profile.owned,companionOwned:profile.companionOwned,skillRefs:[...profile.skills],companionId:profile.companionId});
+const tracked=profile=>({save:Number.isInteger(profile.gold)?serializeProfile(profile):null,skillValues:profile.skills.map(skill=>Object.getOwnPropertyDescriptors(skill)),ownedValues:[...profile.owned],companionValues:[...profile.companionOwned],gold:profile.gold,skills:profile.skills,owned:profile.owned,companionOwned:profile.companionOwned,skillRefs:[...profile.skills],companionId:profile.companionId});
 const unchanged=(profile,before)=>{
- assert.equal(serializeProfile(profile),before.save);
+ if(before.save!==null)assert.equal(serializeProfile(profile),before.save);
+ assert.deepEqual(profile.skills.map(skill=>Object.getOwnPropertyDescriptors(skill)),before.skillValues);
+ assert.deepEqual([...profile.owned],before.ownedValues);assert.deepEqual([...profile.companionOwned],before.companionValues);
  for(const key of ['gold','skills','owned','companionOwned','companionId'])assert.equal(profile[key],before[key]);
  assert.deepEqual(profile.skills,before.skillRefs);
 };
@@ -55,10 +57,10 @@ test('quote uses fresh ownership and source prices while leaving every input unc
  assert.deepEqual(quoteArmoryCart(lines,createArmorySnapshot(profile)),quote);
 });
 
-test('skill-only quote honors strict source boundary, including positive fractional balances',()=>{
- for(const [gold,ok,shortfall] of [[1999,false,2],[2000,false,1],[2000.5,true,0],[2001,true,0]]){
+test('skill-only quote uses the displayed total with exact and fractional balances',()=>{
+ for(const [gold,ok,shortfall] of [[1999,false,1],[1999.5,false,1],[2000,true,0],[2000.5,true,0],[2001,true,0]]){
   const quote=quoteArmoryCart([line('fireArrow'),line('iceArrow')],funded(gold));
-  assert.equal(quote.ok,ok);assert.equal(quote.shortfall,shortfall);assert.equal(quote.requiredGold,2001);
+  assert.equal(quote.ok,ok);assert.equal(quote.shortfall,shortfall);assert.equal(quote.requiredGold,2000);
  }
 });
 
@@ -122,9 +124,20 @@ test('buying skills never changes an existing companion selection',()=>{
  assert.equal(result.ok,true);assert.equal(p.companionId,'gorath');assert.equal(p.companionOwned.size,1);
 });
 
-test('insufficient gold is rejected before any mutation and failed cart is retained',()=>{
- const p=funded(2000),before=tracked(p),cart=new ArmoryCart();cart.add(card('fireArrow'));cart.add(card('iceArrow'));
- const result=cart.checkout(p,allow);assert.equal(result.code,'insufficient_gold');assert.equal(result.shortfall,1);assert.match(result.message,/in-game gold/);assert.equal(cart.size,2);unchanged(p,before);
+test('stale exact-total quotes reject insufficient integer or fractional funds and retain the cart',()=>{
+ for(const gold of [1999,1999.5]){
+  const p=funded(2000),cart=new ArmoryCart();cart.add(card('fireArrow'));cart.add(card('iceArrow'));
+  assert.equal(cart.quote(p).ok,true);p.gold=gold;const before=tracked(p);
+  const result=cart.checkout(p,allow);assert.equal(result.code,'insufficient_gold');assert.equal(result.shortfall,1);assert.match(result.message,/in-game gold/);assert.equal(cart.size,2);unchanged(p,before);
+ }
+});
+
+test('exact-budget skill cart reaches zero, round-trips and rejects a repeated raw checkout',()=>{
+ const p=funded(2000),basic=p.skills[0],cart=new ArmoryCart();cart.add(card('fireArrow'));cart.add(card('iceArrow'));const lines=cart.lines;
+ const result=cart.checkout(p,allow);assert.equal(result.ok,true);assert.equal(p.gold,0);assert.equal(result.receipt.goldAfter,0);assert.equal(result.receipt.total,2000);assert.equal(result.requiredGold,2000);assert.equal(cart.size,0);
+ assert.equal(p.skills[0],basic);assert.deepEqual(p.skills.slice(1).map(skill=>[skill.id,skill.binding]),[['fireArrow',-1],['iceArrow',-1]]);
+ const restored=restoreProfile(serializeProfile(p));assert.equal(restored.gold,0);assert.deepEqual(restored.skills.map(skill=>[skill.id,skill.binding]),[['arrow',0],['fireArrow',-1],['iceArrow',-1]]);
+ const before=tracked(p);assert.equal(checkoutArmoryCart(p,lines,allow).code,'already_owned');unchanged(p,before);
 });
 
 test('missing, stale, duplicate and now-owned lines abort the entire mixed cart',()=>{
@@ -144,7 +157,7 @@ test('price changes since adding are detected using the live source and retain t
 });
 
 test('a repeated checkout of the same raw lines never charges twice',()=>{
- const p=funded(),lines=[line('fireArrow'),line('gorath')];assert.equal(checkoutArmoryCart(p,lines,allow).ok,true);
+ const p=funded(8500),lines=[line('fireArrow'),line('gorath')];assert.equal(checkoutArmoryCart(p,lines,allow).ok,true);assert.equal(p.gold,0);
  const before=tracked(p);assert.equal(checkoutArmoryCart(p,lines,allow).code,'already_owned');unchanged(p,before);
 });
 
@@ -154,10 +167,12 @@ test('closing the purchase window during checkout cancels all staged changes',()
  assert.equal(result.code,'context_blocked');assert.equal(calls,2);unchanged(p,before);
 });
 
-test('checkout rejects a campaign changed during the final context check without overwriting it',()=>{
- const p=funded(),originalSkills=p.skills,originalOwned=p.owned;let calls=0;
- const result=checkoutArmoryCart(p,[line('fireArrow')],{canPurchase:()=>{if(++calls===2)p.gold=777;return true;}});
- assert.equal(result.code,'profile_changed');assert.equal(p.gold,777);assert.equal(p.skills,originalSkills);assert.equal(p.owned,originalOwned);assert.equal(p.owned.has('fireArrow'),false);
+test('exact-budget checkout rejects integer or fractional fund changes during the final check',()=>{
+ for(const gold of [1999,1999.5]){
+  const p=funded(2000),originalSkills=p.skills,originalOwned=p.owned;let calls=0;
+  const result=checkoutArmoryCart(p,[line('fireArrow'),line('iceArrow')],{canPurchase:()=>{if(++calls===2)p.gold=gold;return true;}});
+  assert.equal(result.code,'profile_changed');assert.equal(p.gold,gold);assert.equal(p.skills,originalSkills);assert.equal(p.owned,originalOwned);assert.equal(p.owned.has('fireArrow'),false);assert.equal(p.owned.has('iceArrow'),false);
+ }
 });
 
 test('checkout rejects changed existing skill contents during final context check',()=>{
@@ -213,8 +228,8 @@ test('success updates only four profile fields and leaves unrelated objects unto
  assert.ok(Object.isFrozen(result.receipt));assert.ok(Object.isFrozen(result.receipt.lines));assert.ok(Object.isFrozen(result.receipt.lines[0]));
 });
 
-test('single skill checkout accepts only a positive remainder, while companion can spend exactly its price',()=>{
- for(const [gold,expected]of [[1000,false],[1000.5,true],[1001,true]]){
+test('single skill and companion checkout both accept their exact displayed price',()=>{
+ for(const [gold,expected]of [[999,false],[999.5,false],[1000,true],[1000.5,true],[1001,true]]){
   const p=funded(gold),before=expected?null:tracked(p),result=checkoutArmoryCart(p,[line('fireArrow')],allow);
   assert.equal(result.ok,expected);if(expected){assert.equal(p.gold,gold-1000);assert.equal(p.skills.at(-1).binding,-1);}else unchanged(p,before);
  }
@@ -247,4 +262,13 @@ test('host can refresh the existing hotbar after atomic array replacement withou
  for(let i=0;i<10;i++)battle.step();
  assert.equal(grunt.cooldown,cooldown);assert.equal(p.gold,gold);assert.equal(battle.friendlyQueue.queue.length,queue);
  grunt.binding=4;battle.refreshHotbar();assert.equal(battle.hotbar.bars[0][4],grunt);
+});
+
+
+test('an exact-budget skill cart rolls back when its final engine purchase throws after spending',t=>{
+ const p=funded(2000),before=tracked(p),method=PlayerProfile.prototype.purchase;t.after(()=>{PlayerProfile.prototype.purchase=method;});
+ let stagedFinal;PlayerProfile.prototype.purchase=function(id){const result=method.call(this,id);if(id==='iceArrow'){stagedFinal={purchased:result,gold:this.gold,owned:[...this.owned]};throw Error('final staged purchase failed');}return result;};
+ const cart=new ArmoryCart();cart.add(card('fireArrow'));cart.add(card('iceArrow'));
+ assert.equal(cart.checkout(p,allow).code,'purchase_failed');assert.deepEqual(stagedFinal,{purchased:true,gold:0,owned:['arrow','fireArrow','iceArrow']});assert.equal(cart.size,2);unchanged(p,before);
+ PlayerProfile.prototype.purchase=method;assert.equal(cart.checkout(p,allow).ok,true);assert.equal(p.gold,0);assert.equal(cart.size,0);
 });

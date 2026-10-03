@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T08:45:32.533237+00:00",
-  "stage": "playable-campaign-and-expedition",
-  "internal_tests_passing": 1030,
+  "updated": "2026-10-03T11:52:29.839400+00:00",
+  "stage": "campaigns-expedition-and-seeded-practice",
+  "internal_tests_passing": 1352,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,6 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 45 native follow-through for keyboard recovery and resource labels",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -24,12 +23,34 @@
     "Crownroad map frontier centering, region selection, rotation, locked-field guard and explicit battle start",
     "Assisted Army paid Queue, cancel with reserve refund, Auto toggle and Loadout return while paused",
     "Compact Armory galleries at 915\u00d7360, 740\u00d7320, 360\u00d7640 and 412\u00d7780 CSS viewports",
-    "Landscape Precise Shot, airborne activation, Leave/Enter, arc toggle and Battle 16 high-ground shot"
+    "Landscape Precise Shot, airborne activation, Leave/Enter, arc toggle and Battle 16 high-ground shot",
+    "Remappable keyboard controls, reload persistence and optional guided drill journey",
+    "Named deck comparison/apply/code import, zero-gold Basic Arrow recovery with firing, and real checkpoint reload",
+    "Seeded workshop maximum seed/code checks, natural practice victory and fresh-kit/deck-code restoration",
+    "Saved deck header/inspector/list return and twelve-deck capacity at phone CSS proportions",
+    "Build 50 exact-budget single/cart checkout to zero gold; quick keyboard activation and Enter/Leave; optional report recording, copy and clear",
+    "Build 50 real guided High Arc and Ice-counter hits; short-landscape Skirmish hall clearance",
+    "Imported QA Battle 13 opening checkpoint reload restores 1,556 gold / 70 reserve; restarting charges one 100-gold / 13-reserve recruitment cycle"
   ],
-  "latest_gameplay_fix": "Visual command hall and spatial campaign atlas; compact illustrated Armory; Army contracts, muster and paid recruitment; usable modal keyboard focus.",
-  "build": 45,
+  "latest_gameplay_fix": "Quick activation and Enter/Leave key taps now survive between simulation ticks. Exact-price purchases work consistently for single cards and carts. Guided drills credit actual damage from their eligible shot. Flyers have clearer original art, and optional local diagnostics stay off until enabled.",
+  "build": 51,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach and a separate branching Wayfarer charter use recreation rules."
+  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach and a separate branching Wayfarer charter use recreation rules.",
+  "deck_presets": {
+    "per_profile_limit": 12,
+    "ability_slots": 30,
+    "separate_companion": true,
+    "local_checkpoint_metadata": 2,
+    "portable_campaign_format_unchanged": true
+  },
+  "skirmish": {
+    "seed_format": "SK1",
+    "biomes": 4,
+    "threat_tiers": 3,
+    "doctrines": 3,
+    "progression": "Disposable assisted practice; campaign checkpoints unchanged"
+  },
+  "test_evidence": "1,345-check full Build 50 gate plus seven new phase regressions; 41 focused report checks pass on the two-file follow-through."
 }

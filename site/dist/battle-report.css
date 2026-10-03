@@ -1,0 +1,10 @@
+/* Opt-in utility panel only: no persistent battlefield surface. */
+#battleReportPanel { width: min(880px, calc(100vw - var(--hud-left) - var(--hud-right))); }
+#battleReportPanel .menu-body { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+#battleReportPanel p, #battleReportPanel label { font-size: 14px; line-height: 1.45; }
+#battleReportPanel .battle-report-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#battleReportPanel .battle-report-actions button { flex: 1 1 145px; min-height: 44px; }
+#battleReportText { display: block; width: 100%; min-height: 220px; height: 37vh; resize: vertical; padding: 12px; border: 1px solid var(--brass); border-radius: 4px; background: #180f15; color: var(--ivory); font: 13px/1.55 ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+#battleReportStatus { min-height: 1.45em; color: var(--gilt); }
+@media (max-height: 500px) and (orientation: landscape) { #battleReportText { min-height: 130px; height: 35vh; } #battleReportPanel .menu-body { gap: 8px; } }
+@media (max-width: 440px) { #battleReportPanel .battle-report-actions button { flex-basis: 120px; } }

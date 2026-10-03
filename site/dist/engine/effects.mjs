@@ -41,7 +41,8 @@ export function impactEffect({source=null,target,amount,critical=false,impactTyp
  if(typeof target?.takeDamage!=='function')throw new TypeError('Impact target needs a takeDamage behavior');
  const effect=new TimedEffect({kind:'impact',target,duration,interval:9999,perform:self=>{
    if(amount>=0&&protectsAlliedFlyer(source,target)){self.duration=0;return;}
-   const damage=Math.floor(amount);target.takeDamage(damage,{playSound:true,impactType});onDamage({target,damage,critical,scale:critical?150:100});
+   const damage=Math.floor(amount),hpBefore=target.hp;target.takeDamage(damage,{playSound:true,impactType});
+   onDamage({source,target,damage,actualDamage:Math.max(0,hpBefore-target.hp),critical,scale:critical?150:100});
    if(target.isFighter&&alive(target)&&!target.knockedDown){const reaction=impactReaction(damage,target.hp,random);if(reaction)onReaction(target,reaction);}
    self.duration=0;
  }});return effect;

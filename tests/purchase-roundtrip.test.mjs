@@ -1,27 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PlayerProfile, SKILLS} from '../site/dist/engine/progression.mjs';
+import {PlayerProfile, SKILLS, serializeProfile, restoreProfile} from '../site/dist/engine/progression.mjs';
 import {CampaignProfiles} from '../site/dist/engine/profile-manager.mjs';
 import {CampaignBattle} from '../site/dist/engine/first-battle.mjs';
 import {seededRandom} from '../site/dist/engine/combat.mjs';
 
-test('purchase enforces current strict affordability and charges only once', () => {
+test('modern displayed-price purchase accepts exact gold, persists zero and charges only once', () => {
   const profile = new PlayerProfile('Buyer');
   const price = SKILLS.fireArrow.price;
-  for (const gold of [0, price - 1, price]) {
+  for (const gold of [0, price - 1, price - 0.5]) {
     profile.gold = gold;
     assert.equal(profile.purchase('fireArrow'), false);
     assert.equal(profile.gold, gold);
     assert.deepEqual([...profile.owned], ['arrow']);
   }
   // Funding is a controlled engine fixture, not claimed gameplay earnings.
-  profile.gold = price + 1;
+  profile.gold = price;
   assert.equal(profile.purchase('fireArrow'), true);
-  assert.equal(profile.gold, 1);
+  assert.equal(profile.gold, 0);
   assert.equal(profile.skills.length, 2);
+  const restored = restoreProfile(serializeProfile(profile));
+  assert.equal(restored.gold, 0);
+  assert.equal(restored.owned.has('fireArrow'), true);
+  profile.gold = price; // Even renewed funds cannot buy the same skill twice.
   assert.equal(profile.purchase('fireArrow'), false);
   assert.equal(profile.purchase('missingSkill'), false);
-  assert.equal(profile.gold, 1);
+  assert.equal(profile.gold, price);
   assert.equal(profile.skills.length, 2);
 });
 

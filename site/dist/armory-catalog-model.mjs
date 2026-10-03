@@ -15,10 +15,10 @@ export function createArmorySnapshot(profile){
 }
 export function armoryCardState(item,snapshot){
  const companion=item.kind==='companion',owned=(companion?snapshot.companionOwned:snapshot.owned).has(item.id),skill=companion?null:snapshot.skills.get(item.id);
- // The existing engine deliberately uses different purchase boundaries.
+ // Intentional modern rule: skills and companions use the displayed price.
  const purchaseBlockedReason=snapshot.purchaseBlockedReason??null;
- const eligible=!owned&&!purchaseBlockedReason&&(companion?snapshot.gold>=item.price:snapshot.gold>item.price);
- return {owned,eligible,purchaseBlockedReason,skill,equipped:companion?snapshot.companionId===item.id:(skill?.binding??-1)>=0,shortfall:Math.max(0,item.price+(companion?0:1)-Math.floor(snapshot.gold))};
+ const eligible=!owned&&!purchaseBlockedReason&&snapshot.gold>=item.price;
+ return {owned,eligible,purchaseBlockedReason,skill,equipped:companion?snapshot.companionId===item.id:(skill?.binding??-1)>=0,shortfall:Math.max(0,item.price-Math.floor(snapshot.gold))};
 }
 export class ArmoryCatalog {
  constructor(records,{pageSize=ARMORY_PAGE_SIZE,selectedId='fireArrow'}={}){
