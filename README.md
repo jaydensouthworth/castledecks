@@ -44,7 +44,7 @@ The check validates source syntax, local asset references, packaging hygiene and
 
 ## Current scope
 
-See [release 62 candidate notes](docs/releases/62.md) for this snapshot and its known limits. The new independent ground-company controls are awaiting native acceptance. Release 61 completed its native Battery-clearance and Army-copy checks and is the known-good rollback.
+See [release 63 candidate notes](docs/releases/63.md) for this snapshot and its known limits. A follow-up company-marker and Army-receipt correction is awaiting native acceptance. Release 61 remains the known-good rollback until that gate passes.
 
 The prototype includes a 30-field campaign atlas, a live preparation table, a separate Wayfarer Charter expedition mode, seeded Skirmish practice, optional guided Training, remappable controls, named deck presets, campaign profile import/export, device-local checkpoints, three action-bar pages, a shared full-viewport card discovery and deck workspace, an Army command ledger, 12 regular recruit types and a companion. Allied field caps grow with campaign progress, with quick Advance/Rally commands and fixed Rear/Center/Forward lines. Wayfarer now has a six-field branching route board, and recruited allied trebuchets can target hostile buildings when no distant troop target remains. Balance, presentation and mobile input are still under development.
 

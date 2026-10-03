@@ -8,7 +8,7 @@ const n=value=>Number(value).toLocaleString(undefined,{maximumFractionDigits:2})
 const positions=[['field','In the field'],['garrison','Garrisoned'],['arriving','Arriving'],['clearing','Fallen · clearing']];
 export function createArmyCommandUI({root,records,getState,icon,onChanged=()=>{},onLoadout=()=>{},onArmory=()=>{}}){
  const $=selector=>root.querySelector(selector),doc=root.ownerDocument,roster=new ArmyRoster(records);bindCardPortraits(root);
- let identity=null,selected=null,returnId=null,tab='contracts',signature='',message='';
+ let identity=null,selected=null,returnId=null,tab='contracts',signature='',message='',renderedTick=null;
  const options=(entries,value)=>entries.map(([id,label])=>`<option value="${esc(id)}" ${id===value?'selected':''}>${esc(label)}</option>`).join('');
  const current=(origin,id)=>{const state=getState();if(!state.active||state.battle!==origin.battle||state.profile!==origin.profile)return null;const skill=state.profile.skills.find(s=>s.id===id);return skill&&state.profile.owned.has(id)?{state,skill}:null;};
  function inert(active){for(const child of root.children)if(child!==$('#armyInspector'))child.inert=active;}
@@ -41,6 +41,7 @@ export function createArmyCommandUI({root,records,getState,icon,onChanged=()=>{}
  }
  function render(){
   const state=getState();if(identity!==state.battle){closeInspect();identity=state.battle;roster.setView({query:'',role:'all',state:'all'});signature='';tab='contracts';message='';}
+  if(renderedTick!==state.battle.tick){message='';renderedTick=state.battle.tick;}
   $('#armyMore').open=false;
   const snapshot=armySnapshot(state.battle),result=roster.query(state),active=doc.activeElement?.id,scroll=$('#armyRoster').scrollTop;
   $('#armyPhase').textContent=state.battle.outcome||state.battle.summary?'BATTLE SETTLED':state.started?'BATTLE PAUSED':'PREPARE YOUR ORDERS';

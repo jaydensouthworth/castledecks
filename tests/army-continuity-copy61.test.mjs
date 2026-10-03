@@ -23,3 +23,11 @@ test('opening and reading continuity guidance has no economy, queue, save, or ba
  for(let i=0;i<5;i++){ui.click('introArmy');ui.click('army-card-grunt');ui.click('armyCloseInspector');ui.click('closeQueue');}
  assert.equal(serializeProfile(b.profile),before);assert.equal(b.friendlyQueue.population,reserve);assert.deepEqual(b.friendlyQueue.queue,queue);assert.equal(b.tick,tick);
 });
+
+test('an old queued receipt clears after battle time advances, without refunding or changing paid recruits',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=skirmish'});ui.click('skirmishPrepare');ui.click('start');ui.frames(2);ui.click('battlePause');ui.click('pauseQueue');
+ ui.click('army-card-grunt');ui.click('armyRecruit');assert.match(ui.get('queueStatus').textContent,/4 queued/);assert.equal(ui.battle.profile.gold,1180);
+ ui.click('armyCloseInspector');ui.click('closeQueue');ui.click('resumeGame');ui.frames(150);ui.click('battlePause');ui.click('pauseQueue');
+ assert.doesNotMatch(ui.get('queueStatus').textContent,/queued|Deploys after Resume/);assert.match(ui.get('queueStatus').textContent,/Contracts and ranks survive defeat/);
+ assert.equal(ui.battle.profile.gold,1180);assert.equal(ui.battle.friendlyQueue.population,66);assert.equal(ui.battle.friendlyQueue.queue.length,0);
+});
