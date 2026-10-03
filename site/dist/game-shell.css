@@ -1,0 +1,144 @@
+/* One full-viewport game workbench. Each workspace owns its internal scrollers. */
+:root{--shell-inset:8px;--shell-head:62px;--shell-nav:48px;--shell-brass:#c6a56a;--shell-edge:#856747;--shell-ink:#1b151c}
+.panel.menu-panel.game-management{position:absolute;inset:max(var(--shell-inset),env(safe-area-inset-top),var(--preview-safe-top,0px)) max(var(--shell-inset),env(safe-area-inset-right),var(--preview-safe-right,0px)) max(var(--shell-inset),env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) max(var(--shell-inset),env(safe-area-inset-left),var(--preview-safe-left,0px));width:auto;height:auto;max-width:none;max-height:none;transform:none;margin:0;padding:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--shell-edge);border-radius:3px;background:radial-gradient(ellipse at 50% 0,#57334044,transparent 65%),linear-gradient(120deg,#281d25,#1c161f);box-shadow:inset 0 0 0 3px #151118,inset 0 0 0 4px #ac86442b,0 14px 60px #0009}
+.panel.menu-panel.game-management.hidden{display:none}
+.panel.menu-panel.game-management>.panel-head{height:var(--shell-head);min-height:var(--shell-head);max-height:var(--shell-head);box-sizing:border-box;flex:none;display:flex;align-items:center;gap:16px;padding:7px 22px;background:linear-gradient(90deg,#56323d,#33212c 65%,#241a23);border-bottom:1px solid #b8965755;position:relative;top:auto}
+.panel.menu-panel.game-management>.panel-head h2{font:400 28px/1 Georgia,serif;margin:0;color:#f1d9ad}
+.panel.menu-panel.game-management>.panel-head .eyebrow{font:9px/1.2 system-ui;letter-spacing:.14em;margin:0 0 4px;color:#c4a580}
+.panel.menu-panel.game-management>.panel-head .menu-back{margin-left:auto;min-height:44px;min-width:95px;font-size:12px;white-space:nowrap;padding:8px 12px}
+.panel.menu-panel.game-management>.game-shell-nav{display:flex;align-items:stretch;flex:none;min-height:var(--shell-nav);height:var(--shell-nav);padding:0 15px;gap:3px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;border-bottom:1px solid #ad8a4945;background:#17131bd9;scrollbar-width:none;position:relative;top:auto}
+.panel.menu-panel.game-management>.game-shell-nav button{min-height:44px;min-width:78px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 15px;font:12px system-ui;letter-spacing:.04em;text-transform:none;border:0;border-radius:0;color:#bcab8f;background:transparent;box-shadow:none}
+.panel.menu-panel.game-management>.game-shell-nav button .menu-icon{width:21px;height:21px}
+.panel.menu-panel.game-management>.game-shell-nav button[aria-current=page]{color:#ffe2aa;background:linear-gradient(#7b493e32,#8c5b453b);box-shadow:inset 0 -3px #d4ad6a}
+.panel.menu-panel.game-management>.game-shell-nav button:hover{color:#fff0cb;background:#72533b44}
+.panel.menu-panel.game-management>.game-shell-nav button:active{background:#a47b4555;transform:translateY(1px)}
+.panel.menu-panel.game-management>.menu-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+.panel.menu-panel.game-management>.menu-footer{flex:none;min-height:50px;box-sizing:border-box;padding:6px 22px;border-top:1px solid #a17b454c;background:#201722;gap:10px}
+.panel.menu-panel.game-management>.menu-footer button{min-height:38px}
+#shopPanel.game-management .armory-workspace,#skillsPanel.game-management .loadout-workspace{flex:1;min-height:0}
+#shopPanel.game-management .armory-summary,#skillsPanel.game-management .loadout-resources{flex:none;padding:7px 22px;min-height:32px;box-sizing:border-box;font-size:12px}
+#skillsPanel.game-management>.deck-workspace-nav,#shopPanel.game-management .armory-mode-nav{display:flex;flex-direction:row;flex:none;gap:0;padding:0 22px;min-height:44px;height:44px;overflow:auto;scrollbar-width:none;background:#32232c;border-bottom:1px solid #c9a66140}
+#skillsPanel.game-management>.deck-workspace-nav>button,#shopPanel.game-management .armory-mode-nav>button{min-height:44px;min-width:80px;flex:none;padding:8px 15px;border:0;border-radius:0;font:12px system-ui;background:transparent;color:#cbbb9c;box-shadow:none;white-space:nowrap}
+#skillsPanel.game-management>.deck-workspace-nav>button[aria-pressed=true],#shopPanel.game-management .armory-mode-nav>button[aria-pressed=true]{background:#74513b4d;color:#ffe0a7;box-shadow:inset 0 -2px #dbb772}
+#shopPanel.game-management .armory-catalog{padding:16px 22px}
+#shopPanel.game-management .armory-stage{flex:1;min-height:0}
+#shopPanel.game-management .armory-browser{grid-template-columns:160px minmax(0,1fr)}
+#shopPanel.game-management .shop-grid{grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;align-content:start;align-items:start}
+#shopPanel.game-management .armory-refinements{padding:8px;margin-bottom:8px}
+#shopPanel.game-management .armory-refinements>button{grid-column:auto}
+#shopPanel.game-management .armory-discover{padding:18px 28px}
+#shopPanel.game-management .shop-card{min-width:0}
+#skillsPanel.game-management .loadout-workspace{grid-template-columns:minmax(0,1.2fr) minmax(420px,1fr)}
+#skillsPanel.game-management .loadout-owned-list{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));align-content:start;grid-auto-rows:max-content}
+#skillsPanel.game-management .loadout-inventory,#skillsPanel.game-management .loadout-placement{padding:16px;gap:9px}
+#queuePanel.game-management .army-header-tools>#armyLoadout,#queuePanel.game-management .army-header-tools>#armyArmory{display:none}
+#campaignPanel.game-management #campaignAtlasHost{flex:1;min-height:0}
+.game-management button:focus-visible,.game-management summary:focus-visible{outline:2px solid #ffe7b8;outline-offset:-3px}
+@media(min-width:1500px) and (min-height:700px){#shopPanel.game-management .shop-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}#skillsPanel.game-management .loadout-owned-list{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}}
+@media(max-width:850px){.panel.menu-panel.game-management>.game-shell-nav{padding:0 8px}.panel.menu-panel.game-management>.game-shell-nav button{min-width:67px;padding:6px 10px}.panel.menu-panel.game-management>.game-shell-nav .menu-icon{display:none}#shopPanel.game-management .armory-browser{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:620px) and (orientation:portrait){:root{--shell-inset:0px;--shell-head:56px;--shell-nav:44px}.panel.menu-panel.game-management{border-radius:0}.panel.menu-panel.game-management>.panel-head{padding:5px 12px}.panel.menu-panel.game-management>.panel-head h2{font-size:26px}.panel.menu-panel.game-management>.game-shell-nav{padding:0}.panel.menu-panel.game-management>.game-shell-nav button{min-width:65px;padding:6px 10px;font-size:11px}.panel.menu-panel.game-management>.menu-footer{padding:6px 10px}.panel.menu-panel.game-management>.menu-footer .footnote{font-size:10px}#skillsPanel.game-management>.deck-workspace-nav,#shopPanel.game-management .armory-mode-nav{padding:0 5px}#skillsPanel.game-management>.deck-workspace-nav>button,#shopPanel.game-management .armory-mode-nav>button{min-width:72px;font-size:11px;padding:6px 10px}#shopPanel.game-management .armory-catalog{padding:9px}#shopPanel.game-management .shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#shopPanel.game-management .armory-summary,#skillsPanel.game-management .loadout-resources{padding:6px 10px}#skillsPanel.game-management .loadout-workspace{display:flex;flex-direction:column;overflow:auto}#skillsPanel.game-management .loadout-inventory,#skillsPanel.game-management .loadout-placement{flex:none;overflow:visible;padding:12px}#skillsPanel.game-management .loadout-owned-list{grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;flex:none}#shopPanel.game-management .armory-discover{padding:12px}}
+@media(max-height:600px) and (orientation:landscape){:root{--shell-inset:0px;--shell-head:44px;--shell-nav:44px}.panel.menu-panel.game-management>.panel-head{padding:2px 12px}.panel.menu-panel.game-management>.panel-head h2{font-size:22px}.panel.menu-panel.game-management>.panel-head .eyebrow{display:none}.panel.menu-panel.game-management>.panel-head .menu-back{min-height:40px;font-size:11px}.panel.menu-panel.game-management>.game-shell-nav{padding:0 6px}.panel.menu-panel.game-management>.game-shell-nav button{min-width:64px;padding:3px 10px;font-size:11px}.panel.menu-panel.game-management>.game-shell-nav .menu-icon{display:none}.panel.menu-panel.game-management>.menu-footer{min-height:42px;padding:3px 10px}.panel.menu-panel.game-management>.menu-footer button{min-height:36px}.panel.menu-panel.game-management>.menu-footer .footnote{display:none}#shopPanel.game-management .armory-summary,#skillsPanel.game-management .loadout-resources{padding:3px 12px;min-height:24px;font-size:10px}#shopPanel.game-management .armory-workspace{display:flex;flex-direction:column;grid-template-columns:none}#shopPanel.game-management .armory-mode-nav,#skillsPanel.game-management>.deck-workspace-nav{height:40px;min-height:40px;padding:0 8px}#shopPanel.game-management .armory-mode-nav>button,#skillsPanel.game-management>.deck-workspace-nav>button{min-height:40px;padding:4px 11px;min-width:69px;font-size:11px}#shopPanel.game-management .armory-catalog{padding:7px 10px}#shopPanel.game-management .shop-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px}#skillsPanel.game-management .loadout-workspace{grid-template-columns:minmax(0,1fr) minmax(330px,1fr)}#skillsPanel.game-management .loadout-inventory,#skillsPanel.game-management .loadout-placement{padding:8px;gap:6px}#skillsPanel.game-management .loadout-owned-list{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}#skillsPanel.game-management .inventory-heading{display:none}#skillsPanel.game-management .loadout-help{margin:0}#shopPanel.game-management .armory-browser-heading{display:none}}
+@media(prefers-reduced-motion:no-preference){.game-management button{transition:background-color .12s ease,box-shadow .12s ease,color .12s ease}}
+/* In short landscape the global navigation becomes a stable left rail, leaving
+   height for real cards instead of accumulating website-like toolbars. */
+@media(max-height:600px) and (orientation:landscape){
+ .panel.menu-panel.game-management{padding-left:64px}
+ .panel.menu-panel.game-management>.panel-head{margin-left:-64px}
+ .panel.menu-panel.game-management>.game-shell-nav{position:absolute;left:0;top:44px;bottom:0;width:64px;height:auto;min-height:0;padding:0;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;background:#17121b;border-right:1px solid #b9975744;border-bottom:0;gap:0}
+ .panel.menu-panel.game-management>.game-shell-nav button{flex:none;min-width:0;width:64px;min-height:44px;height:44px;padding:3px;font-size:10px;white-space:normal}
+ .panel.menu-panel.game-management>.game-shell-nav button[aria-current=page]{box-shadow:inset 3px 0 #d4ad6a}
+ #shopPanel.game-management .armory-workspace{display:grid;grid-template-columns:88px minmax(0,1fr)}
+ #shopPanel.game-management .armory-mode-nav{height:auto;min-height:0;padding:0;display:flex;flex-direction:column;overflow-y:auto}
+ #shopPanel.game-management .armory-mode-nav>button{min-height:44px;height:44px;min-width:0;width:100%;padding:5px;font-size:10px;flex:none}
+ #shopPanel.game-management .shop-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}
+ #shopPanel.game-management .armory-browser{grid-template-columns:minmax(0,1fr)}
+ #skillsPanel.game-management .loadout-workspace{grid-template-columns:minmax(0,1fr) minmax(310px,1fr)}
+}
+#shopPanel.game-management #shopLoadout,#skillsPanel.game-management #loadoutArmory,#skillsPanel.game-management #openQueue{display:none}
+/* Search and optional refinements remain available without burying the cards. */
+#skillsPanel.game-management .loadout-inventory{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 44px minmax(0,1fr) 38px;gap:10px}
+#skillsPanel.game-management .inventory-heading{grid-column:1/-1;grid-row:1}
+#skillsPanel.game-management .loadout-search{grid-column:1;grid-row:2;margin:0}
+#skillsPanel.game-management .loadout-refine{grid-column:2;grid-row:2;position:static;margin:0;border:0;padding:0;align-self:stretch}
+#skillsPanel.game-management .loadout-refine>summary{list-style:none;display:flex;align-items:center;justify-content:center;min-height:44px;height:100%;padding:8px 14px;box-sizing:border-box;font-size:12px;border:1px solid #bc98585e;background:#4a2d37;color:#efdaad;cursor:pointer}
+#skillsPanel.game-management .loadout-refine[open]>summary{background:#8a5b4055;border-color:#d4b275}
+#skillsPanel.game-management .loadout-refine-sheet{position:absolute;z-index:12;left:12px;right:12px;top:110px;padding:14px;border:1px solid #cfab65;background:#251b25;box-shadow:0 18px 45px #000b}
+#skillsPanel.game-management .loadout-refine-sheet .ability-filters{margin-bottom:12px}
+#skillsPanel.game-management .loadout-owned-list{grid-column:1/-1;grid-row:3;min-height:0}
+#skillsPanel.game-management .loadout-pagination{grid-column:1/-1;grid-row:4;min-height:0}
+@media(max-height:600px) and (orientation:landscape){
+ #skillsPanel.game-management{padding-left:144px}
+ #skillsPanel.game-management>.panel-head{margin-left:-144px}
+ #skillsPanel.game-management>.deck-workspace-nav{position:absolute;left:64px;top:44px;bottom:0;width:80px;height:auto;min-height:0;padding:0;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid #c9a66140}
+ #skillsPanel.game-management>.deck-workspace-nav>button{height:44px;min-height:44px;min-width:0;padding:5px;font-size:10px;flex:none}
+ #skillsPanel.game-management .loadout-inventory{grid-template-rows:38px minmax(0,1fr) 32px;gap:6px}
+ #skillsPanel.game-management .loadout-search,#skillsPanel.game-management .loadout-refine{grid-row:1}
+ #skillsPanel.game-management .loadout-search input,#skillsPanel.game-management .loadout-search button,#skillsPanel.game-management .loadout-refine>summary{height:38px;min-height:38px;font-size:11px}
+ #skillsPanel.game-management .loadout-search button{display:none}
+ #skillsPanel.game-management .loadout-search{grid-template-columns:1fr}
+ #skillsPanel.game-management .loadout-owned-list{grid-row:2}
+ #skillsPanel.game-management .loadout-pagination{grid-row:3}
+ #skillsPanel.game-management .loadout-pagination button{min-height:32px;padding:4px 7px}
+ #skillsPanel.game-management .loadout-refine-sheet{top:49px;left:5px;right:5px;padding:8px;max-height:calc(100% - 54px);overflow:auto}
+ #skillsPanel.game-management .loadout-refine-sheet .ability-filters{flex-wrap:wrap}
+ #skillsPanel.game-management .loadout-refine-sheet .ability-filters>button{flex:1;font-size:10px;min-height:38px}
+ #skillsPanel.game-management .loadout-facets{flex-wrap:wrap}
+}
+@media(max-width:620px) and (orientation:portrait){
+ #skillsPanel.game-management .loadout-inventory{grid-template-rows:auto 44px auto 38px;overflow:visible}
+ #skillsPanel.game-management .loadout-refine-sheet{top:110px;max-height:310px;overflow:auto}
+ #skillsPanel.game-management .loadout-refine-sheet .ability-filters{flex-wrap:wrap}
+ #skillsPanel.game-management .loadout-facets{flex-wrap:wrap}
+}
+@media(max-width:620px) and (orientation:portrait){
+ /* Both the equipped bar and real collection have a bounded, immediately
+    visible working area. No page scroll is needed to discover the cards. */
+ #skillsPanel.game-management .loadout-workspace{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(170px,.72fr) minmax(235px,1fr);overflow:hidden}
+ #skillsPanel.game-management .loadout-placement{grid-column:1;grid-row:1;min-height:0;overflow:auto;padding:8px 10px;gap:7px;border-bottom:1px solid #b6925955}
+ #skillsPanel.game-management .loadout-inventory{grid-column:1;grid-row:2;display:grid;grid-template-rows:44px minmax(0,1fr) 34px;padding:8px 10px;gap:7px;min-height:0;overflow:hidden}
+ #skillsPanel.game-management .inventory-heading{display:none}
+ #skillsPanel.game-management .loadout-search,#skillsPanel.game-management .loadout-refine{grid-row:1}
+ #skillsPanel.game-management .loadout-owned-list{grid-row:2;min-height:0;overflow:auto;grid-auto-rows:max-content;align-content:start}
+ #skillsPanel.game-management .loadout-pagination{grid-row:3}
+ #skillsPanel.game-management .loadout-pagination button{min-height:34px;padding:4px 10px}
+ #skillsPanel.game-management .loadout-refine-sheet{top:57px;max-height:calc(100% - 65px)}
+ #skillsPanel.game-management>.deck-workspace-nav,#shopPanel.game-management .armory-mode-nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0;gap:0;overflow:visible;height:44px;min-height:44px}
+ #skillsPanel.game-management>.deck-workspace-nav>button,#shopPanel.game-management .armory-mode-nav>button{min-width:0;width:auto;min-height:44px;padding:3px 1px;font-size:10px;white-space:normal;line-height:1.15;gap:2px;margin:0}
+ #shopPanel.game-management #shopCartOpen{margin-left:0}
+ #shopPanel.game-management .armory-mode-nav>button span{font-size:9px;padding:1px}
+ .panel.menu-panel.game-management>.game-shell-nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));overflow:visible;gap:0;padding:0}
+ .panel.menu-panel.game-management>.game-shell-nav button{min-width:0;padding:4px 1px;font-size:10px}
+}
+/* Retire legacy absolute resource/header placement from older panel layouts. */
+#shopPanel.game-management .armory-summary,#skillsPanel.game-management .loadout-resources{position:relative;left:auto;right:auto;top:auto;max-height:none;height:auto;pointer-events:auto}
+#skillsPanel.game-management .loadout-placement{position:static;max-height:none}
+#shopPanel.game-management[data-battle-continuation=false]>.menu-footer{display:none}
+#shopPanel.game-management[data-battle-continuation=true]>.menu-footer{height:auto;pointer-events:auto}
+#shopPanel.game-management[data-battle-continuation=true] #shopContinue{display:inline-flex;align-items:center;justify-content:center}
+@media(max-height:600px) and (orientation:landscape){
+ #skillsPanel.game-management .loadout-inventory{overflow:hidden}
+ #skillsPanel.game-management .loadout-owned-list{overflow:auto;min-height:0}
+ #shopPanel.game-management .shop-grid{grid-template-columns:repeat(auto-fill,minmax(225px,1fr))}
+ #shopPanel.game-management .shop-card .shop-inspect{display:grid;grid-template-columns:68px minmax(0,1fr);gap:6px;align-items:center;text-align:left;padding:0 6px}
+ #shopPanel.game-management .shop-card .shop-inspect .card-art-stage{height:64px;width:68px;min-height:0;margin:0}
+ #shopPanel.game-management .shop-card .card-name{padding:2px;min-height:0;justify-content:flex-start}
+ #shopPanel.game-management .shop-card .card-name strong{font-size:17px;line-height:1.1}
+ #shopPanel.game-management .shop-card .card-kicker{min-height:20px;padding:4px 6px 2px}
+ #shopPanel.game-management .shop-card .card-state{min-height:18px;padding:2px 6px}
+ #shopPanel.game-management .shop-card .shop-card-actions{min-height:40px}
+}
+/* Native 915×360 acceptance: one complete, legible card rather than two
+   portrait cards whose names fall behind pagination. Inspect retains stats. */
+@media(max-height:600px) and (orientation:landscape){
+ #skillsPanel.game-management .loadout-inventory{grid-template-rows:44px minmax(0,1fr) 44px}
+ #skillsPanel.game-management .loadout-search input,#skillsPanel.game-management .loadout-refine>summary,#skillsPanel.game-management .loadout-pagination button{height:44px;min-height:44px}
+ #skillsPanel.game-management .loadout-owned-list{grid-template-columns:minmax(0,1fr);gap:7px;grid-auto-rows:max-content;padding:3px}
+ #skillsPanel.game-management .loadout-card-select{display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto auto;gap:2px 9px;padding:4px 7px;min-height:66px;align-items:center}
+ #skillsPanel.game-management .loadout-card-topline{grid-column:2;grid-row:1;min-height:14px;font-size:10px;line-height:12px}
+ #skillsPanel.game-management .loadout-card-topline b{font-size:10px;padding:1px 3px}
+ #skillsPanel.game-management .loadout-card-art{grid-column:1;grid-row:1/4;width:52px;height:54px;margin:0}
+ #skillsPanel.game-management .loadout-card-select strong{grid-column:2;grid-row:2;font-size:17px;line-height:18px;min-height:18px;text-align:left}
+ #skillsPanel.game-management .loadout-card-binding{grid-column:2;grid-row:3;min-height:12px;font-size:10px;line-height:12px;padding:0}
+ #skillsPanel.game-management .loadout-card-facts{display:none}
+ #skillsPanel.game-management .loadout-card-tools>button,#skillsPanel.game-management .loadout-card-tools .ability-drag-handle{height:44px;min-height:44px}
+}

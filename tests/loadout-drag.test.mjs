@@ -1,10 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createLoadoutDrag} from '../site/dist/loadout-drag.mjs';
+import {createLoadoutDrag,createCardLift} from '../site/dist/loadout-drag.mjs';
 function fixture(t){
  let time=0,next=0,point=null;const frames=new Map(),captures=new Map(),events={drop:[],hint:[],start:[],cancel:[],bar:[]};
  class Element{
   constructor(attributes={},parentNode=null){this.attributes=attributes;this.parentNode=parentNode;this.listeners={};this.style={};this.children=[];const classes=new Set();this.classList={add:(...names)=>names.forEach(n=>classes.add(n)),remove:(...names)=>names.forEach(n=>classes.delete(n)),contains:n=>classes.has(n)};this.ownerDocument=doc;this.scrollHeight=0;this.clientHeight=0;this.scrollTop=0;}
-  getAttribute(name){return this.attributes[name]??null;}setAttribute(n,v){this.attributes[n]=v;}
+  getAttribute(name){return this.attributes[name]??null;}setAttribute(n,v){this.attributes[n]=v;}removeAttribute(n){delete this.attributes[n];}
   addEventListener(type,callback){(this.listeners[type]??=[]).push(callback);}
   fire(type,init={}){const event={type,target:this,button:0,pointerId:1,pointerType:'mouse',isPrimary:true,clientX:20,clientY:20,preventDefault(){this.defaultPrevented=true;},stopPropagation(){this.stopped=true;},stopImmediatePropagation(){this.stopped=true;},...init};for(let e=this;e;e=e.parentNode){for(const fn of e.listeners[type]??[])fn(event);if(event.stopped)break;}return event;}
   setPointerCapture(id){const old=captures.get(id);captures.set(id,this);if(old&&old!==this)old.fire('lostpointercapture',{pointerId:id});}hasPointerCapture(id){return captures.get(id)===this;}releasePointerCapture(id){if(this.hasPointerCapture(id)){captures.delete(id);this.fire('lostpointercapture',{pointerId:id});}}
@@ -48,4 +48,30 @@ test('bar hover switches once after dwell without dropping; empty-space cancel s
 });
 test('drag near scroll edge autoscrolls the marked pane and stops on cancel',t=>{
  const f=fixture(t);f.scroll.scrollHeight=600;f.scroll.clientHeight=200;f.source.fire('pointerdown');f.setPoint(f.scroll);f.send('pointermove',{clientY:190});f.step();assert.ok(f.scroll.scrollTop>0);f.adapter.cancel();const stopped=f.scroll.scrollTop;f.step();assert.equal(f.scroll.scrollTop,stopped);
+});
+
+test('card lift stays anchored at the initial grab point rather than chasing a cursor popup',t=>{
+ const f=fixture(t);f.source.fire('pointerdown',{clientX:120,clientY:80});f.send('pointermove',{clientX:160,clientY:100});
+ const ghost=f.doc.body.children[0];assert.equal(ghost.style.left,'40px');assert.equal(ghost.style.top,'20px');assert.equal(ghost.style.width,'400px');assert.equal(ghost.style.height,'200px');assert.equal(ghost.inert,true);assert.equal(ghost.getAttribute('aria-hidden'),'true');f.adapter.cancel();
+});
+test('drop targets outside the current editor, disabled targets and malformed indices never assign',t=>{
+ const f=fixture(t);for(const invalid of ['outside','disabled','negative','overflow','fraction','text']){
+  f.slot.parentNode=invalid==='outside'?f.doc.body:f.root;f.slot.disabled=invalid==='disabled';f.slot.setAttribute('data-drop-slot',({negative:'-1',overflow:'30',fraction:'2.5',text:'buy'})[invalid]??'4');
+  f.source.fire('pointerdown');f.setPoint(f.slot);f.send('pointermove',{clientX:50});assert.equal(f.slot.classList.contains('is-drop-target'),false,invalid);f.send('pointerup');
+ }assert.equal(f.events.drop.length,0);assert.equal(f.events.cancel.length,6);
+});
+test('target verbs distinguish reserve replacement, equipped swapping, returning and empty placement',t=>{
+ const f=fixture(t);for(const [binding,occupant,verb] of [['-1','iceArrow','Replace'],['1','iceArrow','Swap'],['1','fireArrow','Return'],['1',null,'Place']]){
+  f.source.setAttribute('data-card-binding',binding);if(occupant)f.slot.setAttribute('data-drag-ability',occupant);else f.slot.removeAttribute('data-drag-ability');
+  f.source.fire('pointerdown');f.setPoint(f.slot);f.send('pointermove',{clientX:50});assert.equal(f.slot.getAttribute('data-drop-action'),verb);f.adapter.cancel();assert.equal(f.slot.getAttribute('data-drop-action'),null);
+ }
+});
+test('rotation cancels and synthetic post-drag clicks cannot activate an unrelated button',t=>{
+ const f=fixture(t);f.source.fire('pointerdown');f.setPoint(f.slot);f.send('pointermove',{clientX:50});globalThis.window.fire('orientationchange');
+ assert.equal(f.adapter.active,false);assert.equal(f.events.drop.length,0);assert.equal(f.source.fire('click').defaultPrevented,true);f.step(401);assert.equal(f.source.fire('click').defaultPrevented,undefined);
+});
+test('lift clone preserves actual child artwork and strips identity without mutating source',()=>{
+ const make=(attributes={},children=[])=>({attributes,children,style:{setProperty(k,v){this[k]=v;}},setAttribute(k,v){this.attributes[k]=v;},removeAttribute(k){delete this.attributes[k];},querySelectorAll(){return this.children.flatMap(c=>[c,...c.querySelectorAll('*')]);},cloneNode(){return make({...this.attributes},this.children.map(c=>c.cloneNode(true)));}});
+ const image=make({src:'actual-fire-atlas.webp','data-card-atlas':'arcane'}),source=make({id:'owned-fireArrow','data-drag-ability':'fireArrow','data-card-tone':'fire'},[image]);
+ const copy=createCardLift(source,{name:'Fire Arrow'});assert.equal(copy.children[0].attributes.src,'actual-fire-atlas.webp');assert.equal(copy.attributes.id,undefined);assert.equal(copy.attributes['data-drag-ability'],undefined);assert.equal(copy.attributes['data-card-tone'],'fire');assert.equal(source.attributes.id,'owned-fireArrow');assert.equal(copy.style.position,'fixed');
 });

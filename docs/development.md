@@ -6,7 +6,7 @@ The application is a static web game. `site/dist/battle.html` supplies the UI an
 
 The campaign, atlas, armory, loadout, profile manager, recruit army and companion UI share the running battle state. Menu transitions must preserve pause state and clear interrupted input. Campaign checkpoints use device-local browser storage with same-origin Web Locks, two-bank validation, conflict checks and newer-version protection. Checkpoints cover safe openings and settled results, never an in-progress battlefield. Portable own-format files/codes remain the backup route. Preserve clear player feedback, session-only fallbacks and the separation of rehearsal/expedition state from earned campaign progress. There is no backend, account service or telemetry. Any future game backend is planned to use Rust; the Node server here is only local static-development tooling.
 
-The `dist` folder is the source of truth for the runtime, not generated build output. Edit its modules directly. The development landing page is `index.html`; the playable entry is `battle.html`. Additional lab and phone-preview pages are development surfaces.
+The `dist` folder is the source of truth for the runtime, not generated build output. Edit its modules directly. The player homepage is `index.html`, developer details are in `about.html`, and the playable entry is `battle.html`. Additional lab and phone-preview pages are development surfaces.
 
 ## Practice, controls and decks
 
@@ -25,6 +25,7 @@ Run `npm start` for a loopback-only development server. It supports the same ext
 - `npm run validate`: syntax, markup, local-resource existence and public-source hygiene
 - `npm test`: all committed engine and UI tests
 - `npm run check`: both gates, as used in CI
+- `bash scripts/check-container.sh`: production Docker build, Nginx syntax and HTTP smoke checks; requires Docker
 
 The suites use Node's built-in test runner and assertions, with two concurrent test files to keep the full UI harness's memory use bounded. Two pixel-level rendering suites also use the pinned test-only `@napi-rs/canvas` package. Run `npm ci --ignore-scripts --no-audit --no-fund` before testing; native canvas packages are platform-specific. Tests require no private files or machine-specific runtime paths. Some tests deliberately select deterministic random numbers or start with clearly identified funded/assisted profiles. Preserve those distinctions when adding coverage.
 
@@ -55,7 +56,7 @@ Record what was actually tested. Do not infer device acceptance from the Node ha
 
 Keep commits focused and run the aggregate checks on the exact final tree. Use branches and reviewable diffs for changes. Preserve repository visibility and history; do not force-push shared branches.
 
-GitHub is the source mirror. Live Sites deployment is a separate controlled workflow with its own source repository. This GitHub repository intentionally contains no Sites project configuration or deployment credentials, and its CI never deploys.
+GitHub is the source mirror and includes static Docker packaging for Dokploy. Live Sites deployment is a separate controlled workflow with its own source repository. This GitHub repository intentionally contains no Sites project configuration or deployment credentials. Its CI tests the production container but never deploys it.
 
 When importing a released snapshot, use a frozen source revision, audit the allowlist, and include only game source, portable tests and public development documentation. Never recursively copy a research workspace. Exclude original archives, recovered source, private reports, credentials, machine-specific tools and user saves.
 

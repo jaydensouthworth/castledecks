@@ -1,3 +1,4 @@
+import {ArmyOrders} from './army-orders.mjs';
 /** First CTF battle integration. Independent code and new presentation only.
  * Game-object scheduling is emulator-source-grounded, not a recorded Flash run.
  * Geometry retains explicit static-measurement/twip-edge uncertainty.
@@ -100,7 +101,7 @@ export class FirstBattle {
     this.enemyFlag=this.objects.add(new FlagState({x:1725,y:this.elevationAt(1725)}));
     this.shooter=createShooter({origin:this.hero.launchPosition,mode:profile.shootingMode,aimSolver:assistedAutoAim,onFailure:()=>this.emit({type:'aim-unreachable'})});
     this.hotbar=new Hotbar(profile.skills,{activate:s=>summonSquad(s,this.profile,this.friendlyQueue,this.stats)});this.activeSkill=this.hotbar.active;this.queuedAim=null;this.playerShots=[];this.queuedSelection=null;
-    this.companions=new CompanionController(this);
+    this.companions=new CompanionController(this);this.armyOrders=new ArmyOrders(this);
     this.profile.scene=this.scene;this.profile.level=this.level;this.profile.highestScene=Math.max(this.profile.highestScene,this.scene);
   }
   elevationAt(x){return this.terrain.elevationAt(x);}
@@ -112,7 +113,7 @@ export class FirstBattle {
   assignGeometry(entity){const local=COLLISION_REGIONS[entity.regionKind].hitbox;entity.height=local[3]-local[2];entity.width=local[1]-local[0];this.updateGeometry(entity);return entity;}
   updateGeometry(entity){if(entity.clipPresent===false){entity.hitbox=null;entity.headbox=null;return;}if(!entity.regionKind)return;Object.assign(entity,unitRegions(entity.regionKind,{x:entity.x,y:entity.y,scaleX:entity.facing??1,rotation:entity.collisionRotation??entity.rotation??0}));}
   createCastle(team,x,hp){
-    const castle=new Castle({x,y:this.elevationAt(x),hp,team,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
+    const castle=new Castle({x,y:this.elevationAt(x),hp,team,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders?.mode==='rally')this.armyOrders.set('advance');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
     castle.regionKind=team==='good'?'friendlyCastle':'enemyCastle';this.assignGeometry(castle);
     this.objects.add(castle);this.structures.push(castle);this.garrisons.push(castle);(team==='good'?this.goodStructures:this.badStructures).push(castle);return castle;
   }
@@ -123,6 +124,8 @@ export class FirstBattle {
       destroyed:t=>{remove(t.occupiedBy==='good'?this.goodStructures:t.occupiedBy==='bad'?this.badStructures:this.neutralStructures,t);remove(this.garrisons,t);this.objects.remove(t);this.emit({type:'tower-destroyed',tower:t})}
     }});tower.regionKind='tower';this.assignGeometry(tower);this.objects.add(tower);this.structures.push(tower);this.garrisons.push(tower);this.neutralStructures.push(tower);return tower;
   }
+  get armyOrder(){return this.armyOrders.snapshot;}
+  setArmyOrder(mode){return this.armyOrders.set(mode);}
   get regularArmyCount(){return this.goodTeam.filter(unit=>unit!==this.hero&&!unit.isCompanion).length;}
   createUnit(type,{team='bad',rank=null,skill=null,companion=false,fieldEntry=false}={}){
     if(type==='gorath'&&team==='good'&&!companion)throw new RangeError('Bosses use the companion summon slot');
@@ -217,7 +220,7 @@ export class FirstBattle {
   // Shared settlement keeps assisted QA on the same progression/summary path.
   finishOutcome(outcome){
     if(this.outcome||!['victory','defeat'].includes(outcome))return false;
-    this.activateObjects();this.outcome=outcome;this.cancelPlayerShots();this.companions.end();this.endCountdown=200;
+    this.armyOrders.reset();this.activateObjects();this.outcome=outcome;this.cancelPlayerShots();this.companions.end();this.endCountdown=200;
     if(outcome==='victory'){this.profile.victories++;this.profile.level=this.level+1;this.profile.scene=this.scene+1;this.profile.highestLevel=Math.max(this.profile.highestLevel,this.level+1);this.profile.highestScene=Math.max(this.profile.highestScene,this.scene+1);}else this.profile.defeats++;
     this.emit({type:'outcome',outcome});return true;
   }

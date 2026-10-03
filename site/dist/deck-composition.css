@@ -1,0 +1,42 @@
+/* Mount .deck-composition as the final child of #shopBrowseView. */
+#shopPanel .deck-composition{min-width:0;min-height:0;border-left:1px solid #b391574d;background:#20131dd9;overflow:auto;scrollbar-width:thin;}
+#shopPanel .deck-composition details{border:0;margin:0;padding:0;}
+#shopPanel .deck-composition summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:12px;cursor:pointer;list-style:none;color:#f1d49c;}
+#shopPanel .deck-composition summary::-webkit-details-marker{display:none;}
+#shopPanel .deck-composition summary strong{display:block;font:21px/1.15 Georgia,serif;}
+#shopPanel .deck-composition summary small{display:block;color:#c9b18a;font:11px/1.4 system-ui,sans-serif;margin-top:4px;}
+#shopPanel .deck-composition-chevron{font-size:18px;}
+#shopPanel .deck-composition details[open] .deck-composition-chevron{transform:rotate(180deg);}
+#shopPanel .deck-composition-body{padding:0 10px 12px;}
+#shopPanel .deck-composition-counts{margin:0 0 9px;font:11px/1.4 system-ui,sans-serif;color:#dbc396;}
+#shopPanel .deck-composition nav{display:flex;gap:4px;margin-bottom:9px;}
+#shopPanel .deck-composition nav button{flex:1;min-width:0;min-height:44px;padding:4px;font-size:11px;}
+#shopPanel .deck-composition nav button small{display:block;font-size:10px;opacity:.8;}
+#shopPanel .deck-composition nav button[aria-pressed=true]{background:#6b394d;border-color:#dcbd7f;}
+#shopPanel .deck-composition-cards{display:grid;gap:6px;}
+#shopPanel .deck-composition-cards>button{display:flex;align-items:center;gap:7px;position:relative;width:100%;min-height:61px;padding:5px 5px 5px 23px;background:linear-gradient(120deg,var(--card-wash),#251722 70%);border:1px solid #aa865a70;text-align:left;}
+#shopPanel .deck-composition-key{position:absolute;top:5px;left:5px;color:#f1d392;font:12px/1.2 system-ui,sans-serif;}
+#shopPanel .deck-composition-art{display:block;width:43px;height:46px;flex:none;overflow:hidden;border:1px solid #ba985466;}
+#shopPanel .deck-composition-art .card-medallion{width:28px;height:28px;box-shadow:none;}
+#shopPanel .deck-composition-card-copy{min-width:0;}
+#shopPanel .deck-composition-card-copy strong{display:block;color:#f0dbb6;font:12px/1.2 system-ui,sans-serif;overflow-wrap:anywhere;}
+#shopPanel .deck-composition-card-copy small{display:block;margin-top:4px;color:var(--card-accent);font:10px/1.2 system-ui,sans-serif;}
+#shopPanel .deck-composition-companion{margin:12px 0 0;padding-top:9px;border-top:1px solid #b7955144;color:#dec496;font:12px/1.3 system-ui,sans-serif;}
+#shopPanel .deck-composition-companion small,#shopPanel .deck-composition-hint{display:block;color:#b9a78b;font:11px/1.4 system-ui,sans-serif;margin-top:5px;}
+#shopPanel .deck-composition-empty{font:12px/1.4 system-ui,sans-serif;color:#cdb695;padding:12px 4px;}
+#shopPanel .deck-composition button:focus-visible,#shopPanel .deck-composition summary:focus-visible{outline:2px solid #ffe4a1;outline-offset:2px;}
+@media(min-width:1100px) and (min-height:621px){
+ #shopPanel #shopBrowseView:has(.deck-composition){grid-template-columns:140px minmax(0,1fr) 210px;}
+ #shopPanel .deck-composition{grid-column:3;grid-row:1;}
+}
+@media(max-width:1099px),(max-height:620px){
+ #shopPanel .deck-composition{grid-column:1/-1;grid-row:1;border-left:0;border-bottom:1px solid #b391574d;position:relative;overflow:visible;z-index:6;}
+ #shopPanel #shopBrowseView:has(.deck-composition){grid-template-rows:auto minmax(0,1fr);}
+ #shopPanel #shopBrowseView:has(.deck-composition)>.armory-catalog,#shopPanel #shopBrowseView:has(.deck-composition)>.armory-departments{grid-row:2;}
+ #shopPanel .deck-composition summary{padding:5px 10px;min-height:44px;}
+ #shopPanel .deck-composition-body{position:absolute;top:100%;left:0;right:0;z-index:7;max-height:min(50dvh,340px);overflow:auto;padding:10px;background:#241620;border:1px solid #b39157;box-shadow:0 12px 24px #0008;}
+ #shopPanel .deck-composition summary>span:first-child{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+ #shopPanel .deck-composition summary strong{font-size:16px;}
+ #shopPanel .deck-composition summary small{margin-top:0;}
+ #shopPanel .deck-composition-cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
+}

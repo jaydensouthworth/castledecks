@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T11:52:29.839400+00:00",
-  "stage": "campaigns-expedition-and-seeded-practice",
-  "internal_tests_passing": 1352,
+  "updated": "2026-10-03T18:01:01.459956+00:00",
+  "stage": "shared-deck-workspace-and-ground-line-orders",
+  "internal_tests_passing": 1407,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -30,14 +30,17 @@
     "Saved deck header/inspector/list return and twelve-deck capacity at phone CSS proportions",
     "Build 50 exact-budget single/cart checkout to zero gold; quick keyboard activation and Enter/Leave; optional report recording, copy and clear",
     "Build 50 real guided High Arc and Ice-counter hits; short-landscape Skirmish hall clearance",
-    "Imported QA Battle 13 opening checkpoint reload restores 1,556 gold / 70 reserve; restarting charges one 100-gold / 13-reserve recruitment cycle"
+    "Imported QA Battle 13 opening checkpoint reload restores 1,556 gold / 70 reserve; restarting charges one 100-gold / 13-reserve recruitment cycle",
+    "Build 52/53 shared Deck/Build, portrait visible cards and tabs, 915x360 complete horizontal card rows, actual mouse move/swap/cancel and keyboard placement/Escape",
+    "Independent Wayfarer/Training preparation and session return, locked Crownroad inspection, live Rally/R quick toggle on bow bars and exact paused field retention",
+    "Player homepage/About load at 1165 and 485 native content pixels with no horizontal overflow"
   ],
-  "latest_gameplay_fix": "Quick activation and Enter/Leave key taps now survive between simulation ticks. Exact-price purchases work consistently for single cards and carts. Guided drills credit actual damage from their eligible shot. Flyers have clearer original art, and optional local diagnostics stay off until enabled.",
-  "build": 51,
+  "latest_gameplay_fix": "Shared full-viewport Deck and Build, readable equipped cards and actual card lifting, live preparation table, player frontpage/About, fuller allied field and quick Advance/Rally commands. Short-landscape card rows and first-Escape cancellation were repaired after native testing.",
+  "build": 54,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach and a separate branching Wayfarer charter use recreation rules.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach, fuller allied field, optional fixed Rally line, and a separate branching Wayfarer charter use recreation rules.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,
@@ -52,5 +55,5 @@
     "doctrines": 3,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "1,345-check full Build 50 gate plus seven new phase regressions; 41 focused report checks pass on the two-file follow-through."
+  "test_evidence": "Exact-source Build 53 full sequential aggregate passes 1,407 checks. Build 54 changes build/status metadata only. Native 52 journeys plus 53 card/Escape rechecks cover desktop, portrait and short-landscape CSS viewports; physical touch and device performance remain separate."
 }

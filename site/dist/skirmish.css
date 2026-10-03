@@ -15,20 +15,3 @@
 @media(max-height:600px) and (orientation:landscape){#skirmishPanel{--skirmish-panel-gap:10px}}
 @media(orientation:portrait){#skirmishPanel{--skirmish-panel-gap:12px}}
 
-/* Short-landscape Skirmish hall: fixed central slots, not wrapped seed-code text.
-   At the 192px minimum: banner bottom63; workshop73.84..125.84;
-   Loadout137..189. Side stations remain in their existing outer columns. */
-@media(max-height:600px) and (orientation:landscape){
- #intro.command-hall[data-active-destination="skirmish"] .hall-room{min-height:192px}
- #intro.command-hall[data-active-destination="skirmish"] .hall-session-banner{top:3px;padding:4px 18px;width:58%}
- #intro.command-hall[data-active-destination="skirmish"] #hubSessionTitle{font:16px/18px Georgia,serif;margin:0 0 2px}
- #intro.command-hall[data-active-destination="skirmish"] #hubSessionResources,#intro.command-hall[data-active-destination="skirmish"] #hubSessionState{display:block;margin:0;font:12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
- #intro.command-hall[data-active-destination="skirmish"] .hall-war-table{top:52%}
- #intro.command-hall[data-active-destination="skirmish"] #introWorkshop{width:min(267px,42vw);height:52px;min-height:52px;padding:5px 12px}
- #intro.command-hall[data-active-destination="skirmish"] #introWorkshop>span{min-width:0;gap:2px}
- #intro.command-hall[data-active-destination="skirmish"] #introWorkshop strong{font:18px/20px Georgia,serif}
- #intro.command-hall[data-active-destination="skirmish"] #hubSkirmishProgress{font:12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
- #intro.command-hall[data-active-destination="skirmish"] .hall-loadout{top:auto;bottom:3px;transform:translateX(-50%);height:52px;min-height:52px;padding:4px 10px;gap:2px}
- #intro.command-hall[data-active-destination="skirmish"] .hall-loadout .menu-icon{width:20px;height:20px}
- #intro.command-hall[data-active-destination="skirmish"] .hall-loadout strong{font:17px/20px Georgia,serif}
-}

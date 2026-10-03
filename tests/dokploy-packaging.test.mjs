@@ -29,7 +29,7 @@ test('native modules have a JavaScript MIME type and mutable assets revalidate',
 });
 
 test('expected route targets and module entrypoint are shipped', async () => {
-  for (const file of ['index.html', 'battle.html', 'lab.html', 'phone-preview.html', 'battle.mjs']) {
+  for (const file of ['index.html', 'about.html', 'battle.html', 'lab.html', 'phone-preview.html', 'battle.mjs']) {
     await access(new URL(`../site/dist/${file}`, import.meta.url));
   }
 });

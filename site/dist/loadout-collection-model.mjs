@@ -1,3 +1,4 @@
+import {cardRuleSearchText} from './card-rule-search.mjs';
 /** Owned collection indexing only. No profile writes, combat ticks or generated content. */
 export const LOADOUT_PAGE_SIZE=12;
 export const LOADOUT_TYPES=[['all','All abilities'],['arrows','Shots'],['waves','Waves'],['army','Units']];
@@ -5,7 +6,7 @@ export const LOADOUT_SORTS=[['equipped','Equipped first'],['name','Name: A–Z']
 const normalized=value=>String(value??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 export class LoadoutCollection {
  constructor(records,{pageSize=LOADOUT_PAGE_SIZE}={}){
-  this.records=records.filter(item=>item.kind==='skill').map((item,order)=>({...item,order,search:normalized([item.name,item.description,item.category,item.role,...item.traits??[]].join(' '))}));
+  this.records=records.filter(item=>item.kind==='skill').map((item,order)=>({...item,order,search:normalized([item.name,item.description,item.category,item.role,...item.traits??[]].join(' ')),ruleSearch:normalized(cardRuleSearchText(item))}));
   this.byId=new Map(this.records.map(item=>[item.id,item]));
   this.pageSize=Math.min(24,Math.max(1,Math.floor(pageSize)||LOADOUT_PAGE_SIZE));
   this.view={type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped',page:0};
@@ -25,7 +26,9 @@ export class LoadoutCollection {
   const roles=[...new Set(pool.map(item=>item.role).filter(role=>role&&role!=='bow'))],traits=[...new Set(pool.flatMap(item=>item.traits??[]))];
   if(!roles.includes(this.view.role))this.view.role='all';if(!traits.includes(this.view.trait))this.view.trait='all';
   const tokens=normalized(this.view.query).trim().split(/\s+/).filter(Boolean);
-  const matches=pool.filter(item=>{const wrapper=owned.get(item.id),v=this.view;return(v.role==='all'||item.role===v.role)&&(v.trait==='all'||item.traits.includes(v.trait))&&(v.status==='all'||(v.status==='equipped')===(wrapper.binding>=0))&&tokens.every(token=>item.search.includes(token));});
+  const eligible=pool.filter(item=>{const wrapper=owned.get(item.id),v=this.view;return(v.role==='all'||item.role===v.role)&&(v.trait==='all'||item.traits.includes(v.trait))&&(v.status==='all'||(v.status==='equipped')===(wrapper.binding>=0));});
+  let matches=eligible.filter(item=>tokens.every(token=>item.search.includes(token)));
+  if(!matches.length)matches=eligible.filter(item=>tokens.every(token=>(item.search+' '+item.ruleSearch).includes(token)));
   const byName=(a,b)=>a.name.localeCompare(b.name)||a.order-b.order;
   matches.sort(this.view.sort==='name'?byName:this.view.sort==='reload'?(a,b)=>a.reloadSeconds-b.reloadSeconds||byName(a,b):this.view.sort==='rank'?(a,b)=>owned.get(b.id).skill.rank-owned.get(a.id).skill.rank||byName(a,b):(a,b)=>{const av=owned.get(a.id).binding,bv=owned.get(b.id).binding;return (av<0?Infinity:av)-(bv<0?Infinity:bv)||byName(a,b);});
   const total=matches.length,pageCount=Math.max(1,Math.ceil(total/this.pageSize));this.view.page=Math.min(this.view.page,pageCount-1);const start=this.view.page*this.pageSize;

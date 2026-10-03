@@ -8,7 +8,7 @@ const strength=Object.freeze({grunt:1,tallGrunt:1.4,archer:1,priest:1,mount:1.4,
 const alive=u=>u.hp>0&&!u.dead&&!u.destroyed;
 const weight=u=>strength[typeof u==='string'?u:u.type]??1;
 const sum=units=>units.reduce((n,u)=>n+weight(u),0);
-export function battleFieldLimits(level){const bonus=level>=13?4:level>=7?2:0;return {friendly:10+bonus,enemy:20+bonus};}
+export function battleFieldLimits(level){const bonus=level>=13?4:level>=7?2:0;return {friendly:14+bonus,enemy:20+bonus};}
 
 /** Only facts an army can observe. Retain slot accounting separately from living
  * pressure so dying units still occupy their normal slot until actual removal. */

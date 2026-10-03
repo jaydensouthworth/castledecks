@@ -18,8 +18,8 @@ test('command hall preserves real room actions and explicit launch without start
  for(const [open,close] of [['introArmy','closeQueue'],['introLoadout','closeSkills'],['introArmory','closeShop'],['introSettings','closeSettings']]){ui.click(open);assert.equal(battle.tick,0);ui.click(close);assert.equal(ui.visible('intro'),true);assert.equal(ui.battle,battle);}
  assert.equal(battle.tick,0);ui.click('start');ui.frames(3);assert.ok(battle.tick>0);
 });
-test('destination drawer closes after selection and keeps current campaign until explicit Open',async t=>{
- const ui=await loadGameUI(t),battle=ui.battle;ui.get('hallDestinationDrawer').open=true;ui.get('hubDestinations').querySelector('[data-hub-destination="expedition"]').click();assert.equal(ui.get('hallDestinationDrawer').open,false);assert.equal(ui.get('hallSelectedName').textContent,'Wayfarer Charter');assert.equal(ui.battle,battle);assert.equal(battle.tick,0);ui.click('start');assert.equal(ui.get('intro').getAttribute('data-active-destination'),'expedition');assert.equal(ui.visible('introRoute'),true);assert.equal(ui.visible('introAtlas'),false);
+test('world selection keeps current campaign until explicit Open',async t=>{
+ const ui=await loadGameUI(t),battle=ui.battle;ui.get('hubDestinations').querySelector('[data-hub-destination="expedition"]').click();assert.equal(ui.get('hallSelectedName').textContent,'Wayfarer Charter');assert.equal(ui.battle,battle);assert.equal(battle.tick,0);ui.click('start');assert.equal(ui.get('intro').getAttribute('data-active-destination'),'expedition');assert.equal(ui.visible('introRoute'),true);assert.equal(ui.visible('introAtlas'),false);
 });
 test('full map frontier jump preserves source progress and locked inspection remains read-only',async t=>{
  const ui=await loadGameUI(t),battle=ui.battle;ui.click('introAtlas');const host=ui.get('campaignAtlasHost');assert.equal(host.querySelectorAll('[data-atlas-level]').length,30);assert.equal(host.querySelector('.atlas-intelligence').getAttribute('open'),null);host.querySelector('[data-atlas-level="30"]').click();assert.equal(ui.get('atlasPrepare').disabled,true);host.querySelector('[data-atlas-frontier]').click();assert.equal(ui.document.activeElement.getAttribute('data-atlas-level'),'1');assert.equal(ui.get('atlasPrepare').disabled,false);assert.equal(battle.tick,0);assert.equal(battle.profile.highestLevel,1);
@@ -29,7 +29,7 @@ test('map scrolling and mouse drag use bounded handlers and preserve selection s
 });
 test('local checkpoint controls and save label spans remain present exactly once',async()=>{
  const html=await readFile(new URL('../site/dist/battle.html',import.meta.url),'utf8');for(const id of ['localHubStatus','localHubChoices','localContinue','localNew','localSessionOnly','localManage','introSaveLabel','introLoadLabel','hubExpeditionProgress','introRoute'])assert.equal(html.split(`id="${id}"`).length-1,1,id);
- const css=await readFile(new URL('../site/dist/command-hall.css',import.meta.url),'utf8');assert.match(css,/command-hall\.webp/);assert.match(css,/regal-great-hall\.png/);assert.match(css,/prefers-reduced-motion/);
+ const css=await readFile(new URL('../site/dist/command-hall.css',import.meta.url),'utf8');assert.match(css,/hall-atlas-board/);assert.match(css,/hall-card-spread/);assert.match(css,/prefers-reduced-motion/);
 });
 
 test('region focus puts every standard inside its own 48px-safe camera at phone and wider sizes',()=>{
@@ -48,6 +48,6 @@ test('new disclosures participate in the existing modal focus trap and destinati
  const ui=await loadGameUI(t);for(const summary of ui.get('intro').querySelectorAll('summary'))assert.equal(summary.getAttribute('tabindex'),'0');ui.get('hubDestinations').querySelector('[data-hub-destination="midgame"]').click();assert.equal(ui.document.activeElement,ui.get('start'));ui.get('hubDestinations').querySelector('[data-hub-destination="campaign"]').click();ui.click('introAtlas');for(const summary of ui.get('campaignAtlasHost').querySelectorAll('summary'))assert.equal(summary.getAttribute('tabindex'),'0');
 });
 
-test('Escape dismisses only the destination drawer without changing the preserved session',async t=>{
- const ui=await loadGameUI(t),battle=ui.battle,drawer=ui.get('hallDestinationDrawer');let stopped=false,prevented=false;drawer.open=true;drawer.onkeydown({key:'Escape',stopPropagation:()=>stopped=true,preventDefault:()=>prevented=true});assert.equal(drawer.open,false);assert.equal(stopped,true);assert.equal(prevented,true);assert.equal(ui.document.activeElement,drawer.querySelector('summary'));assert.equal(ui.battle,battle);assert.equal(battle.tick,0);
+test('Escape dismisses card inspection without changing the preserved session',async t=>{
+ const ui=await loadGameUI(t),battle=ui.battle;let stopped=false,prevented=false;const card=ui.get('hallDeckCards').querySelector('[data-hall-card]');card.click();ui.get('intro').onkeydown({key:'Escape',stopPropagation:()=>stopped=true,preventDefault:()=>prevented=true});assert.equal(ui.visible('hallCardInspect'),false);assert.equal(stopped,true);assert.equal(prevented,true);assert.equal(ui.document.activeElement,card);assert.equal(ui.battle,battle);assert.equal(battle.tick,0);
 });

@@ -9,10 +9,11 @@ export const CONTROL_ACTIONS=Object.freeze([
  ['activate','Activate airborne ability','Tap the activation control when it appears'],
  ['companion','Companion / signature','Tap the separate companion control'],
  ['arc','Switch Auto aim arc','Tap High / Low arc in Auto aim'],
+ ['armyOrder','Advance / Rally ground line','Tap the ground-line control beside your active card'],
  ['previousBar','Previous action bar','Use the bar-cycle control to reach any equipped bar'],
  ['nextBar','Next action bar','Tap the bar-cycle control'],
 ].map(([id,label,touch])=>Object.freeze({id,label,touch})));
-export const DEFAULT_CONTROL_BINDINGS=Object.freeze({left:'a',right:'d',up:'w',down:'s',pause:'p',activate:' ',companion:'g',arc:'v',previousBar:'[',nextBar:']'});
+export const DEFAULT_CONTROL_BINDINGS=Object.freeze({left:'a',right:'d',up:'w',down:'s',pause:'p',activate:' ',companion:'g',arc:'v',armyOrder:'r',previousBar:'[',nextBar:']'});
 const names=Object.freeze({arrowleft:'Left Arrow',arrowright:'Right Arrow',arrowup:'Up Arrow',arrowdown:'Down Arrow',' ':'Space'});
 const allowed=key=>typeof key==='string'&&(/^[a-z]$/.test(key)||['arrowleft','arrowright','arrowup','arrowdown',' ','[',']','-','=',';',"'",',','.','/','\\','`'].includes(key));
 const compactNames=Object.freeze({arrowleft:'←',arrowright:'→',arrowup:'↑',arrowdown:'↓',' ':'Space'});
@@ -32,6 +33,14 @@ export function controlBindingError(bindings,action,key){
 export function validControlBindings(value){
  return !!value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===CONTROL_ACTIONS.length&&CONTROL_ACTIONS.every(({id})=>Object.hasOwn(value,id)&&!controlBindingError(value,id,value[id]));
 }
+/** Preserve all ten legacy remaps. Pick an unused new key without stealing one. */
+export function migrateControlBindings(value){
+ if(validControlBindings(value))return {...value};
+ const legacy=CONTROL_ACTIONS.filter(item=>item.id!=='armyOrder');
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==legacy.length||!legacy.every(({id})=>Object.hasOwn(value,id)&&!controlBindingError(value,id,value[id])))return null;
+ const used=new Set(Object.values(value)),key=[...'rbtyuiofhjklzxc nmqe'.replace(/ /g,'')].find(key=>!used.has(key));
+ const next={...value,armyOrder:key};return validControlBindings(next)?next:null;
+}
 export function createControlBindings({getStorage=()=>globalThis.window?.localStorage}={}){
  let bindings={...DEFAULT_CONTROL_BINDINGS},revision=0,storageMessage='',forward=false;
  try{
@@ -39,8 +48,8 @@ export function createControlBindings({getStorage=()=>globalThis.window?.localSt
   if(raw){
    if(typeof raw!=='string'||raw.length>4096)throw new Error('Invalid preference size');
    const value=JSON.parse(raw);
-   if(Number.isInteger(value?.version)&&value.version>1){forward=true;storageMessage='A newer controls format is stored here. Changes will work for this tab only; the stored preferences are kept.';}
-   else if(value?.version===1&&validControlBindings(value.bindings))bindings={...value.bindings};
+   if(Number.isInteger(value?.version)&&value.version>2){forward=true;storageMessage='A newer controls format is stored here. Changes will work for this tab only; the stored preferences are kept.';}
+   else if([1,2].includes(value?.version)&&migrateControlBindings(value.bindings))bindings=migrateControlBindings(value.bindings);
    else throw new Error('Invalid controls');
   }
  }catch{storageMessage='Saved controls could not be read. Default keys are ready; you can apply new controls below.';}
@@ -52,7 +61,7 @@ export function createControlBindings({getStorage=()=>globalThis.window?.localSt
    if(!validControlBindings(next))return {ok:false,message:'Controls were not applied. Each action needs a different supported key.'};
    bindings={...next};revision++;
    if(forward)return {ok:true,persisted:false,message:storageMessage};
-   try{const storage=getStorage();if(!storage?.setItem)throw new Error('Storage unavailable');storage.setItem(CONTROL_STORAGE_KEY,JSON.stringify({version:1,bindings}));storageMessage='Controls saved on this browser. Campaign files and other devices keep their own controls.';return {ok:true,persisted:true,message:storageMessage};}
+   try{const storage=getStorage();if(!storage?.setItem)throw new Error('Storage unavailable');storage.setItem(CONTROL_STORAGE_KEY,JSON.stringify({version:2,bindings}));storageMessage='Controls saved on this browser. Campaign files and other devices keep their own controls.';return {ok:true,persisted:true,message:storageMessage};}
    catch{storageMessage='Controls applied for this tab. Browser storage is unavailable or full, so these changes may be lost when you reload.';return {ok:true,persisted:false,message:storageMessage};}
   }
  };

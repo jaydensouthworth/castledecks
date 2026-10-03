@@ -15,7 +15,7 @@ export function createCampaignAtlas({document,host,getState,onPrepare,onReturn})
   inspector.hidden=compact&&!open;inspector.classList.toggle('hidden',inspector.hidden);
   if(open){inspector.setAttribute('role','dialog');inspector.setAttribute('aria-modal','true');}else{inspector.removeAttribute('role');inspector.removeAttribute('aria-modal');}
   for(const node of host.querySelectorAll('.atlas-overview,.atlas-regions,.atlas-road,.atlas-actions'))node.inert=open;
-  const header=host.parentElement?.querySelector('.panel-head');if(header)header.inert=open;
+  for(const node of host.parentElement?.querySelectorAll('.panel-head,.game-shell-nav')??[])node.inert=open;
   host.querySelector('#atlasInspect').setAttribute('aria-expanded',String(open));
   for(const node of host.querySelectorAll('.atlas-inspect-head,.atlas-inspect-actions,.atlas-inspect-note')){node.hidden=!compact;node.classList.toggle('hidden',!compact);}
   host.querySelector('.atlas-inspect-shade').classList.toggle('hidden',!open);

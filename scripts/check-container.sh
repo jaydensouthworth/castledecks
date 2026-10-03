@@ -21,7 +21,9 @@ for attempt in {1..30}; do
   sleep 0.5
 done
 
-for route in index battle lab phone-preview; do
+curl --silent --show-error --fail "$origin/" --output "$response_dir/body"
+cmp site/dist/index.html "$response_dir/body"
+for route in index about battle lab phone-preview; do
   curl --silent --show-error --fail "$origin/$route?smoke=1" --output "$response_dir/body"
   cmp "site/dist/$route.html" "$response_dir/body"
 done

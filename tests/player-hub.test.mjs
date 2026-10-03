@@ -4,7 +4,7 @@ import {loadGameUI} from './helpers/game-ui-harness.mjs';
 import {PLAY_DESTINATIONS,canPurchaseInArmory,playDestinationURL} from '../site/dist/player-hub.mjs';
 import {CampaignProfiles} from '../site/dist/engine/profile-manager.mjs';
 import {PlayerProfile} from '../site/dist/engine/progression.mjs';
-const route=(ui,panel,name)=>ui.get(panel).querySelector(`[data-menu-route="${name}"]`).click();
+const route=(ui,panel,name)=>{if(name==='loadout'){ui.get(panel).querySelector('[data-menu-route="deck"]').click();ui.click('shopBuildTab');}else ui.get(panel).querySelector(`[data-menu-route="${name}"]`).click();};
 const select=(ui,id)=>ui.get('hubDestinations').querySelector(`[data-hub-destination="${id}"]`).click();
 const switchTo=(ui,id)=>{select(ui,id);ui.click('start');if(ui.visible('switchSessionConfirm'))ui.click('confirmSessionSwitch');ui.frames();};
 const snapshot=b=>JSON.stringify({tick:b.tick,level:b.level,profile:b.profile,stats:b.stats,good:b.goodTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),bad:b.badTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),wave:b.wave.countdown,population:b.friendlyQueue.population,queue:b.friendlyQueue.queue,projectiles:b.projectiles.map(p=>[p.x,p.y,p.vx,p.vy]),outcome:b.outcome,summary:b.summary});
@@ -27,7 +27,7 @@ test('lobby Armory Loadout Army Settings and Save routes return without starting
  const ui=await loadGameUI(t,{search:'?mode=demo'}),b=ui.battle,before=snapshot(b);
  for(const [open,panel,close] of [['introArmory','shopPanel','closeShop'],['introLoadout','skillsPanel','closeSkills'],['introArmy','queuePanel','closeQueue'],['introSettings','settingsPanel','closeSettings'],['introSave','savePanel','closeSave']]){ui.click(open);assert.equal(ui.visible(panel),true);ui.frames(10);ui.click(close);assert.equal(ui.visible(panel),false);assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);}
  ui.click('introLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);assert.equal(ui.get('closeSkills').textContent,'Back to lobby');ui.click('closeSkills');
- ui.click('introArmory');ui.click('shopLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to armory');route(ui,'skillsPanel','settings');ui.click('closeSettings');assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);
+ ui.click('introArmory');ui.click('shopLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to deck');route(ui,'skillsPanel','settings');ui.click('closeSettings');assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);
 });
 
 test('prebattle purchases spend once and owned placement persists into the unchanged demo battle',async t=>{
@@ -49,8 +49,8 @@ test('live lobby Armory blocks purchases with clear card copy while owned cards 
 
 test('prebattle same-tab destinations keep campaign data isolated and restore its original object',async t=>{
  const ui=await loadGameUI(t),campaign=ui.battle;campaign.profile.gold=321;const before=snapshot(campaign),urls=[];let popups=0;ui.window.open=()=>popups++;ui.window.history={replaceState:(state,title,url)=>urls.push(url)};
- switchTo(ui,'midgame');const demo=ui.battle;assert.notEqual(demo,campaign);assert.equal(demo.profile.gold,1120);assert.equal(demo.tick,1350);assert.equal(ui.visible('intro'),true);assert.equal(popups,0);demo.profile.gold=555;
- switchTo(ui,'allies');assert.equal(ui.battle.profile.name,'Allies Demo');assert.equal(ui.battle.profile.gold,1120);assert.ok(ui.battle.goodTeam.some(u=>u.type==='dragon_scout_fire'));assert.equal(ui.get('companionAction').disabled,true);
+ switchTo(ui,'midgame');const demo=ui.battle;assert.notEqual(demo,campaign);assert.equal(demo.profile.gold,1100);assert.equal(demo.tick,1350);assert.equal(ui.visible('intro'),true);assert.equal(popups,0);demo.profile.gold=555;
+ switchTo(ui,'allies');assert.equal(ui.battle.profile.name,'Allies Demo');assert.equal(ui.battle.profile.gold,1100);assert.ok(ui.battle.goodTeam.some(u=>u.type==='dragon_scout_fire'));assert.equal(ui.get('companionAction').disabled,true);
  switchTo(ui,'training');ui.click('introTesting');ui.click('testGoldLarge');ui.click('closeTesting');assert.equal(ui.battle.profile.cheated,true);switchTo(ui,'campaign');assert.equal(ui.battle,campaign);assert.equal(snapshot(campaign),before);switchTo(ui,'midgame');assert.equal(ui.battle,demo);assert.equal(demo.profile.gold,555);assert.equal(urls.at(-1),'./battle?mode=demo');
 });
 

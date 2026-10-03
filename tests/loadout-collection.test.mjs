@@ -47,3 +47,11 @@ test('reopening identical collection state refreshes wrappers before the next as
 test('companion equip changes refresh the collapsed separate-slot summary',async t=>{const ui=await editor(t);ui.click('equipCompanion');assert.match(ui.get('loadoutCompanionSummary').textContent,/^Companion/);ui.click('equipCompanion');assert.match(ui.get('loadoutCompanionSummary').textContent,/^Gorath/);});
 
 test('empty type in a new campaign recovers to its starting owned card',async t=>{const ui=await loadGameUI(t);ui.click('introLoadout');type(ui,'army');assert.equal(ui.get('ownedSkillList').querySelectorAll('article').length,0);assert.equal(ui.get('loadoutClearFilters').disabled,false);ui.click('loadoutEmptyReset');assert.ok(ui.get('owned-arrow'));assert.equal(ui.get('loadoutFilters').querySelector('[data-loadout-type="all"]').getAttribute('aria-pressed'),'true');});
+
+test('equipped cards retain their real portrait, semantic type and owned rank',async t=>{
+ const ui=await editor(t);ui.document.querySelector('[data-loadout-bar="0"]').click();const slot=ui.get('assign-0'),skill=ui.battle.profile.skills.find(s=>s.binding===0);
+ assert.equal(slot.querySelector('[data-card-portrait]').getAttribute('data-card-portrait'),skill.id);
+ assert.match(slot.querySelector('.loadout-slot-identity').textContent,new RegExp(`R${skill.rank}$`));
+ assert.match(slot.getAttribute('aria-label'),new RegExp(`rank ${skill.rank}`));
+ const body=ui.get('owned-'+skill.id);assert.equal(body.getAttribute('data-card-binding'),String(skill.binding));
+});

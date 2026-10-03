@@ -1,0 +1,23 @@
+.army-orders{border:1px solid #718f91;border-radius:10px;padding:12px;background:#142b32;color:#e4e8d8}.army-order-heading{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}.army-order-heading span,.army-order-help{font-size:.82rem;line-height:1.45;color:#b5cbca}.army-order-options{display:flex;gap:8px;margin:10px 0}.army-order-options button{min-height:44px;flex:1;padding:9px 14px;touch-action:manipulation}.army-order-options button[aria-pressed=true]{background:#b7ddd0;color:#172d32;box-shadow:inset 0 0 0 2px #d5f2d8}.army-order-options button:focus-visible{outline:3px solid #fff2b5;outline-offset:3px}.army-order-status{font-size:.9rem;margin:6px 0}.army-order-help{margin:6px 0 0}
+#queuePanel .army-orders{flex:none;display:grid;grid-template-columns:100px 180px minmax(0,1fr) 32px;align-items:center;gap:10px;padding:6px 20px;border:0;border-bottom:1px solid #a78b5555;border-radius:0;background:#29202a;color:#e9d4ad;position:relative;z-index:4}
+#queuePanel .army-order-heading{display:block;font-size:12px}
+#queuePanel .army-order-heading span{display:block;font-size:10px;color:#c4b295}
+#queuePanel .army-order-options{margin:0;gap:5px}
+#queuePanel .army-order-options button{min-height:44px;padding:5px 8px;font-size:11px}
+#queuePanel .army-order-options button[aria-pressed=true]{background:#74563c;color:#ffe6b9;box-shadow:inset 0 -2px #d9b771}
+#queuePanel .army-order-status{font-size:11px;line-height:1.4;margin:0;color:#cfbea0}
+#queuePanel .army-order-rules{margin:0;padding:0;border:0}
+#queuePanel .army-order-rules>summary{min-height:44px;display:grid;place-items:center;cursor:pointer;border:1px solid #a88c5d55;font-size:15px;background:#221925}
+#queuePanel .army-order-help{position:absolute;top:100%;right:12px;left:auto;width:min(370px,calc(100vw - 40px));padding:14px;margin:0;background:#271e29;color:#e7d4b1;border:1px solid #c7a25e;box-shadow:0 12px 24px #0008;z-index:4}
+@media(max-height:600px) and (orientation:landscape){#queuePanel .army-orders{grid-template-columns:66px 160px minmax(0,1fr) 32px;gap:7px;padding:2px 10px}#queuePanel .army-order-heading span{display:none}#queuePanel .army-order-status{font-size:10px;line-height:1.2}}
+@media(max-width:620px) and (orientation:portrait){#queuePanel .army-orders{grid-template-columns:65px minmax(0,1fr) 32px;padding:5px 10px;gap:3px 8px}#queuePanel .army-order-status{grid-column:1/-1;grid-row:2;font-size:10px}#queuePanel .army-order-heading span{display:none}}
+/* A quick tactical command lives beside the selected-card readout, never in a
+   new HUD belt. Its 44px button remains available on bow bars with an army. */
+.live-arsenal-caption:has(#liveArmyOrder:not(.hidden)){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 8px;align-items:center;min-height:44px}
+.live-arsenal-caption:has(#liveArmyOrder:not(.hidden)) .live-selected-caption{grid-column:1;grid-row:1;min-width:0;overflow:hidden}
+.live-arsenal-caption:has(#liveArmyOrder:not(.hidden)) .live-resources{grid-column:1;grid-row:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin:0}
+#liveArmyOrder{grid-column:2;grid-row:1/3;position:relative;pointer-events:auto;min-height:44px;height:44px;min-width:94px;padding:4px 24px 4px 9px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;border:1px solid #b89862;border-radius:4px;background:linear-gradient(#503746,#241a25);color:#ebd7ad;box-shadow:0 3px 10px #0005;text-shadow:none;touch-action:manipulation}
+#liveArmyOrder>span{font:9px/1 system-ui;color:#c9b28c}#liveArmyOrder>strong{font:600 12px/1.1 system-ui;color:#ffe3ad}#liveArmyOrder>kbd{position:absolute;right:6px;top:15px;font:10px system-ui;color:#c6af84}
+#liveArmyOrder[aria-pressed=true]{background:linear-gradient(#3b6463,#213b41);border-color:#a4d7c9}#liveArmyOrder[aria-pressed=true]>strong{color:#caffee}
+#liveArmyOrder:hover:not(:disabled){filter:brightness(1.15)}#liveArmyOrder:active:not(:disabled){transform:translateY(1px)}#liveArmyOrder:focus-visible{outline:2px solid #fff1c9;outline-offset:2px}#liveArmyOrder:disabled{opacity:.55}
+@media(max-width:620px) and (orientation:portrait){#liveArmyOrder{min-width:90px}.live-arsenal-caption:has(#liveArmyOrder:not(.hidden)) .live-selected-caption{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px}}

@@ -257,7 +257,7 @@ export class FlagArcher extends SpecialistTroop {
     }
     if(target==null)return !this.garrisoned()&&building!=null?this.moveToward(building):this.transition(A.BLOCK);
     if(this.inShotRange(target)){this.rangedTarget=target;return this.transition(R.LOAD_ARROW);}
-    if(!this.garrisoned())return this.moveToward(target);
+    if(!this.garrisoned()){const order=this.world.armyOrders?.archerAction(this,target);return order?this.transition(order):this.moveToward(target);}
     this.leaveGarrison();return null;
   }
   shootAtTarget(target) {

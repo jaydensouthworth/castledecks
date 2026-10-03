@@ -2,8 +2,8 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {MemoryStorage} from './helpers/local-storage.mjs';
 import {CONTROL_ACTIONS,CONTROL_STORAGE_KEY,DEFAULT_CONTROL_BINDINGS,createControlBindings,controlBindingError,validControlBindings,controlEventKey,isControlComposition,isControlTextTarget} from '../site/dist/control-bindings.mjs';
 
-test('default bindings exactly preserve the existing ten desktop actions',()=>{
- const controls=createControlBindings({getStorage:()=>new MemoryStorage()});assert.deepEqual(controls.bindings,DEFAULT_CONTROL_BINDINGS);assert.equal(CONTROL_ACTIONS.length,10);
+test('default bindings preserve the existing ten desktop actions and add a ground-line key',()=>{
+ const controls=createControlBindings({getStorage:()=>new MemoryStorage()});assert.deepEqual(controls.bindings,DEFAULT_CONTROL_BINDINGS);assert.equal(CONTROL_ACTIONS.length,11);
  for(const [action,key] of Object.entries(DEFAULT_CONTROL_BINDINGS))assert.equal(controls.action({key}),action);
  assert.equal(controls.label('activate'),'Space');assert.equal(controls.action({key:'1'}),null);assert.equal(controls.action({key:'Escape'}),null);
 });

@@ -7,9 +7,9 @@ const select=(ui,id)=>ui.get('hubDestinations').querySelector(`[data-hub-destina
 const rebind=(ui,action,key)=>{ui.click('control-'+action);ui.key('keydown',key);};
 const switchTo=(ui,id)=>{select(ui,id);ui.click('start');if(ui.visible('switchSessionConfirm'))ui.click('confirmSessionSwitch');ui.frames();};
 
-test('optional Training entry follows the launch selection and adds no separate hall card',async t=>{
+test('optional guided Training entry follows launch selection inside scrollable orders',async t=>{
  const ui=await loadGameUI(t),campaign=ui.battle;
- assert.equal(ui.get('trainingEntry').parentElement.classList.contains('hall-launch-copy'),true);
+ assert.equal(ui.get('trainingEntry').parentElement.classList.contains('hall-orders-scroll'),true);
  assert.equal(ui.visible('trainingEntry'),true);assert.equal(ui.visible('trainingEntryNote'),false);
  for(const id of ['expedition','midgame','allies']){select(ui,id);assert.equal(ui.visible('trainingEntry'),false);assert.equal(ui.battle,campaign);}
  select(ui,'campaign');ui.click('dismissTrainingInvite');assert.equal(ui.visible('trainingEntry'),false);

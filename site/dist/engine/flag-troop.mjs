@@ -166,10 +166,12 @@ export class FlagTroop {
   chooseNextAction() {
     if(this.hp>0) {
       this.engageRetaliation();
-      if(this.runner===0) this.engageNearby();
+      if(this.runner===0||this.world.armyOrders?.activeFor(this)&&this.world.armyOrders.frontlineAction(this)) this.engageNearby();
     }
     if(!(this.hp>0)) return this.transition(A.DIE);
     if(this.attacking.length>0) return this.transition(A.ATTACK);
+    const order=this.world.armyOrders?.frontlineAction(this);
+    if(order){const runner=this.runner,result=this.transition(order);this.runner=runner;return result;}
     const decision=decideFlagObjective(this,this.world);
     this.lastFlagDecision=decision;
     if(decision.clearRunner) this.runner=0;

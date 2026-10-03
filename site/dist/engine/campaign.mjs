@@ -29,7 +29,7 @@ export class FriendlyReinforcements {
   enqueue(ticket){const cost=ticket.cost??1;if(this.queue.length>=this.capacity||this.population<cost)return false;this.population-=cost;this.queue.push({...ticket,cost});return true;}
   enqueueSquad(ticket,amount){const cost=ticket.cost??1;if(this.queue.length>=this.capacity||this.population<cost*amount)return false;this.population-=cost*amount;const shared={...ticket,cost};for(let i=0;i<amount;i++)this.queue.push(shared);return true;}
   cancel(index){if(index<0||index>=this.queue.length)return null;const [ticket]=this.queue.splice(index,1);this.population+=ticket.cost;return ticket;}
-  step(onScreen){this.timer-=2;if(this.timer>=0||onScreen>=this.cap)return null;this.timer=50;return this.queue.shift()??null;}
+  step(onScreen){this.timer-=2;if(this.timer>=0||onScreen>=this.cap)return null;this.timer=38;return this.queue.shift()??null;}
 }
 export function ctfOutcome({heroDead,ownFlagCaptured,enemyFlagAtBase,enemyFlagCaptured,ownFlagAtBase,reinforcementsLeft,enemiesAlive}){
  if(heroDead||(ownFlagCaptured&&enemyFlagAtBase))return 'defeat';

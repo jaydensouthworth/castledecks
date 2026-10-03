@@ -60,30 +60,30 @@ test('initial mixed army and automatic recruitment pay real gold and reserve cos
  const b=create(),calls=[],orig=b.friendlyQueue.enqueueSquad.bind(b.friendlyQueue);b.friendlyQueue.enqueueSquad=(ticket,amount)=>{calls.push({type:ticket.type,cost:ticket.cost,rank:ticket.rank,amount});return orig(ticket,amount);};
  const receipt=prepareMidgameDemoBattle(b);
  assert.deepEqual(calls.slice(0,4),[{type:'tallGrunt',cost:1,rank:2,amount:3},{type:'archer',cost:1,rank:2,amount:4},{type:'priest',cost:1,rank:2,amount:2},{type:'trebuchet',cost:1,rank:2,amount:1}]);
- assert.equal(b.profile.gold,1120);assert.equal(b.stats.goldSpent,380);assert.equal(b.friendlyQueue.population,61);assert.equal(b.stats.populationGiven,90);assert.equal(b.friendlyQueue.queue.length,15);
- assert.deepEqual(receipt,{id:'midgame-13-v3',assisted:true,level:13,seed:131,ticks:1350,simulatedSeconds:1350/33,squadGoldSpent:380,remainingGold:1120,populationGiven:90,populationRemaining:61});
+ assert.equal(b.profile.gold,1100);assert.equal(b.stats.goldSpent,400);assert.equal(b.friendlyQueue.population,57);assert.equal(b.stats.populationGiven,90);assert.equal(b.friendlyQueue.queue.length,15);
+ assert.deepEqual(receipt,{id:'midgame-13-v3',assisted:true,level:13,seed:131,ticks:1350,simulatedSeconds:1350/33,squadGoldSpent:400,remainingGold:1100,populationGiven:90,populationRemaining:57});
 });
 test('preparation runs exactly 1350 ordinary simulation steps, including normal edge spawns',()=>{
  const b=create();let calls=0;const original=b.step.bind(b);b.step=()=>{calls++;original();};
  const spawn=[];b.onEvent=e=>{if(e.type==='spawn')spawn.push({type:e.unit.type,team:e.unit.team,x:e.unit.x});};
  prepareMidgameDemoBattle(b);assert.equal(calls,1350);assert.equal(b.tick,1350);
- assert.equal(spawn.filter(x=>x.team==='good').length,14);assert.equal(spawn.filter(x=>x.team==='bad').length,14);
+ assert.equal(spawn.filter(x=>x.team==='good').length,18);assert.equal(spawn.filter(x=>x.team==='bad').length,16);
  assert.ok(spawn.filter(x=>x.team==='good').every(x=>x.x===-50));assert.ok(spawn.filter(x=>x.team==='bad').every(x=>x.x===2050));
 });
-test('handoff has healthy hero and lightly contested keep, no outcome, and 14 army slots with 13 living allies',()=>{
+test('handoff has healthy hero and lightly contested keep, no outcome, and 18 army slots with 17 living allies',()=>{
  const {battle:b}=prepared();assert.equal(b.outcome,null);assert.equal(b.summary,null);
  assert.equal(b.hero.hp,380);assert.equal(b.goodCastle.hp,11200);assert.equal(b.badCastle.hp,11466);
  assert.equal(b.hero.hp,b.hero.maxHp);assert.equal(b.goodCastle.hp,b.goodCastle.maxHp);assert.equal(b.badCastle.hp,b.badCastle.maxHp);
- assert.equal(b.goodTeam.filter(x=>x.type!=='hero'&&x.hp>0).length,13);
+ assert.equal(b.goodTeam.filter(x=>x.type!=='hero'&&x.hp>0).length,17);
  assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,0);assert.equal(b.stats.shotsFired,0);assert.equal(b.stats.goldEarned,0);
 });
 test('handoff includes a genuine dragon, ground and siege threats with a mixed allied army',()=>{
  const {battle:b}=prepared();const types=new Set(b.badTeam.map(u=>u.type));
  for(const type of ['grunt','tallGrunt','archer','priest','trebuchet','dragon_scout_ice'])assert.ok(types.has(type),type);
- assert.equal(b.badTeam.length,14);assert.equal(b.enemies.remaining,134);assert.equal(b.projectiles.length,1);
+ assert.equal(b.badTeam.length,16);assert.equal(b.enemies.remaining,132);assert.equal(b.projectiles.length,2);
  assert.ok(b.airUnits.some(u=>u.type==='dragon_scout_ice'&&u.x>600&&u.x<900));
- assert.equal(b.goodTeam.filter(u=>u.type==='tallGrunt').length,3);assert.equal(b.goodTeam.filter(u=>u.type==='trebuchet').length,1);
- assert.equal(b.hotbar.bar,0);assert.equal(b.activeSkill.id,'arrow');assert.equal(b.profile.skills.filter(s=>s.id!=='trebuchet').every(s=>s.cooldown===0),true);assert.equal(b.profile.skills.find(s=>s.id==='trebuchet').cooldown,1326);
+ assert.equal(b.goodTeam.filter(u=>u.type==='tallGrunt').length,5);assert.equal(b.goodTeam.filter(u=>u.type==='trebuchet').length,1);
+ assert.equal(b.hotbar.bar,0);assert.equal(b.activeSkill.id,'arrow');assert.equal(b.profile.skills.filter(s=>!['archer','trebuchet'].includes(s.id)).every(s=>s.cooldown===0),true);assert.equal(b.profile.skills.find(s=>s.id==='archer').cooldown,138);assert.equal(b.profile.skills.find(s=>s.id==='trebuchet').cooldown,1326);
 });
 test('same seed yields identical handoff snapshots and continuation',()=>{
  const {battle:a}=prepared(),{battle:b}=prepared();assert.deepEqual(fingerprint(a),fingerprint(b));
@@ -99,7 +99,7 @@ test('no hidden protection and ordinary future summons keep spending normally',(
  const {battle:b}=prepared();assert.equal(b.testing,false);assert.equal(b.protectedTesting,false);
  b.hero.takeDamage(10);assert.equal(b.hero.hp,370);
  const s=b.profile.skills.find(s=>s.id==='grunt');while(b.friendlyQueue.queue.length>10)b.friendlyQueue.cancel(b.friendlyQueue.queue.length-1);const before=b.friendlyQueue.population;assert.equal(summonSquad(s,b.profile,b.friendlyQueue,b.stats),true);
- assert.equal(b.profile.gold,1100);assert.equal(b.friendlyQueue.population,before-4);assert.equal(b.stats.goldSpent,400);assert.equal(b.friendlyQueue.queue.length,14);
+ assert.equal(b.profile.gold,1080);assert.equal(b.friendlyQueue.population,before-4);assert.equal(b.stats.goldSpent,420);assert.equal(b.friendlyQueue.queue.length,14);
  assert.equal(summonSquad(s,b.profile,b.friendlyQueue,b.stats),false);
 });
 test('preparation cannot replay or mutate an ordinary campaign battle',()=>{
@@ -113,8 +113,8 @@ test('paused, protected, wrong-level and already-funded/used setups fail before 
 });
 test('idle continuation can naturally lose, proving the demo is not invulnerable',()=>{
  const {battle:b}=prepared();while(!b.outcome&&b.tick<15000)b.step();
- assert.equal(b.tick,11992);assert.equal(b.outcome,'defeat');assert.equal(b.goodCastle.hp,10170);assert.equal(b.hero.dead,false);assert.equal(b.ownFlag.status,4);
+ assert.equal(b.tick,9132);assert.equal(b.outcome,'defeat');assert.equal(b.goodCastle.hp,10291);assert.equal(b.hero.dead,false);assert.equal(b.ownFlag.status,4);
  assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,1);
 });
 
-test('auto recruitment keeps a full mixed army after sixty unplayed seconds within the explicitly enlarged field cap',()=>{const {battle:b}=prepared();for(let i=0;i<1980;i++)b.step();assert.equal(b.goodTeam.filter(u=>u!==b.hero&&u.hp>0).length,13);assert.equal(b.friendlyQueue.population,44);assert.equal(b.profile.gold,1000);assert.equal(b.goodCastle.hp,10499);assert.equal(b.protectedTesting,false);assert.equal(b.outcome,null);});
+test('auto recruitment keeps a full mixed army after sixty unplayed seconds within the explicitly enlarged field cap',()=>{const {battle:b}=prepared();for(let i=0;i<1980;i++)b.step();assert.equal(b.goodTeam.filter(u=>u!==b.hero&&u.hp>0).length,16);assert.equal(b.friendlyQueue.population,41);assert.equal(b.profile.gold,900);assert.equal(b.goodCastle.hp,10495);assert.equal(b.protectedTesting,false);assert.equal(b.outcome,null);});
