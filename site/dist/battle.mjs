@@ -113,7 +113,7 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='64';
+const GAME_BUILD='65';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null;
@@ -275,7 +275,7 @@ function switchDestination(id){
  }
  document.title=skirmishMode?'Castledecks · Seeded Skirmish':expeditionMode?'Castledecks · Wayfarer Charter':demoMode?'Castledecks · Midgame demo':testingMode?'Castledecks · Training':'Castledecks · Campaign';
  window.history?.replaceState(null,'',skirmishMode?skirmishURL(skirmishDescriptor):playDestinationURL(activeDestination,profile.shootingMode));
- $('#battleTitle').textContent=`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;
+ $('#battleTitle').textContent=isUnitTrial(trainingRun)?`${SKILLS[trainingRun.cardId].name} · field trial`:`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;
  $('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;$('#battleAngle').value=String(angle);$('#battleAngleOut').textContent=angle+'°';$('#battlePower').value=String(power);updatePowerMode();if(saved)battle.shooter.angleMode=saved.shooterAngleMode;$('#battleFire').classList[$('#showAssist').checked?'remove':'add']('hidden');now=performance.now();lastPaint=null;showHub();if(trainingLaunchRequested&&id==='training'){trainingLaunchRequested=false;trainingReturnDestination=guidedOrigin;enterGuidedTraining();}if(skirmishMode&&!saved)showSkirmishWorkshop();
 }
 function restartMidgameDemo(){
@@ -363,7 +363,7 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
  combatPoses.attach(battle);specialMotion.attach(battle);
  attachLiveSkills();
  clock=new SimulationClock({onTick:()=>{const actorsAdvanced=!battle.paused&&!battle.summary&&!battle.outcome;const tap=movementTap;movementTap=null;if(tap)battle.input[tap]=true;liveSkills.beforeTick();battle.step();battle.guidedTraining?.afterTick();liveSkills.afterTick();if(battle.outcome)liveSkills.clear();combatPoses.observeTick({actorsAdvanced});specialMotion.observeTick({actorsAdvanced});if(tap){battle.input[tap]=false;movementOwners.sync();}if(activationPulse>0)--activationPulse;battle.input.space=heldSpace||activationPulse>0;}});notices=[];now=performance.now();barSignature='';
- $('#battleTitle').textContent=`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;renderHub();
+ $('#battleTitle').textContent=isUnitTrial(trainingRun)?`${SKILLS[trainingRun.cardId].name} · field trial`:`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;renderHub();
  $('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;updatePowerMode();drawHotbar();if(completed){$('#intro').classList.add('hidden');$('#ending').classList.remove('hidden');$('#endingTitle').textContent=(profile.cheated?'Assisted · ':'')+'Campaign complete';$('#endingText').textContent=profile.cheated?'This assisted profile has a final-battle result. Export it to keep the record, or begin a new campaign.':'This saved campaign has completed all 30 battles. Export it to keep the record, or begin a new campaign.';$('#replay').textContent=completedCampaignLabel();}
  if(expeditionMode){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}
  syncPause();localCampaign?.checkpoint('ready');
@@ -879,7 +879,7 @@ function renderPortraitView(camera){
  $('#viewCenter').value=String(Math.max(500,Math.min(1500,(bounds.left+bounds.right)/2)));
  $('#viewOverview').setAttribute('aria-pressed',String(portraitOverview));$('#viewOverview').textContent=portraitOverview?'Close-up':'Whole field';
  const onScreen=battle.hero.x>=bounds.left+30&&battle.hero.x<=bounds.right-30;$('#viewHero').setAttribute('aria-pressed',String(portraitCenter===null&&!portraitOverview));
- $('#viewStatus').textContent=`Battle ${battle.level} · `+(battle.enemies.finalStand?battle.enemies.status(observeBattlefield(battle)):portraitOverview?`${battle.badTeam.length} enemies · ${battle.enemies.remaining} incoming`:!onScreen?'Hero off-screen · tap Hero':portraitOffscreenStatus(battle,camera)||`${battle.badTeam.length} enemies · drag map to look ahead`);
+ $('#viewStatus').textContent=isUnitTrial(trainingRun)?`${SKILLS[trainingRun.cardId].name} trial · no reinforcements`:`Battle ${battle.level} · `+(battle.enemies.finalStand?battle.enemies.status(observeBattlefield(battle)):portraitOverview?`${battle.badTeam.length} enemies · ${battle.enemies.remaining} incoming`:!onScreen?'Hero off-screen · tap Hero':portraitOffscreenStatus(battle,camera)||`${battle.badTeam.length} enemies · drag map to look ahead`);
  if(!onScreen&&hasEquippedBow()&&profile.shootingMode==='classic')$('#combatAimHint').textContent='Tap Hero to return to your bow';
 }
 
@@ -907,7 +907,7 @@ function render(){renderTrainingEntry();trainingCoach.render({visible:!!training
  const xp=heroExperience(profile);$('#heroXpHud').textContent=xp.text;$('#heroXpFill').style.width=`${100*xp.fraction}%`;$('#armyHud').textContent=`Army slots ${battle.regularArmyCount}/${battle.friendlyQueue.cap} · Reserve ${battle.friendlyQueue.population}`;$('#openQueue').textContent=`Army / Queue · ${battle.friendlyQueue.queue.length}`;$('#activeProgress').textContent=active?`Rank ${active.rank} · ${Math.floor(active.xp)} / ${active.threshold} XP`:'';
  $('#heroHud').textContent=`Rank ${battle.profile.rank} · ${Math.max(0,Math.ceil(battle.hero.hp))} HP`;
  $('#goldHud').textContent=`${Math.floor(battle.profile.gold)} gold · ${battle.hero.garrisoned()?'Garrisoned':'On foot'}`;
- $('#enemyHud').textContent=`${observeBattlefield(battle).enemyAlive} enemies · ${battle.enemies.remaining} reserves${battle.enemies.withdrawn?' · '+battle.enemies.withdrawn+' withdrawn':''}`;
+ $('#enemyHud').textContent=isUnitTrial(trainingRun)?`${observeBattlefield(battle).enemyAlive} enemies · no reinforcements`:`${observeBattlefield(battle).enemyAlive} enemies · ${battle.enemies.remaining} reserves${battle.enemies.withdrawn?' · '+battle.enemies.withdrawn+' withdrawn':''}`;
  $('#waveHud').textContent=battle.enemies.status(observeBattlefield(battle));
  $('#heroHealth').style.width=`${100*Math.max(0,battle.hero.hp/battle.hero.maxHp)}%`;$('#activeName').textContent=active?SKILLS[active.id].name:'No skill selected';const ready=active&&active.cooldown<=0;$('#reloadFill').style.width=`${100*(active?1-active.cooldown/active.maximum:0)}%`;$('#reloadText').textContent=ready?'Bow ready':'Reloading';$('#battleFire').disabled=!started||!!battle.outcome||!ready||battle.paused||!!openPanelId;$('#activate').disabled=!started||battle.paused||!!battle.outcome||!battle.activationObjects.length;$('#openShop').disabled=!!battle.summary?.campaignComplete;$('#endingShop').disabled=!!battle.summary?.campaignComplete;const hud=contextualHudState(battle),screen=$('.battle-screen');screen.dataset.heroMode=hud.heroMode;screen.dataset.nearGarrison=String(hud.nearGarrison);screen.dataset.aiming=String(aimPointerId!==null);$('#activate').classList[hud.showActivation?'remove':'add']('hidden');$('#activate').textContent=hud.activationLabel;const alert=priorityFlagAlert(battle);if($('#flagHud').textContent!==alert)$('#flagHud').textContent=alert;$('#flagHud').classList[alert?'remove':'add']('hidden');for(const button of document.querySelectorAll('[data-key]')){button.disabled=!started||battle.paused||!!battle.outcome||!!openPanelId;button.dataset.held=String(!!battle.input[button.dataset.key]);}drawHotbar();renderPortraitView(camera);updateObjectiveFeedback(battle);
 }

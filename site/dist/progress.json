@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T22:47:56.273875+00:00",
-  "stage": "armory-live-contract-trials",
-  "internal_tests_passing": 1685,
+  "updated": "2026-10-03T23:29:53.008926+00:00",
+  "stage": "armory-trial-preparation-correction",
+  "internal_tests_passing": 1702,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of live Armory contract trials",
+    "Native acceptance of preparation-safe Armory contract trials",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -40,11 +40,11 @@
     "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 64,
+  "build": 65,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,

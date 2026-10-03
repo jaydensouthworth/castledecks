@@ -70,3 +70,11 @@ test('choosing another demo during a paused trial closes the trial before showin
  assert.equal(ui.battle,origin);assert.equal(state(origin),before);assert.equal(ui.visible('shopPanel'),false);assert.equal(ui.visible('intro'),true);assert.equal(ui.visible('switchSessionConfirm'),true);
  ui.click('confirmSessionSwitch');ui.frames();assert.notEqual(ui.battle,origin);assert.equal(ui.battle.level,13);assert.equal(ui.battle.guidedTraining,undefined);select(ui,'campaign');assert.equal(ui.battle,origin);assert.equal(state(origin),before);
 });
+
+test('trial map and pause report disclose no reinforcements without reading suspended reserves',async t=>{
+ const ui=await loadGameUI(t);ui.get('battlefield').getBoundingClientRect=()=>({left:0,top:0,width:390,height:844});ui.document.querySelector('.live-movement').getBoundingClientRect=()=>({left:12,top:530,width:140,height:56});ui.click('introArmory');inspect(ui,'fireDragon');ui.click('shopTryCard');ui.frames();ui.click('viewOverview');ui.frames();
+ assert.match(ui.get('viewStatus').textContent,/Fire Dragon trial · no reinforcements/);assert.doesNotMatch(ui.get('viewStatus').textContent,/incoming|27/);
+ assert.match(ui.get('enemyHud').textContent,/2 enemies · no reinforcements/);assert.equal(ui.get('battleTitle').textContent,'Fire Dragon · field trial');
+ ui.click('battlePause');ui.frames();assert.doesNotMatch(ui.get('enemyHud').textContent,/reserves/);
+ ui.click('pauseLobby');ui.frames();assert.notEqual(ui.get('battleTitle').textContent,'Fire Dragon · field trial');
+});
