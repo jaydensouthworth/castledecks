@@ -20,15 +20,21 @@ Wayfarer presents six fields in a branching route board; a run still contains fo
 
 Rally positions are fixed Rear/Center/Forward world landmarks, independent of hero movement and camera motion. Advance retains the ordinary AI path. Keep orders transient: no save schema, costs or combat values change. Allied recruited trebuchets may fall back to a living hostile keep or occupied hostile tower when normal distant-actor selection finds nothing. Validate live ownership both before release and at impact, retain actor priority/range limits, and preserve enemy siege behavior. The reviewed engine fingerprint changes with these deliberately tested extensions.
 
-## Optional Battery interception candidate
+## Battery interception
 
 Battery interception is a supplied Skirmish doctrine with two explicitly bound ordinary enemy trebuchets and a finite escort. Only those original identities count. Resolve both marked engines and return the home flag to base; hero death or home-flag capture takes precedence over completion in the same full simulation tick. Ordinary enemy-keep or enemy-flag victories cannot bypass the objective. Retry creates a fresh supplied attempt. Do not apply this objective to earned campaign saves.
 
-Objective presentation reads the engine state into the existing HUD, portrait status, Pause brief and Canvas labels. Keep markers in CSS-pixel geometry without new input targets, timers, RNG, spawns or resource mutations. The generated legacy Skirmish JSON fixture records our own deterministic implementation outputs, not original-game assets or recovered code. The initial candidate completed a native practice victory. Native acceptance of its follow-up compact-control and Army-copy changes remains a separate gate.
+Objective presentation reads the engine state into the existing HUD, portrait status, Pause brief and Canvas labels. Keep markers in CSS-pixel geometry without new input targets, timers, RNG, spawns or resource mutations. The generated legacy Skirmish JSON fixture records our own deterministic implementation outputs, not original-game assets or recovered code. The initial candidate completed a native practice victory. Release 61 then passed native target-clearance and Army-copy inspection, including a correct defeat after losing the home flag despite resolving both engines.
 
 ## Army continuity
 
 Regular troop contracts and ranks survive casualties and defeat; individual dispatched units do not become a persistent battlefield roster. A new battle replenishes its reserve, while gold already spent on dispatch remains spent. Supplied practice kits retain their own reset rules. Army text should explain those existing boundaries without suggesting refunds or new persistence behavior. Regression fixtures cover the actual profile and battle transitions.
+
+## Independent ground-company candidate
+
+Frontline and Support may Advance or hold separate fixed Rear/Center/Forward lines. Frontline contains the supported melee roles; Support contains archers and priests. The current Army selector targets one company or All ground. Live shortcuts and the live line selector always override both companies and disclose split orders. New troops inherit their role; flag recovery, carriers and ordinary exclusions retain priority. Enemy-keep destruction releases both groups.
+
+Held Support regroups before starting new actions. Committed attacks/spells finish, with living-recipient and real-range checks at heal/purge release; switching to Advance mid-cast must not bypass those checks. Keep ordinary Advance deterministic. This is a tactical tradeoff rather than a universal advantage: holding support too far away can remove useful healing. Orders are transient battle state, with no new save, contract, cost or stat persistence. Native acceptance of the new controls remains pending.
 
 ## Diagnostics
 

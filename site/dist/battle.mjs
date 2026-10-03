@@ -110,7 +110,7 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='61';
+const GAME_BUILD='62';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null;
@@ -137,7 +137,7 @@ function showControls(){controlsReturnPanel=openPanelId;controlsUI.begin();panel
 function closeControls(){const back=controlsReturnPanel;controlsReturnPanel=null;controlsUI.discard();if(back){panel(back,true);$('#openControls').focus?.();}else panel('#controlsPanel',false);}
 function syncControlLabels(){
  for(const node of document.querySelectorAll('[data-control-label]'))node.textContent=controlLabel(node.getAttribute('data-control-label'),{compact:true});
- $('#pauseControlsReference').textContent=`${controlLabel('left')} / ${controlLabel('right')} move · ${controlLabel('up')} / ${controlLabel('down')} enter / leave · 1–9 then 0 skills · ${controlLabel('previousBar')} / ${controlLabel('nextBar')} change bars · ${controlLabel('activate')} activates airborne skills · ${controlLabel('companion')} commands your companion · ${controlLabel('arc')} switches Auto aim arc · ${controlLabel('armyOrder')} changes ground-line order · ${controlLabel('pause')} or Escape pauses`;
+ $('#pauseControlsReference').textContent=`${controlLabel('left')} / ${controlLabel('right')} move · ${controlLabel('up')} / ${controlLabel('down')} enter / leave · 1–9 then 0 skills · ${controlLabel('previousBar')} / ${controlLabel('nextBar')} change bars · ${controlLabel('activate')} activates airborne skills · ${controlLabel('companion')} commands your companion · ${controlLabel('arc')} switches Auto aim arc · ${controlLabel('armyOrder')} overrides all ground orders · ${controlLabel('pause')} or Escape pauses`;
  $('#trajectoryHint').textContent=`Used only with Auto aim. Switch live with the High / Low arc button or ${controlLabel('arc')}.`;
  $('#loadoutControlsReference').textContent=`Keyboard: Tab and Enter select cards and keys. Inspect opens details without changing your placement selection. During battle, keys 1–9 and 0 activate the current bar; ${controlLabel('companion')} controls your separate companion. Reserve abilities stay owned but do not cool down.`;
  $('#nextBar').setAttribute('title',`Next skill bar · ${controlLabel('nextBar')} or mouse wheel`);
@@ -176,7 +176,7 @@ function syncSkirmishIdentity(){
  $('#hubSessionState').textContent=battle.summary?`Practice ${battle.summary.outcome} · retry ready`:started?'Practice paused':'Practice ready';
  $('#saveStatus').textContent='Keep the seed code to recreate this field. Attempt rewards are temporary.';$('#endingSaveStatus').textContent='No campaign progress was earned. Retry restores the supplied kit and clears this attempt’s saved decks. Export a deck code first.';
  if(selectedDestination===activeDestination){$('#start').textContent=battle.summary?'Prepare same seed':started?'Resume skirmish':'Start skirmish';$('#hubLaunchNote').textContent='A fresh supplied kit for each attempt. Open the workshop to inspect, copy or change this seed.';}
- if(battle.summary){const objective=objectiveFeedbackState(battle);$('#endingTitle').textContent=objective?objective.status:`Practice ${battle.summary.outcome}`;$('#endingText').textContent=`${scenario.name} · ${objective?`${objective.resolved}/2 marked engines resolved.${objective.phase==='victory'?' Home flag safe.':''}`:`${battle.stats.shotsFired} basic shots · ${battle.stats.bodyShots+battle.stats.headShots} basic hits.`} This attempt’s gold and XP stay here. Retry the same seed with fresh supplies, or make a new field.`;$('#replay').textContent='Prepare same seed';}
+ if(battle.summary){const objective=objectiveFeedbackState(battle);$('#endingTitle').textContent=objective?objective.status:`Practice ${battle.summary.outcome}`;$('#endingText').textContent=`${scenario.name} · ${objective?`${objective.resolved}/2 marked engines resolved.${objective.phase==='victory'?' Home flag safe.':objective.reason?' '+objective.reason:''}`:`${battle.stats.shotsFired} basic shots · ${battle.stats.bodyShots+battle.stats.headShots} basic hits.`} This attempt’s gold and XP stay here. Retry the same seed with fresh supplies, or make a new field.`;$('#replay').textContent='Prepare same seed';}
 }
 const expeditionRoute=createExpeditionRoute({host:$('#expeditionRouteHost'),getRun:()=>profiles.activeRun,getState:()=>({started,summary:battle.summary,pendingOutcome:!!battle.outcome&&!battle.summary}),onChoose:id=>{if(!expeditionMode||!profiles.activeRun.choose(id))return;panelResume=false;panel('#expeditionPanel',false);setup();showHub();$('#introNotice').textContent=`${profiles.activeRun.current.name} chosen. Arrange your loadout, then Start when ready.`;},onReturn:()=>panel('#expeditionPanel',false),onRestart:()=>{if(!expeditionMode)return;panelResume=false;panel('#expeditionPanel',false);profile=profiles.restartCurrent();setup();showHub();$('#introNotice').textContent='Charter restarted with its declared starting supplies. Other banners and sessions are preserved.';}});
 function showExpeditionRoute(){if(!expeditionMode||battle.outcome&&!battle.summary)return;showHub();expeditionRoute.open();panel('#expeditionPanel',true);}
@@ -341,7 +341,7 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
    else if(['ground-crack','earth-shard','lightning-bolt','lightning-strike'].includes(event.kind))notices.push({x:event.x,y:event.y,radius:50,tick:event.tick,color:'#b3dfea'});
   }
   if(event.type==='aim-unreachable')status(autoAimFeedback(battle.hero.launchPosition,battle.shooter.pointer,battle.shooter).message??'That target is out of range at this power');
-  if(event.type==='army-order'){lineReleased=event.mode==='advance'?event.tick:null;visualDirty=true;status(event.mode==='rally'?`${armyRallyPositionLabel(event.position)} line set. Your frontline will regroup at the fixed banner.`:'Ground line released. Your army advances.');}
+  if(event.type==='army-order'){lineReleased=event.mode==='advance'?event.tick:null;visualDirty=true;status(armyOrderStatus(battle));}
   if(event.type==='enemy-reserves-withdrawn'){status('Enemy keep destroyed. Reinforcements cut off. '+(lineReleased===event.tick?'Ground line released. ':'')+'Defeat the remaining army or capture their flag.');lineReleased=false;}
   if(event.type==='outcome')status(event.outcome==='victory'?'Victory! Counting the spoils…':battle.hero.dead?'Your hero fell':'The enemy captured your flag');
   if(event.type==='summary'){
@@ -508,12 +508,12 @@ function hasEquippedBow(){return profile.skills.some(skill=>skill.binding>=0&&!S
 function hasCommandArmy(){return profile.skills.some(skill=>!!SKILLS[skill.id]?.summon)||battle.regularArmyCount>0;}
 function canIssueLiveArmyOrder(){return started&&!hubOpen&&!openPanelId&&!battle.paused&&!battle.outcome&&!battle.summary&&!trainingRun&&hasCommandArmy();}
 function renderLiveArmyOrder(){
- const button=$('#liveArmyOrder'),holding=battle.armyOrder.mode==='rally',line=armyRallyPositionLabel(battle.armyOrder.position);
+ const button=$('#liveArmyOrder'),holding=battle.armyOrder.mode!=='advance',split=battle.armyOrder.mode==='split',line=armyRallyPositionLabel(battle.armyOrder.position);
  button.classList[hasCommandArmy()&&!trainingRun?'remove':'add']('hidden');button.disabled=!canIssueLiveArmyOrder()||!holding&&!(battle.badCastle.hp>0);button.setAttribute('aria-pressed',String(holding));
- $('#liveArmyOrderLabel').textContent=holding?'Rally':'Advance';button.setAttribute('aria-label',`Ground line ${holding?'holding':'advancing'}. ${holding?'Release and advance':`Rally at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);button.setAttribute('title',`${holding?'Release the rally line':`Rally the frontline at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);
+ $('#liveArmyOrderLabel').textContent=split?'Split':holding?'Rally':'Advance';button.setAttribute('aria-label',`${split?'Split company orders. ':''}All ground ${holding?'holding':'advancing'}. ${holding?'Release both companies and advance all ground':`Rally all ground at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);button.setAttribute('title',`${split?'Split orders. ':''}${holding?'Advance all ground; replaces both company orders':`Rally all ground at the ${line.toLowerCase()} line`} · ${controlLabel('armyOrder')}`);
  liveRallyPositionUI.render();
 }
-function toggleLiveArmyOrder(){if(!canIssueLiveArmyOrder())return;if(battle.setArmyOrder(battle.armyOrder.mode==='rally'?'advance':'rally')){visualDirty=true;renderLiveArmyOrder();status(armyOrderStatus(battle));}}
+function toggleLiveArmyOrder(){if(!canIssueLiveArmyOrder())return;if(battle.setArmyOrder(battle.armyOrder.mode==='advance'?'rally':'advance',undefined,'all')){visualDirty=true;renderLiveArmyOrder();status(armyOrderStatus(battle));}}
 $('#liveArmyOrder').onclick=event=>{if(event.detail>1)return;toggleLiveArmyOrder();};
 function drawHotbar(){
  // A deliberately bowless loadout may still command squads and a companion.

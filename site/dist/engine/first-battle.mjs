@@ -114,7 +114,7 @@ export class FirstBattle {
   assignGeometry(entity){const local=COLLISION_REGIONS[entity.regionKind].hitbox;entity.height=local[3]-local[2];entity.width=local[1]-local[0];this.updateGeometry(entity);return entity;}
   updateGeometry(entity){if(entity.clipPresent===false){entity.hitbox=null;entity.headbox=null;return;}if(!entity.regionKind)return;Object.assign(entity,unitRegions(entity.regionKind,{x:entity.x,y:entity.y,scaleX:entity.facing??1,rotation:entity.collisionRotation??entity.rotation??0}));}
   createCastle(team,x,hp){
-    const castle=new Castle({x,y:this.elevationAt(x),hp,team,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders?.mode==='rally')this.armyOrders.set('advance');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
+    const castle=new Castle({x,y:this.elevationAt(x),hp,team,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders&&this.armyOrders.mode!=='advance')this.armyOrders.set('advance',undefined,'all');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
     castle.regionKind=team==='good'?'friendlyCastle':'enemyCastle';this.assignGeometry(castle);
     this.objects.add(castle);this.structures.push(castle);this.garrisons.push(castle);(team==='good'?this.goodStructures:this.badStructures).push(castle);return castle;
   }
@@ -126,7 +126,7 @@ export class FirstBattle {
     }});tower.regionKind='tower';this.assignGeometry(tower);this.objects.add(tower);this.structures.push(tower);this.garrisons.push(tower);this.neutralStructures.push(tower);return tower;
   }
   get armyOrder(){return this.armyOrders.snapshot;}
-  setArmyOrder(mode,position){return this.armyOrders.set(mode,position);}
+  setArmyOrder(mode,position,group='all'){return this.armyOrders.set(mode,position,group);}
   get regularArmyCount(){return this.goodTeam.filter(unit=>unit!==this.hero&&!unit.isCompanion).length;}
   createUnit(type,{team='bad',rank=null,skill=null,companion=false,fieldEntry=false}={}){
     if(type==='gorath'&&team==='good'&&!companion)throw new RangeError('Bosses use the companion summon slot');

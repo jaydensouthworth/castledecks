@@ -245,6 +245,8 @@ export class FlagArcher extends SpecialistTroop {
   inShotRange(target){return this.shotAngles(target,this.bowPower*.95,1)[0]!==777;}
   chooseNextAction() {
     this.fired=false;
+    const hold=this.world.armyOrders?.supportAction(this);
+    if(hold&&hold!==A.BLOCK)return this.transition(hold);
     if(this.x<50||this.x>(this.world.width??2000)-50)return this.transition(A.ADVANCE);
     const enemy=this.closestFlagCarrier()??this.nearest(this.enemies,alive),structure=this.closestEnemyStructure();
     const target=enemy==null?structure:structure==null?enemy:
@@ -255,7 +257,7 @@ export class FlagArcher extends SpecialistTroop {
       if(building!=null&&Math.abs(building.x-this.x)<this.garrisonDistance&&target!=null&&this.inShotRange(target))
         this.attemptGarrison(building);
     }
-    if(target==null)return !this.garrisoned()&&building!=null?this.moveToward(building):this.transition(A.BLOCK);
+    if(target==null)return hold?this.transition(A.BLOCK):!this.garrisoned()&&building!=null?this.moveToward(building):this.transition(A.BLOCK);
     if(this.inShotRange(target)){this.rangedTarget=target;return this.transition(R.LOAD_ARROW);}
     if(!this.garrisoned()){const order=this.world.armyOrders?.archerAction(this,target);return order?this.transition(order):this.moveToward(target);}
     this.leaveGarrison();return null;
@@ -301,7 +303,13 @@ export class FlagPriest extends SpecialistTroop {
   }
   healReady(){return this.healCooldown<0;}
   transition(action) {
-    if(action===R.HEAL||action===R.PURGE)return this.stationary(action,34,[96,131],1);
+    if(action===R.HEAL||action===R.PURGE){
+      // A held cast must still have a real in-range living recipient when it
+      // releases, including if Advance was issued during its windup.
+      if(this.world.armyOrders?.supportAction(this)!=null)this.heldSupportCast=true;
+      else if(this.heldSupportCast)delete this.heldSupportCast;
+      return this.stationary(action,34,[96,131],1);
+    }
     return super.transition(action);
   }
   frontLineFriend() {
@@ -321,10 +329,14 @@ export class FlagPriest extends SpecialistTroop {
     if(this.hp>0)this.engageRetaliation();
     if(!(this.hp>0))return this.transition(A.DIE);
     if(this.attacking.length>0)return this.transition(A.ATTACK);
-    const poisonedFriend=this.nearest(this.friends,poisoned);
+    const hold=this.world.armyOrders?.supportAction(this);
+    if(hold&&hold!==A.BLOCK)return this.transition(hold);
+    const reachable=target=>!hold||alive(target)&&this.inRange(target,this.healRange);
+    const poisonedFriend=this.nearest(this.friends,target=>reachable(target)&&poisoned(target));
     if(poisonedFriend!=null)return this.supportTarget(poisonedFriend,R.PURGE);
-    const injuredFriend=this.nearest(this.friends,target=>injured(target)&&living(target));
+    const injuredFriend=this.nearest(this.friends,target=>reachable(target)&&injured(target)&&living(target));
     if(injuredFriend!=null)return this.supportTarget(injuredFriend,R.HEAL);
+    if(hold)return this.transition(A.BLOCK);
     const front=this.frontLineFriend();
     if(front!=null) {
       if(!this.inFront(front))return this.transition(A.RETREAT);
@@ -340,6 +352,7 @@ export class FlagPriest extends SpecialistTroop {
     if(this.actionMode===R.HEAL||this.actionMode===R.PURGE) {
       if(this.actionDuration<0) {
         this.healCooldown=this.healCooldownMax;
+        if((this.heldSupportCast||this.world.armyOrders?.supportAction(this)!=null)&&(!alive(this.healTarget)||!this.inRange(this.healTarget,this.healRange)))return;
         const heal=this.actionMode===R.HEAL;
         const amount=heal?this.healPower*this.percentVariation(20):undefined;
         const request={kind:this.actionMode,target:this.healTarget,duration:heal?10:3000,interval:heal?9999:20};

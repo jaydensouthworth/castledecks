@@ -3,6 +3,7 @@
  * engine owns target membership, allegiance, progress and outcome precedence.
  */
 import {worldToScreen} from './world-camera.mjs';
+import {FLAG_STATUS as FS} from './engine/flag-troop.mjs';
 
 export const BATTERY_BRIEF=Object.freeze({
  title:'Battery Interception',
@@ -22,10 +23,11 @@ export function objectiveFeedbackState(battle){
  const outcome=battle.outcome??battle.summary?.outcome;
  const phase=outcome==='defeat'?'defeat':outcome==='victory'?'victory':progress.state;
  const status=phase==='defeat'?'Attempt lost':phase==='victory'?'Battery cleared':phase==='recover-flag'?'Recover home flag':phase==='completed'?'Battery resolved':phase==='pending'?'Prepare the battery':resolved===1?'Silence last gun':'Silence both guns';
+ const reason=phase==='defeat'?(battle.ownFlag?.status===FS.CAPTURED?'Your home flag was captured.':battle.hero&&(battle.hero.dead||battle.hero.hp<=0)?'Your hero fell.':null):null;
  const counts=`${resolved}/2 engines resolved · ${neutralized} destroyed · ${secured} secured`;
- return Object.freeze({phase,resolved,neutralized,secured,title:`Battery · ${resolved}/2`,status,
+ return Object.freeze({phase,resolved,neutralized,secured,reason,title:`Battery · ${resolved}/2`,status,
   portrait:`Battery ${resolved}/2 · ${status}`,
-  brief:`${BATTERY_BRIEF.title} · ${counts}. ${status}. Silence both marked guns and finish with your flag at base. Fire deals double damage to siege. Protect your own fragile siege from the escort; priests cannot repair vehicles. Hero or home-flag loss ends the attempt.`,
+  brief:`${BATTERY_BRIEF.title} · ${counts}. ${status}. ${reason?reason+' ':''}Silence both marked guns and finish with your flag at base. Fire deals double damage to siege. Protect your own fragile siege from the escort; priests cannot repair vehicles. Hero or home-flag loss ends the attempt.`,
   ariaLabel:`Battery Interception. ${counts}. ${status}.`,
  });
 }

@@ -34,3 +34,9 @@
 #liveRallyPosition[data-holding=true] .live-rally-position-select{background:#213b41;border-color:#a4d7c9;color:#caffee}.live-rally-position-select:disabled{opacity:.55;cursor:default}.live-rally-position-select:focus-visible{outline:2px solid #fff1c9;outline-offset:2px}
 @media(max-height:600px) and (orientation:landscape){#queuePanel .army-orders{grid-template-columns:60px 144px minmax(195px,1fr) 32px;gap:2px 6px;padding:3px 10px}#queuePanel .army-rally-positions span{display:none}#queuePanel .army-rally-positions{gap:4px}}
 @media(max-width:620px) and (orientation:portrait){#queuePanel .army-orders{grid-template-columns:65px minmax(0,1fr) 32px;gap:4px 8px}#queuePanel .army-order-rules{grid-column:3}#queuePanel .army-rally-positions{grid-column:1/-1;grid-row:2}#queuePanel .army-order-status{grid-column:1/-1;grid-row:3}.live-rally-position-select{width:91px;font-size:10px}#liveArmyOrder{min-width:82px;padding-left:6px}}
+
+/* Company target replaces the old heading in the existing command row. */
+.army-company-select{box-sizing:border-box;display:block;min-width:0;width:100%;min-height:44px;padding:4px;border:1px solid #b89862;border-radius:4px;background:#30222d;color:#ebd7ad;font:600 11px system-ui;touch-action:manipulation}.army-company-select:focus-visible{outline:2px solid #fff1c9;outline-offset:2px}
+#queuePanel .army-orders{grid-template-columns:116px 165px minmax(210px,1fr) 32px}#queuePanel .army-order-heading{min-width:0}#queuePanel .army-order-heading span{display:none}
+@media(max-height:600px) and (orientation:landscape){#queuePanel .army-orders{grid-template-columns:110px 144px minmax(195px,1fr) 32px}}
+@media(max-width:620px) and (orientation:portrait){#queuePanel .army-orders{grid-template-columns:110px minmax(0,1fr) 32px}}

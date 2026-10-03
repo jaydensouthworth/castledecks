@@ -31,3 +31,12 @@ test('ordinary skirmish retains existing preparation and hides objective-only pa
  assert.match(ui.get('hallOrderObjective').textContent,/Defeat the company or bring the enemy flag home/);
  assert.equal(ui.visible('batteryObjectiveBrief'),false);assert.equal(ui.get('batteryObjectiveBrief').textContent,'');
 });
+
+for(const cause of ['hero','flag'])test(`Battery result preserves actual ${cause} defeat reason after both guns fall`,async t=>{
+ const ui=await loadGameUI(t,{search});ui.click('skirmishPrepare');ui.click('start');ui.frames(2);const b=ui.battle;
+ for(const u of b.badTeam.filter(u=>u.type==='trebuchet'))u.takeDamage(u.hp);
+ if(cause==='flag')b.ownFlag.status=FS.CAPTURED;else b.hero.hp=0;
+ ui.frames(110);assert.equal(b.summary.outcome,'defeat');assert.equal(ui.get('endingTitle').textContent,'Attempt lost');
+ assert.match(ui.get('endingText').textContent,cause==='flag'?/Your home flag was captured\./:/Your hero fell\./);
+ assert.doesNotMatch(ui.get('endingText').textContent,/Home flag safe|basic shots/);
+});

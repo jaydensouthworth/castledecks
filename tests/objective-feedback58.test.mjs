@@ -54,7 +54,7 @@ for(const flagState of [FS.GROUNDED,FS.HELD_BY_ENEMY,FS.HELD_BY_FRIEND])test(`2/
 });
 for(const cause of ['hero','flag'])test(`actual ${cause} loss overrides completed objective feedback`,()=>{
  const b=battle();for(const u of targets(b))u.hp=0;if(cause==='hero')b.hero.hp=0;else b.ownFlag.status=FS.CAPTURED;b.checkOutcome();
- assert.equal(b.outcome,'defeat');const state=objectiveFeedbackState(b);assert.equal(state.title,'Battery · 2/2');assert.equal(state.status,'Attempt lost');assert.doesNotMatch(state.status,/cleared|resolved|victory/);
+ assert.equal(b.outcome,'defeat');const state=objectiveFeedbackState(b);assert.equal(state.title,'Battery · 2/2');assert.equal(state.status,'Attempt lost');assert.equal(state.reason,cause==='hero'?'Your hero fell.':'Your home flag was captured.');assert.ok(state.brief.includes(state.reason));assert.doesNotMatch(state.status,/cleared|resolved|victory/);
 });
 test('live standard, portrait status and Pause brief reuse existing UI and reset cleanly',()=>{
  const b=battle(),root=documentFixture();updateObjectiveFeedback(b,root);
@@ -126,4 +126,8 @@ test('short-landscape battery commands use left sky offsets without new controls
   assert.equal(firstX,left);assert.equal(secondX,left+99);assert.equal(y,top+62);
   assert.ok(secondX+100<width/2+44);assert.ok(y+44<height*.5);
  }
+});
+
+test('forced unknown defeat does not invent a physical cause',()=>{
+ const b=battle();b.finishOutcome('defeat');assert.equal(objectiveFeedbackState(b).reason,null);
 });

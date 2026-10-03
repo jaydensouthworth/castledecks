@@ -32,7 +32,7 @@ test('repeated position commands are idempotent and Advance remembers the chosen
  u.chooseNextAction();b.setArmyOrder('rally','forward');const changes=interrupted;
  for(let i=0;i<12;i++){b.hero.x+=25;b.setArmyOrder('rally','forward');}assert.equal(events.length,1);assert.equal(interrupted,changes);assert.equal(b.armyOrder.anchorX,1500);
  b.setArmyOrder('advance');assert.equal(b.armyOrder.anchorX,null);assert.equal(b.armyOrder.position,'forward');b.hero.x=500;b.setArmyOrder('rally');assert.equal(b.armyOrder.anchorX,1500);assert.equal(events.length,3);
- b.finishOutcome('victory');assert.deepEqual(b.armyOrder,{mode:'advance',position:'rear',anchorX:null,affected:1});assert.equal(fresh().armyOrder.position,'rear');
+ b.finishOutcome('victory');assert.deepEqual(b.armyOrder,{...fresh().armyOrder,mode:'advance',position:'rear',anchorX:null,affected:1,groups:{frontline:{mode:'advance',position:'rear',anchorX:null,affected:1},support:{mode:'advance',position:'rear',anchorX:null,affected:0}}});assert.equal(fresh().armyOrder.position,'rear');
 });
 test('invalid positions and dead or settled battles reject commands without mutations',()=>{
  for(const position of ['','left','REAR',null,0,Infinity]){const b=fresh(),before=b.armyOrder;assert.equal(b.setArmyOrder('rally',position),false);assert.deepEqual(b.armyOrder,before);}

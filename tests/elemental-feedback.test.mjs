@@ -179,7 +179,10 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // building fallback with live-ownership release/impact guards. See army-rally-
  // position and siege-targeting tests; costs, damage, enemy AI and artwork stay unchanged.
  // See the dedicated source, recruitment, and flying-friendly-fire regressions.
+ // Candidate61 adds transient independent company orders and a held-support
+ // movement/range leash. Default/explicit Advance matches frozen60 in 30
+ // seed/level cases. See company-orders61 and the isolated parity report.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'d48f8b8664e05a0f15bd44c0007c00e7160873b858599f21cc4e8c9e1fa03e22','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'1c4049c02976521a913f2e90878c34dc548d45d54f08281746544e891c025091','reviewed engine boundary');
 });
