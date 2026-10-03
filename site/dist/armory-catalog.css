@@ -635,3 +635,9 @@
  #shopPanel .shop-card .card-name{min-height:32px;padding-bottom:2px}
  #shopPanel .shop-card .card-state{min-height:18px;padding:1px 5px 3px}
 }
+
+/* A contract's field invitation belongs to the illustrated detail, not another market tile. */
+.armory-field-trial{display:flex;align-items:center;gap:16px;margin:18px 0;padding:14px 0;border-block:1px solid #b78f5059}
+.armory-field-trial>div{flex:1;min-width:0}.armory-field-trial h4{font-size:18px;margin:3px 0 5px;color:#f4db9d}.armory-field-trial p{font-size:14px;line-height:1.45;margin:0;color:#e1d3bc}
+.armory-field-trial button{min-height:44px;flex:0 1 auto;background:#72562d;color:#fff0c9;border:1px solid #c7a268;padding:10px 15px;font-size:14px}
+@media(max-width:620px),(max-height:500px){.armory-field-trial{gap:10px;margin:10px 0;padding:10px 0;align-items:stretch}.armory-field-trial h4{font-size:16px}.armory-field-trial button{max-width:42%}}

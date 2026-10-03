@@ -1,3 +1,4 @@
+import {isUnitTrial,unitTrialOptions,prepareUnitTrial,unitTrialCopy} from './unit-trial.mjs';
 import {defaultControlLabel} from './control-bindings.mjs';
 /** Optional assisted drills. Fixtures are explicit and local to these fresh
  * profiles: no campaign, save manager, analytics, timers or audio are touched.
@@ -18,8 +19,9 @@ export const TRAINING_LESSONS=Object.freeze([
 const profiles=new WeakSet(),prepared=new WeakSet();
 const alive=u=>u?.hp>0&&!u.dead&&!u.destroyed;
 export function createTrainingRun(){return {index:0,completed:new Set(),skipped:new Set(),reviewedLoadout:false,revision:0};}
-export function trainingLesson(run){return TRAINING_LESSONS[run?.index]??null;}
+export function trainingLesson(run){return isUnitTrial(run)?run.lesson:TRAINING_LESSONS[run?.index]??null;}
 export function createTrainingBattleOptions(run){
+ if(isUnitTrial(run))return unitTrialOptions(run);
  if(!trainingLesson(run)&&run?.index!==TRAINING_LESSONS.length)throw new RangeError('Unknown training drill');
  const profile=new PlayerProfile('Guided practice');
  Object.assign(profile,{rank:3,gold:600,cheated:true,difficulty:'easy',shootingMode:'auto_aim'});
@@ -36,6 +38,7 @@ export function createTrainingBattleOptions(run){
  * supplies extra HP, suspends enemy waves and prevents campaign settlement.
  */
 export function prepareTrainingBattle(battle,run){
+ if(isUnitTrial(run))return prepareUnitTrial(battle,run);
  if(!profiles.has(battle?.profile)||battle.testing!==true||prepared.has(battle))throw new TypeError('Expected a fresh guided-practice battle');
  prepared.add(battle);battle.protectedTesting=true;battle.shooter.angleMode=1;
  battle.enemies.step=()=>null;battle.enemies.status=()=> 'Guided practice · waves paused';
@@ -104,6 +107,7 @@ export function advanceTraining(run,{skip=false}={}){
 }
 export function restartTrainingLesson(run){const lesson=trainingLesson(run);if(!lesson)return false;run.completed.delete(lesson.id);run.skipped.delete(lesson.id);run.revision++;return true;}
 export function trainingCopy(controller,controlLabel=defaultControlLabel){
+ if(isUnitTrial(controller.run))return unitTrialCopy(controller);
  const {lesson,battle,run}=controller,s=controller.snapshot;
  if(!lesson)return {title:'Make the loadout yours',instruction:'Open Loadout to inspect your three supplied abilities. Then return to your lobby.',feedback:`${run.completed.size} of ${TRAINING_LESSONS.length} drills completed${run.skipped.size?` · ${run.skipped.size} skipped`:''}. Practice supplies, hits and progress stay separate from your campaign.`};
  let instruction=lesson.brief;
@@ -115,6 +119,7 @@ export function trainingCopy(controller,controlLabel=defaultControlLabel){
 }
 
 export function drawTrainingTarget(ctx,controller,scale=1){
+ if(isUnitTrial(controller?.run))return;
  const target=controller?.target,point=controller?.targetPoint();if(!alive(target)||!point||controller.complete)return;
  const r=Math.max(22,18/scale);ctx.save();ctx.strokeStyle='#f5d878';ctx.lineWidth=2/scale;ctx.setLineDash?.([5/scale,4/scale]);ctx.beginPath();ctx.arc(point.x,point.y,r,0,Math.PI*2);ctx.stroke();ctx.setLineDash?.([]);ctx.restore();
 }

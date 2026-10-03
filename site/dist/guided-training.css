@@ -21,3 +21,10 @@
 @media(orientation:portrait){.training-coach{top:calc(max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)) + 64px);left:max(12px,env(safe-area-inset-left),var(--preview-safe-left,0px));right:max(12px,env(safe-area-inset-right),var(--preview-safe-right,0px));width:auto;max-width:none;max-height:128px}#gameShell[data-guided-training="true"] #portraitView{display:none}.training-coach summary{min-height:44px}.training-coach-actions #trainingAssist{flex-basis:auto}.training-coach .training-feedback{font-size:12px}}
 @media(max-width:370px){.training-coach summary strong{font-size:14px}.training-coach p{font-size:14px}.training-coach button{padding:5px 6px}}
 @media(prefers-reduced-motion:reduce){.training-coach *{transition:none!important;animation:none!important}}
+
+/* Contract trials retain the ordinary portrait map so the real company can be followed. */
+@media(orientation:portrait){#gameShell[data-unit-trial="true"] #portraitView{display:grid!important}#gameShell[data-unit-trial="true"] .training-coach{top:calc(max(12px,env(safe-area-inset-top),var(--preview-safe-top,0px)) + 126px);max-height:128px}}
+
+/* Deploy and Return sit outside the collapsible instructions and their scroll. */
+.unit-trial-coach{display:flex;flex-direction:column;overflow:hidden}.unit-trial-dock{display:flex;gap:6px;flex:none}.unit-trial-dock button{flex:1 1 50%;min-width:0;font-size:14px}.unit-trial-dock #unitTrialReturn{background:#513b37;border-color:#b79970}.unit-trial-coach>details{min-height:0;overflow-y:auto;overscroll-behavior:contain;margin-top:5px}.unit-trial-coach summary{flex:none}.unit-trial-coach .training-coach-actions{padding-bottom:2px}.unit-trial-coach .training-feedback{display:block}
+@media(orientation:landscape) and (max-height:500px){.unit-trial-coach{max-height:min(176px,calc(100dvh - max(10px,env(safe-area-inset-top),var(--preview-safe-top,0px)) - 54px - max(10px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) - 74px))}.unit-trial-dock button{padding:5px 6px}.unit-trial-coach>details{margin-top:2px}}
