@@ -6,3 +6,15 @@
 @media(orientation:landscape) and (min-width:700px) and (max-height:500px){
  .live-topbar .live-battle-standard[data-objective="intercept-battery"] #combatEnemyState{font-size:10px;line-height:1.2;overflow:visible;text-overflow:clip}
 }
+/* The marked rear battery occupies the right-hand ground lane. Dock the same
+   two commands in left-side sky on short landscape, preserving their44px hit
+   targets and every input handler. The arsenal ends at viewport safe-right and
+   safe-bottom, so viewport-relative offsets remain independent of bar width. */
+@media(orientation:landscape) and (min-width:700px) and (max-height:500px){
+ .live-hud:has(.live-battle-standard[data-objective="intercept-battery"]) #liveArmyOrder{
+  position:absolute;grid-column:auto;grid-row:auto;top:auto;left:auto;right:calc(100vw - var(--lh-r) - var(--lh-l) - 94px);bottom:calc(100vh - var(--lh-b) - var(--lh-t) - 106px);width:94px;min-width:94px;height:44px;
+ }
+ .live-hud:has(.live-battle-standard[data-objective="intercept-battery"]) #liveRallyPosition{
+  position:absolute;grid-column:auto;grid-row:auto;top:auto;left:auto;right:calc(100vw - var(--lh-r) - var(--lh-l) - 199px);bottom:calc(100vh - var(--lh-b) - var(--lh-t) - 106px);width:100px;height:44px;
+ }
+}

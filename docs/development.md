@@ -24,7 +24,11 @@ Rally positions are fixed Rear/Center/Forward world landmarks, independent of he
 
 Battery interception is a supplied Skirmish doctrine with two explicitly bound ordinary enemy trebuchets and a finite escort. Only those original identities count. Resolve both marked engines and return the home flag to base; hero death or home-flag capture takes precedence over completion in the same full simulation tick. Ordinary enemy-keep or enemy-flag victories cannot bypass the objective. Retry creates a fresh supplied attempt. Do not apply this objective to earned campaign saves.
 
-Objective presentation reads the engine state into the existing HUD, portrait status, Pause brief and Canvas labels. Keep markers in CSS-pixel geometry without new input targets, timers, RNG, spawns or resource mutations. The generated legacy Skirmish JSON fixture records our own deterministic implementation outputs, not original-game assets or recovered code. Native browser acceptance of this candidate remains a separate gate.
+Objective presentation reads the engine state into the existing HUD, portrait status, Pause brief and Canvas labels. Keep markers in CSS-pixel geometry without new input targets, timers, RNG, spawns or resource mutations. The generated legacy Skirmish JSON fixture records our own deterministic implementation outputs, not original-game assets or recovered code. The initial candidate completed a native practice victory. Native acceptance of its follow-up compact-control and Army-copy changes remains a separate gate.
+
+## Army continuity
+
+Regular troop contracts and ranks survive casualties and defeat; individual dispatched units do not become a persistent battlefield roster. A new battle replenishes its reserve, while gold already spent on dispatch remains spent. Supplied practice kits retain their own reset rules. Army text should explain those existing boundaries without suggesting refunds or new persistence behavior. Regression fixtures cover the actual profile and battle transitions.
 
 ## Diagnostics
 

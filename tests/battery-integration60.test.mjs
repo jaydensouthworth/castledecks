@@ -22,8 +22,8 @@ test('actual UI distinguishes partial progress, flag recovery and settled victor
  b.ownFlag.status=FS.GROUNDED;b.ownFlag.x=1400;targets[1].takeDamage(targets[1].hp);ui.frames(2);
  assert.equal(b.outcome,null);assert.equal(ui.get('combatEnemyState').textContent,'Recover home flag');
  b.ownFlag.status=FS.AT_BASE;ui.frames(110);
- assert.equal(b.summary.outcome,'victory');assert.equal(ui.get('endingTitle').textContent,'Battery · Battery cleared');
- assert.match(ui.get('endingText').textContent,/2\/2 marked engines resolved\. Home flag safe\./);
+ assert.equal(b.summary.outcome,'victory');assert.equal(ui.get('endingTitle').textContent,'Battery cleared');
+ assert.match(ui.get('endingText').textContent,/2\/2 marked engines resolved\. Home flag safe\./);assert.doesNotMatch(ui.get('endingText').textContent,/basic shots/);
  ui.click('replay');ui.frames();assert.notEqual(ui.battle,b);assert.equal(ui.battle.tick,0);assert.equal(ui.battle.objectiveProgress.resolved,0);assert.equal(ui.battle.profile.gold,1200);
 });
 test('ordinary skirmish retains existing preparation and hides objective-only paragraph',async t=>{

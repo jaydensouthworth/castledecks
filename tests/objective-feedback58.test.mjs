@@ -110,3 +110,20 @@ test('all three preexisting doctrine briefings remain byte-exact across 72 basel
  const markup=[];for(const doctrine of ['vanguard','skywatch','siege'])for(const biome of ['oaks','lowlands','pines','wasteland'])for(const threat of ['scout','standard','veteran'])for(const seed of [73421,42])markup.push(skirmishBriefHTML(createSkirmish({version:1,seed,biome,threat,doctrine})));
  assert.equal(createHash('sha256').update(markup.join('\n')).digest('hex'),'840a0ce257edc11ab3860e1e92c1c08dd03f5513412261ed898f7e0bcb82e570');
 });
+
+test('short-landscape battery commands use left sky offsets without new controls or altered portrait layout',async()=>{
+ const css=readFileSync(new URL('../site/dist/objective-feedback.css',import.meta.url),'utf8');
+ for(const id of ['liveArmyOrder','liveRallyPosition'])assert.ok(css.includes(`.live-hud:has(.live-battle-standard[data-objective="intercept-battery"]) #${id}`));
+ assert.match(css,/min-width:700px\) and \(max-height:500px/);
+ assert.ok(css.includes('right:calc(100vw - var(--lh-r) - var(--lh-l) - 94px)'));
+ assert.ok(css.includes('right:calc(100vw - var(--lh-r) - var(--lh-l) - 199px)'));
+ assert.ok(css.includes('bottom:calc(100vh - var(--lh-b) - var(--lh-t) - 106px)'));
+ // The arsenal is anchored to safe right/bottom. Its width cannot change these
+ // world-independent docking coordinates; both retained targets are44px tall.
+ for(const [width,height,left,right,top,bottom] of [[740,320,44,44,8,24],[915,360,12,12,8,10],[812,375,24,24,8,24]]){
+  const firstX=width-right-(width-right-left-94)-94,secondX=width-right-(width-right-left-199)-100;
+  const y=height-bottom-(height-bottom-top-106)-44;
+  assert.equal(firstX,left);assert.equal(secondX,left+99);assert.equal(y,top+62);
+  assert.ok(secondX+100<width/2+44);assert.ok(y+44<height*.5);
+ }
+});

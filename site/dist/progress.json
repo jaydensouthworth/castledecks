@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T21:06:08.651209+00:00",
+  "updated": "2026-10-03T21:28:13.184238+00:00",
   "stage": "optional-battery-interception-candidate",
-  "internal_tests_passing": 1528,
+  "internal_tests_passing": 1548,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -39,8 +39,8 @@
     "Build55\u201357 native Rear/Center/Forward selector, R release/reapply, paused Army orders, portrait/740x320 safe-inset aim, corrected route/Army/Build rails",
     "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim"
   ],
-  "latest_gameplay_fix": "Spatial Wayfarer route board; fixed Rear/Center/Forward rally lines with live control; recruited trebuchets attack distant hostile buildings when no distant troop target remains.",
-  "build": 60,
+  "latest_gameplay_fix": "Optional Battery interception with two real marked siege targets, finite escorts, home-flag recovery, and short-landscape target clearance.",
+  "build": 61,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -56,8 +56,8 @@
     "seed_format": "SK1",
     "biomes": 4,
     "threat_tiers": 3,
-    "doctrines": 3,
+    "doctrines": 4,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Gameplay/UI/recruitment full gate1482 passed at58;59 changes build/status metadata only and adds one release-number consistency regression. Native55\u201358 verified branching choices, live fixed Rally, upper-right aim, paid siege recruits and shared navigation/status in portrait/short landscape. Physical Android, extended stability and native siege-to-victory remain unverified."
+  "test_evidence": "Candidate60 exact canonical1528 and portable1536 checks passed; exact GitHub CI/Docker green. Native Dokploy verified workshop, preparation, real1/2 target destruction, paid army deployment and portrait overview. Candidate61 corrects native-found short-landscape target occlusion; final native acceptance pending."
 }
