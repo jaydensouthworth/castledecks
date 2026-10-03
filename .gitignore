@@ -1,0 +1,42 @@
+# Local tools and generated output
+node_modules/
+coverage/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.npmrc
+.aws/
+.codex/
+.agents/
+.openai/
+
+# Private research, original-game materials, backups and user saves
+recovery/
+analysis/
+work/
+private/
+backups/
+saves/
+*.swf
+*.as
+*.fla
+*.jar
+*.exe
+*.zip
+*.tar
+*.gz
+*.7z
+*.bundle
+*.save.json
+*-profile.json
