@@ -1,0 +1,66 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {loadGameUI} from './helpers/game-ui-harness.mjs';
+const change=(ui,id,value)=>{const element=ui.get(id);element.value=value;ui.dispatch(element,'change');};
+const chip=(ui,id)=>ui.get('shopDepartmentChips').querySelector(`[data-filter-department="${id}"]`).click();
+async function open(t){const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introArmory');ui.click('shopCatalogTab');return ui;}
+
+test('filter drawer provides typed chips and contextual filters without spending or changing selection',async t=>{
+ const ui=await open(t);const gold=ui.battle.profile.gold;ui.click('shopFilterToggle');assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'true');assert.equal(ui.document.activeElement.id,'shopFilterCancel');assert.equal(ui.get('shopCardScroll').inert,true);chip(ui,'army');assert.equal(ui.get('shopDepartmentCompact').value,'army');assert.equal(ui.visible('shopRoleField'),true);assert.equal(ui.visible('shopDeliveryField'),false);change(ui,'shopRole','support');assert.equal(ui.get('shopFilterApply').textContent,'Show 1 card');assert.equal(ui.battle.profile.gold,gold);ui.click('shopFilterApply');assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);assert.equal(ui.document.activeElement.id,'shopFilterToggle');assert.ok(ui.get('inspect-priest'));
+});
+test('Cancel and Escape restore the exact browse query, page, filters, scroll and focus',async t=>{
+ const ui=await open(t);ui.click('shopNext');const prior=ui.get('shopPageLabel').textContent;ui.get('shopCatalogScroll').scrollTop=139;ui.click('shopFilterToggle');chip(ui,'army');change(ui,'shopRole','support');ui.click('shopFilterClear');ui.click('shopFilterCancel');assert.equal(ui.get('shopDepartmentCompact').value,'all');assert.equal(ui.get('shopPageLabel').textContent,prior);assert.equal(ui.get('shopCatalogScroll').scrollTop,139);assert.equal(ui.document.activeElement.id,'shopFilterToggle');ui.click('shopFilterToggle');chip(ui,'companions');ui.key('keydown','Escape');assert.equal(ui.visible('shopPanel'),true);assert.equal(ui.visible('shopAdvancedFilters'),false);assert.equal(ui.get('shopDepartmentCompact').value,'all');assert.equal(ui.get('shopPageLabel').textContent,prior);assert.equal(ui.get('shopCatalogScroll').scrollTop,139);
+});
+test('switching workspace cancels the filter draft and never leaves a hidden focus trap',async t=>{
+ const ui=await open(t);ui.click('shopFilterToggle');chip(ui,'army');ui.click('shopCollectionTab');assert.equal(ui.get('shopCardScroll').inert,false);assert.equal(ui.visible('shopAdvancedFilters'),false);ui.click('shopCatalogTab');assert.equal(ui.get('shopDepartmentCompact').value,'all');ui.click('shopFilterToggle');chip(ui,'bow');change(ui,'shopSort','price-desc');assert.equal(ui.get('shopFilterToggle').textContent,'Filters (2)');ui.click('shopFilterClear');assert.equal(ui.get('shopFilterToggle').textContent,'Filters');ui.click('shopFilterApply');assert.equal(ui.get('shopSort').value,'catalog');
+});
+test('quick Add remains ID-bound, repeat-safe and fully reviewable through details',async t=>{
+ const ui=await open(t);const add=ui.get('cart-fireArrow');assert.match(add.getAttribute('aria-label'),/Add Fire Arrow to cart/);ui.click('cart-fireArrow');assert.equal(ui.get('shopCartCount').textContent,'1');assert.match(ui.get('cart-fireArrow').textContent,/Added/);assert.match(ui.get('cart-fireArrow').getAttribute('aria-label'),/Remove Fire Arrow from cart/);ui.click('inspect-fireArrow');for(const id of ['shopSaveSelected','shopCartSelected','shopPinSelected','shopDetailAction'])assert.ok(ui.get(id));ui.click('shopCartSelected');assert.equal(ui.get('shopCartCount').textContent,'0');
+});
+test('cart explains the skill-only wallet reserve using authoritative quote while companion and mixed totals stay exact',async t=>{
+ const ui=await open(t);ui.battle.profile.gold=190;ui.click('cart-fireArrow');ui.click('shopCartOpen');assert.match(ui.get('shopCartView').textContent,/Required wallet: 1,001 gold for this 1,000-gold cart/);assert.match(ui.get('shopCartView').textContent,/Need 811 more/);ui.click('shopCartClear');ui.click('shopCartBack');change(ui,'shopDepartmentCompact','companions');ui.click('cart-gorath');ui.click('shopCartOpen');assert.doesNotMatch(ui.get('shopCartView').textContent,/Required wallet|leave at least 1 gold/);ui.click('shopCartBack');change(ui,'shopDepartmentCompact','bow');ui.click('cart-fireArrow');ui.click('shopCartOpen');assert.doesNotMatch(ui.get('shopCartView').textContent,/Required wallet|leave at least 1 gold/);
+});
+test('post-result continuation is retained separately from a duplicate lobby Back',async t=>{
+ const ui=await open(t);assert.equal(ui.get('shopPanel').dataset.battleContinuation,'false');ui.click('closeShop');ui.click('introTesting');ui.click('testVictory');ui.frames(105);ui.click('endingShop');assert.equal(ui.get('shopPanel').dataset.battleContinuation,'true');assert.match(ui.get('shopContinue').textContent,/Begin battle/);ui.click('shopContinue');assert.equal(ui.battle.level,2);
+});
+test('gallery is structurally two columns at360 and has one quick action while full details survive',()=>{
+ const css=readFileSync(new URL('../site/dist/armory-catalog.css',import.meta.url),'utf8');const mobile=css.slice(css.indexOf('/* Mobile market:'));
+ assert.match(mobile,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);assert.match(mobile,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);assert.match(mobile,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);assert.doesNotMatch(mobile,/\bzoom\s*:|transform\s*:\s*scale/);assert.match(mobile,/\.shop-card:not\(\.owned\) \.shop-buy\{display:none\}/);
+});
+test('Precise shot and airborne activation share the safe-area deck without living inside the skill-size container',()=>{
+ const html=readFileSync(new URL('../site/dist/battle.html',import.meta.url),'utf8'),dock=html.indexOf('class="live-context"'),lane=html.indexOf('class="live-action-lane"');assert.ok(dock<lane);assert.ok(html.includes('id="battleFire"'));assert.ok(html.includes('id="activate"'));const css=readFileSync(new URL('../site/dist/live-action-bar.css',import.meta.url),'utf8');assert.match(css,/\.live-deck>\.live-context\{position:absolute;top:auto;right:auto;bottom:70px;left:0/);assert.match(css,/\.live-context.*pointer-events:none/);assert.match(css,/\.live-context \.live-fire,.*\.live-context \.live-activation.*min-height:44px/);
+});
+
+test('desktop inline filters survive resizing while mobile drafts cancel without retaining inert content',async t=>{
+ const ui=await loadGameUI(t);let listener=null;const media={matches:false,addEventListener(type,fn){listener=fn;},removeEventListener(type,fn){if(fn===listener)listener=null;}};ui.window.matchMedia=()=>media;
+ const {createArmoryCatalogUI}=await import('../site/dist/armory-catalog.mjs');const {buildArmoryRecords}=await import('../site/dist/armory-catalog-data.mjs');const {createArmorySnapshot}=await import('../site/dist/armory-catalog-model.mjs');const {SKILLS}=await import('../site/dist/engine/progression.mjs');const {COMPANIONS}=await import('../site/dist/engine/recruitment.mjs');
+ const root=ui.document.createElement('div'),view=createArmoryCatalogUI({root,records:buildArmoryRecords(SKILLS,COMPANIONS,{}),getSnapshot:()=>createArmorySnapshot(ui.battle.profile)});view.refresh();const get=id=>root.querySelector('#'+id);get('shopCatalogTab').click();get('shopFilterToggle').click();assert.equal(get('shopSearchForm').inert,false);assert.equal(get('shopFilterToggle').textContent,'Refine');get('shopRole').value='support';get('shopRole').onchange();get('shopFilterToggle').click();assert.equal(get('shopRole').value,'support');get('shopFilterToggle').click();get('shopRole').value='frontline';get('shopRole').onchange();media.matches=true;listener();assert.equal(get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(get('shopRole').value,'frontline');assert.equal(get('shopSearchForm').inert,false);get('shopFilterToggle').click();get('shopRole').value='support';get('shopRole').onchange();assert.equal(get('shopSearchForm').inert,true);media.matches=false;listener();assert.equal(get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(get('shopRole').value,'frontline');assert.equal(get('shopSearchForm').inert,false);view.dispose();assert.equal(listener,null);
+});
+
+test('header Loadout and Back cancel a mobile filter draft before hiding Armory and never reopen inert',async t=>{
+ const ui=await open(t);ui.get('shopCatalogScroll').scrollTop=133;ui.click('shopFilterToggle');chip(ui,'army');ui.click('shopLoadout');assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);ui.click('closeSkills');assert.equal(ui.visible('shopPanel'),true);assert.equal(ui.get('shopDepartmentCompact').value,'all');assert.equal(ui.get('shopCatalogScroll').scrollTop,133);assert.equal(ui.visible('shopAdvancedFilters'),false);ui.click('shopFilterToggle');chip(ui,'companions');ui.click('closeShop');ui.click('introArmory');assert.equal(ui.get('shopDepartmentCompact').value,'all');assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);assert.equal(ui.visible('shopAdvancedFilters'),false);
+});
+
+test('setup and profile replacement clear a pending drawer even when reset bypasses panel navigation',async t=>{
+ const ui=await open(t);ui.click('shopFilterToggle');chip(ui,'army');ui.get('testLevel').value='16';ui.click('testLevelApply');assert.equal(ui.battle.level,16);assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);ui.click('introArmory');assert.equal(ui.visible('shopAdvancedFilters'),false);assert.equal(ui.get('shopDepartmentCompact').value,'all');ui.click('shopFilterToggle');chip(ui,'companions');ui.get('newProfileName').value='Reset filter';ui.click('createProfile');assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);ui.click('introArmory');assert.equal(ui.visible('shopAdvancedFilters'),false);assert.equal(ui.get('shopDepartmentCompact').value,'all');
+});
+test('real post-result continuation cancels filters, releases inert regions and preserves normal next-battle flow',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testVictory');ui.frames(105);ui.click('endingShop');ui.click('shopCatalogTab');ui.click('shopFilterToggle');chip(ui,'army');ui.click('shopContinue');assert.equal(ui.battle.level,2);assert.equal(ui.get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(ui.get('shopCardScroll').inert,false);assert.equal(ui.get('shopDepartmentCompact').value,'all');
+});
+
+test('compact art rules outrank the later shared portrait import and narrow prices share one line where space permits',()=>{
+ const css=readFileSync(new URL('../site/dist/armory-catalog.css',import.meta.url),'utf8'),mobile=css.slice(css.indexOf('/* Mobile market:'));
+ assert.doesNotMatch(mobile,/#shopPanel \.shop-inspect \.card-art-stage\s*\{/);
+ assert.match(mobile,/#shopPanel \.shop-card \.shop-inspect \.card-art-stage\{height:76px/);
+ assert.match(mobile,/#shopPanel \.shop-card \.shop-inspect \.card-art-stage\{height:75px/);
+ assert.match(mobile,/#shopPanel \.shop-card \.card-kicker\{align-items:center;flex-direction:row;min-height:24px/);
+});
+
+
+test('Escape Back preserves applied desktop refinements but cancels a compact filter draft',async t=>{
+ const ui=await loadGameUI(t);const media={matches:false,addEventListener(){},removeEventListener(){}};ui.window.matchMedia=()=>media;
+ const {createArmoryCatalogUI}=await import('../site/dist/armory-catalog.mjs');const {buildArmoryRecords}=await import('../site/dist/armory-catalog-data.mjs');const {createArmorySnapshot}=await import('../site/dist/armory-catalog-model.mjs');const {SKILLS}=await import('../site/dist/engine/progression.mjs');const {COMPANIONS}=await import('../site/dist/engine/recruitment.mjs');
+ const root=ui.document.createElement('div'),view=createArmoryCatalogUI({root,records:buildArmoryRecords(SKILLS,COMPANIONS,{}),getSnapshot:()=>createArmorySnapshot(ui.battle.profile)});t.after(()=>view.dispose());view.refresh();const get=id=>root.querySelector('#'+id);get('shopCatalogTab').click();get('shopFilterToggle').click();get('shopRole').value='frontline';get('shopRole').onchange();assert.equal(view.back(),true);assert.equal(get('shopRole').value,'frontline');assert.equal(get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(get('shopCardScroll').inert,false);assert.equal(view.back(),false);
+ media.matches=true;get('shopFilterToggle').click();get('shopRole').value='support';get('shopRole').onchange();assert.equal(get('shopCardScroll').inert,true);assert.equal(view.back(),true);assert.equal(get('shopRole').value,'frontline');assert.equal(get('shopFilterToggle').getAttribute('aria-expanded'),'false');assert.equal(get('shopCardScroll').inert,false);
+});

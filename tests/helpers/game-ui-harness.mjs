@@ -1,3 +1,4 @@
+import {TestLocks,settle} from './local-storage.mjs';
 import {readFile} from 'node:fs/promises';
 import {CampaignBattle} from '../../site/dist/engine/first-battle.mjs';
 
@@ -139,7 +140,7 @@ function dispatch(target, type, init = {}) {
   return {event, completed: Promise.all(pending)};
 }
 
-export async function loadGameUI(t, {search = ''} = {}) {
+export async function loadGameUI(t, {search = '', storage, locks=storage?new TestLocks():undefined} = {}) {
   const document = new Node('document', null);
   document.ownerDocument = document;
   document.captures = new Map();
@@ -147,7 +148,7 @@ export async function loadGameUI(t, {search = ''} = {}) {
   document.createElement = tag => new Node(tag, document);
   parseHTML(await readFile(markupURL, 'utf8'), document);
   document.activeElement = document.querySelector('body');
-  const window = new Target();
+  const window = new Target();window.localStorage=storage;window.navigator={locks};
   window.location = {search};
   let timestamp = 0;
   let nextFrame = null;
@@ -169,13 +170,14 @@ export async function loadGameUI(t, {search = ''} = {}) {
     }
   });
   await import(`${gameURL.href}?input-test=${++instance}`);
+  await settle();
   const get = id => {
     const node = document.querySelector(id.startsWith('#') ? id : '#' + id);
     if (!node) throw new Error(`Missing game UI element: ${id}`);
     return node;
   };
   return {
-    document, window, get, get battle() { return battle; },
+    document, window, get, settle, get battle() { return battle; },
     visible: id => !get(id).classList.contains('hidden'),
     click: id => get(id).click(),
     dispatch,

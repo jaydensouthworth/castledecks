@@ -1,3 +1,14 @@
+import {modalFocusCandidates} from './modal-focus.mjs';
+import {syncCommandHall} from './command-hall.mjs';
+import {createArmyCommandUI} from './army-command.mjs';
+import {createCampaignRegionArt} from './campaign-region-art.mjs';
+import {EXPEDITION_NAME} from './expedition-data.mjs';
+import {ExpeditionProfiles} from './expedition-model.mjs';
+import {ExpeditionBattle} from './expedition-battle.mjs';
+import {createExpeditionRoute,expeditionLaunchLabel,expeditionResultCopy,renderExpeditionReceipt} from './expedition-ui.mjs';
+import {CAMPAIGN_NAME,encounterBrief,campaignProgress,campaignBattleSnapshot,campaignSettlement,canPrepareEncounter} from './campaign-atlas-model.mjs';
+import {createCampaignAtlas,renderCampaignRewards} from './campaign-atlas.mjs';
+import {createLocalCampaignUI} from './local-campaign-ui.mjs';
 import {PLAY_DESTINATIONS,destinationForMode,playDestinationURL,canPurchaseInArmory} from './player-hub.mjs';
 import {observeBattlefield} from './engine/battle-director.mjs';
 import {drawGorath} from './gorath-art.mjs';
@@ -7,29 +18,32 @@ import {createCompanionUI} from './companion-ui.mjs';
 import {buildArmoryRecords} from './armory-catalog-data.mjs';
 import {createArmorySnapshot} from './armory-catalog-model.mjs';
 import {createArmoryCatalogUI} from './armory-catalog.mjs';
+import {checkoutArmoryCart} from './armory-cart.mjs';
 import {RECRUIT_SKILLS,COMPANIONS} from './engine/recruitment.mjs';
-import {placeLoadoutAbility,recoverDuplicateBindings,abilityCategory,ABILITY_CATEGORIES} from './loadout-ui-model.mjs';
+import {placeLoadoutAbility,recoverDuplicateBindings} from './loadout-ui-model.mjs';
+import {createLoadoutCollectionUI} from './loadout-collection.mjs';
 import {createLoadoutDrag} from './loadout-drag.mjs';
 import {slotToKey,eventToSlot} from './keyboard-layout.mjs';
-import {elementalNotice,drawElementalNotice,drawReactiveElement,drawElementalDragon} from './elemental-feedback.mjs?build=37';
+import {createDragonCounterGuide} from './dragon-counter-guide.mjs';
+import {elementalNotice,drawElementalNotice,drawReactiveElement,drawElementalDragon} from './elemental-feedback.mjs?build=40';
 import {createPortraitView,portraitViewBounds,drawBattleOverview,portraitOffscreenStatus} from './portrait-view.mjs';
-import {updateCombatHud} from './combat-hud.mjs?build=37';
+import {updateCombatHud} from './combat-hud.mjs?build=40';
 import {frameCombatCamera} from './combat-camera.mjs';
-import {createMidgameDemoBattleOptions,prepareMidgameDemoBattle} from './midgame-demo.mjs?build=37';
+import {createMidgameDemoBattleOptions,prepareMidgameDemoBattle} from './midgame-demo.mjs?build=40';
 import {skillIcon} from './skill-icons.mjs';
 import {createMovementOwners} from './movement-input.mjs';
 import {liveBarState,liveSlotStatus} from './live-action-model.mjs';
 import {createLiveSkillAdapter} from './live-skill-adapter.mjs';
-import {drawFortification,drawFortificationCollision,garrisonStation,fortificationGeometry} from './fortress-art.mjs?build=37';
+import {drawFortification,drawFortificationCollision,garrisonStation,fortificationGeometry} from './fortress-art.mjs?build=40';
 import {boundSkillRefs,contextualHudState,priorityFlagAlert,shortNames} from './quiet-hud-model.mjs';
 import {drawAlternateAimGuide} from './alternate-aim-guides.mjs';
 import {autoAimFeedback} from './auto-aim-feedback.mjs';
 import {sampleManualAim,drawManualAimGuide} from './manual-aim-guide.mjs';
-import {createCombatPoseController,drawCombatTroop} from './combat-poses.mjs?build=37';
+import {createCombatPoseController,drawCombatTroop} from './combat-poses.mjs?build=40';
 import {createWorldCamera,screenToWorld,getBackingStoreSize,extendTerrainForCamera} from './world-camera.mjs';
 import {flagDescription,heroExperience,summonMessage} from './hud-state.mjs';
 import {markTestingProfiles,grantTestGold,unlockTestSkills,readyTestSkills,protectTestBattle,finishTestBattle,selectTestLevel} from './testing.mjs';
-import {combatNotice,drawCombatNotice,drawStatusBadges} from './combat-feedback.mjs?build=37';
+import {combatNotice,drawCombatNotice,drawStatusBadges} from './combat-feedback.mjs?build=40';
 import {ActionBarLayout} from './engine/action-bar-layout.mjs';
 import {BattleAudio} from './audio.mjs';
 import {CampaignBattle} from './engine/first-battle.mjs';
@@ -61,30 +75,52 @@ function measureScene(rect=canvas.getBoundingClientRect()){
 }
 
 let visualDirty=true,lastPaint=null,aimPointerId=null,aimPressPoint=null,aimCamera=null,aimGuideVisible=false,loadGeneration=0,movementTap=null;
-const background=typeof Image==='undefined'?null:new Image();if(background){background.onload=()=>visualDirty=true;background.src='./images/illustrated-highlands.png';}
+const campaignRegionArt=createCampaignRegionArt({onInvalidate:()=>visualDirty=true});
+const regionContrast=window.matchMedia?.('(prefers-contrast: more)');
+regionContrast?.addEventListener?.('change',()=>visualDirty=true);
+window.addEventListener('pagehide',event=>{if(!event.persisted)campaignRegionArt.dispose();});
 const requestedMode=new URLSearchParams(window.location?.search??'').get('mode');
-let testingMode=requestedMode==='test',demoMode=requestedMode==='demo';
+let testingMode=requestedMode==='test',demoMode=requestedMode==='demo',expeditionMode=requestedMode==='expedition';
 let recruitShowcase=demoMode&&new URLSearchParams(window.location?.search??'').get('showcase')==='companions';
-let activeDestination=destinationForMode({demoMode,recruitShowcase,testingMode});
+let activeDestination=destinationForMode({demoMode,recruitShowcase,testingMode,expeditionMode});
 let selectedDestination=activeDestination,hubOpen=true,pendingDestination=null;
 const destinationSessions=new Map();
 const makeDemo=options=>(recruitShowcase?createRecruitShowcaseOptions:createMidgameDemoBattleOptions)(options);
 const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
-if(demoMode)document.title='Castledecks · Midgame demo';
+if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='37';
-let profiles=new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
+const GAME_BUILD='45';
+let profiles=expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
+let localCampaign=null;
 let profile=profiles.active,battle,clock,combatPoses,specialMotion,started=false,angle=20,power=100,now=performance.now(),notices=[],barSignature='',liveSkills,selectedWrapper=null,editorBar=0,loadoutOrigin='preparation',toastUntil=0,openPanelId=null,panelResume=false,activationPulse=0,heldSpace=false,loadoutReturnPanel=null,pendingDelete=null,bindingLayout=null,pauseMessage="Take your time. Your battlefield is frozen.",panelFocus=null;
 const movementOwners=createMovementOwners(()=>battle?.input??{});
 const descriptions={...Object.fromEntries(Object.entries(RECRUIT_SKILLS).map(([id,item])=>[id,item.description])),arrow:'Fast-reloading standard shot. Earn gold and experience from hits.',fireArrow:'Fire damage and a lingering burn.',iceArrow:'Ice damage that slows affected targets.',pierceArrow:'A heavy piercing projectile.',bombArrow:'A blast on impact with nearby damage.',flakArrow:'Press Space while airborne to scatter shrapnel.',bombWave:'Explosions travel along the ground.',iceWave:'Waves of ice damage and slowing frost sweep outward.',fireWave:'Burning waves travel over the terrain.',healWave:'Restores nearby friendly living units.',thunderArrow:'Press Space to form a lightning cloud.',meteorArrow:'Calls down falling fire and rock.',cometArrow:'Calls down falling ice.',grunt:'Four foot soldiers. Each squad costs 20 gold and 4 reserve.',archer:'Four archers. Each squad costs 20 gold and 4 reserve.',tallGrunt:'Three heavy infantry. Each squad costs 30 gold and 3 reserve.',mount:'Four mounted fighters. Each squad costs 30 gold and 4 reserve.',trebuchet:'One siege engine. Costs 70 gold and 1 reserve recruit.',priest:'Two healers. Each squad costs 30 gold and 2 reserve.'};
-const companionUI=createCompanionUI({document,getBattle:()=>battle,canAct:()=>started&&!battle.paused&&!battle.outcome&&!battle.summary&&!openPanelId,onChange:()=>{visualDirty=true;if(openPanelId==='#shopPanel')renderShop();},notify:text=>status(text)});
+const companionUI=createCompanionUI({document,getBattle:()=>battle,canAct:()=>started&&!battle.paused&&!battle.outcome&&!battle.summary&&!openPanelId,onChange:()=>{localCampaign?.checkpoint('loadout');visualDirty=true;if(openPanelId==='#skillsPanel')drawOwnedSkills();if(openPanelId==='#shopPanel')renderShop();},notify:text=>status(text)});
 function status(text){$('#battleStatus').textContent=text;if(/out of range|not enough|need \d|need more|reloads in|queue is full|unavailable|not ready|begin inside|view changed|wait for|no population|cannot|failed/i.test(text)&&started&&!openPanelId){$('#hudToast').textContent=text;$('#hudToast').classList.remove('hidden');toastUntil=performance.now()+2200;visualDirty=true;}}
-function completedCampaignLabel(){return profiles.profiles.length>1?'Retire and choose campaign':'Start new campaign';}
+function completedCampaignLabel(){if(expeditionMode)return profiles.profiles.length>1?'Archive and choose charter':'Archive and start new charter';return profiles.profiles.length>1?'Retire and choose campaign':'Start new campaign';}
+const campaignAtlas=createCampaignAtlas({document,host:$('#campaignAtlasHost'),getState:()=>({profile,battle,started,summary:battle?.summary,destination:activeDestination}),onPrepare:level=>{if(!canPrepareEncounter({profile,level,started,summary:battle.summary,destination:activeDestination}))return;panelResume=false;panel('#campaignPanel',false);setup(level);showHub();$('#introNotice').textContent=`${encounterBrief(level).name} prepared. ${battle.campaignReplay?'Replay: your earned frontier is preserved.':'Review your loadout, then start when ready.'}`;},onReturn:()=>panel('#campaignPanel',false)});
+const expeditionRoute=createExpeditionRoute({host:$('#expeditionRouteHost'),getRun:()=>profiles.activeRun,getState:()=>({started,summary:battle.summary,pendingOutcome:!!battle.outcome&&!battle.summary}),onChoose:id=>{if(!expeditionMode||!profiles.activeRun.choose(id))return;panelResume=false;panel('#expeditionPanel',false);setup();showHub();$('#introNotice').textContent=`${profiles.activeRun.current.name} chosen. Arrange your loadout, then Start when ready.`;},onReturn:()=>panel('#expeditionPanel',false),onRestart:()=>{if(!expeditionMode)return;panelResume=false;panel('#expeditionPanel',false);profile=profiles.restartCurrent();setup();showHub();$('#introNotice').textContent='Charter restarted with its declared starting supplies. Other banners and sessions are preserved.';}});
+function showExpeditionRoute(){if(!expeditionMode||battle.outcome&&!battle.summary)return;showHub();expeditionRoute.open();panel('#expeditionPanel',true);}
+function syncExpeditionIdentity(){
+ for(const id of ['#introRoute','#pauseRoute','#endingRoute','#hubExpeditionProgress','#expeditionObjective'])$(id).classList[expeditionMode?'remove':'add']('hidden');
+ renderExpeditionReceipt($('#expeditionRewards'),expeditionMode?profiles.activeRun:null);
+ if(!expeditionMode)return;
+ const run=profiles.activeRun,field=run.current;
+ $('#battleTitle').textContent=`Leg ${field.leg} / 4 · ${field.name}`;$('#expeditionObjective').textContent=field.objectiveText;
+ $('#hubSessionState').textContent=run.complete?'Four legs complete · charter ready to archive':run.choosing?`${field.name} won · choose the next road`:battle.summary?`${field.name} lost · retry available`:started?`${field.name} paused · exact battlefield preserved`:`${field.name} ready · combat has not started`;
+ $('#hubExpeditionProgress').textContent=`${run.state.cleared}/4 fields won · ${field.objective==='break-keep'?'Break the enemy keep':'Flag or elimination'} · Seed ${run.state.seed}`;
+ if(selectedDestination===activeDestination){$('#start').textContent=expeditionLaunchLabel(run,{started,summary:battle.summary});$('#hubLaunchNote').textContent=run.choosing?'Choose one road. The next field waits for your explicit Start.':run.complete?'Keep a charter file or code, then archive this banner when ready.':started&&!battle.summary?'Resume this exact field. Route changes wait until victory.':'Your charter has its own starter kit, gold and save. Review the route for objective and enemy counters.';}
+ if(battle.summary){const copy=expeditionResultCopy(run,battle);$('#endingTitle').textContent=copy.title;$('#endingText').textContent=copy.description;$('#replay').textContent=copy.action;}
+}
+function showCampaignAtlas(){if(activeDestination!=='campaign'||battle.outcome&&!battle.summary)return;showHub();campaignAtlas.open(battle.summary?.outcome==='victory'?Math.min(30,profile.highestLevel):battle.level);panel('#campaignPanel',true);campaignAtlas.recenter();}
+function syncCampaignIdentity(){const isCampaign=activeDestination==='campaign';for(const id of ['#introAtlas','#pauseAtlas','#endingAtlas'])$(id).classList[isCampaign?'remove':'add']('hidden');$('#hubCampaignProgress').classList[isCampaign?'remove':'add']('hidden');if(isCampaign){const progress=campaignProgress(profile),brief=encounterBrief(battle.level);$('#hubCampaignProgress').textContent=`${brief.region.name} · ${progress.cleared}/30 ${progress.assisted?'reached':'cleared'}${battle.campaignReplay?' · Replaying a cleared field':''}`;$('#battleTitle').textContent=`${profile.cheated?'Assisted · ':''}Battle ${battle.level} · ${brief.name}${battle.campaignReplay?' · Replay':''}`;}renderCampaignRewards($('#campaignRewards'),isCampaign?campaignSettlement(battle,battle.campaignStartSnapshot):null);}
+
 function renderHub(){
+ localCampaign?.render();
  const current=PLAY_DESTINATIONS.find(item=>item.id===activeDestination),selected=PLAY_DESTINATIONS.find(item=>item.id===selectedDestination);
- $('#introTitle').textContent='Player lobby';
- $('#introText').textContent='Choose where to play. Manage the loadout, army and settings for this session below.';
+ $('#introTitle').textContent='The command hall';
+ $('#introText').textContent='Prepare your banner, then take the field.';
  $('#hubSessionTitle').textContent=`${current.name} · ${profile.name}`;
  $('#hubSessionState').textContent=battle.summary?.campaignComplete?'Campaign complete':battle.summary?`Battle ${battle.level} ${battle.summary.outcome} · ready to ${battle.summary.outcome==='victory'?'continue':'retry'}`:started?`Battle ${battle.level} paused · your battlefield is preserved`:`Battle ${battle.level} ready · combat has not started`;
  $('#hubSessionResources').textContent=`Rank ${profile.rank} · ${Math.floor(profile.gold).toLocaleString()} gold${profile.cheated?' · Assisted':''}`;
@@ -96,6 +132,8 @@ function renderHub(){
  $('#hubDestinationDescription').textContent=selected.description;
  $('#start').textContent=selectedDestination!==activeDestination?`Open ${selected.name.toLowerCase()}`:battle.summary?.campaignComplete?completedCampaignLabel():battle.summary?`${battle.summary.outcome==='victory'?'Start':'Retry'} battle ${battle.summary.outcome==='victory'?battle.level+1:battle.level}`:started?`Resume battle ${battle.level}`:`Start battle ${battle.level}`;
  $('#hubLaunchNote').textContent=selectedDestination!==activeDestination?'Switch to this lobby in the same tab. Your current session is kept in memory.':started&&!battle.summary?'Resume this exact battlefield when you are ready.':battle.summary?'Review your loadout before the next battle.':'Combat begins only when you choose Start.';
+ syncCampaignIdentity();syncExpeditionIdentity();if(activeDestination==='campaign'&&battle.campaignReplay&&battle.summary?.outcome==='victory')$('#start').textContent=campaignSettlement(battle,battle.campaignStartSnapshot).nextLabel;
+ syncCommandHall({document,current,selected,activeDestination,selectedDestination,started,summary:battle.summary});
  $('#introArmory').disabled=!!battle.summary?.campaignComplete;$('#hubOpenSeparate').classList[selectedDestination===activeDestination?'add':'remove']('hidden');
 }
 function openDestination(id,notice=$('#introNotice')){
@@ -110,7 +148,7 @@ function showHub(){
  if(battle.outcome&&!battle.summary){status('Counting the battle result. The lobby opens when rewards are settled.');return;}
  cancelPendingImport();clearInput();loadoutDrag.cancel();
  if(openPanelId){panelResume=false;panel(openPanelId,false);}
- loadoutReturnPanel=null;precisionReturnPanel=null;armoryReturnFromLoadout=false;
+ loadoutReturnPanel=null;precisionReturnPanel=null;armoryReturnFromLoadout=false;armyReturnFromLoadout=false;
  if(started&&!battle.summary)pause(true);
  hubOpen=true;selectedDestination=activeDestination;
  $('#restartConfirm').classList.add('hidden');$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');
@@ -139,18 +177,18 @@ function switchDestination(id){
  if(id===activeDestination)return;
  clearInput();cancelPendingImport();loadoutDrag.cancel();if(bindingLayout&&!bindingLayout.closed)bindingLayout.close();liveSkills?.dispose();
  destinationSessions.set(activeDestination,{profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview,trajectory:$('#trajectory').value,shooterAngleMode:battle.shooter.angleMode,showAssist:$('#showAssist').checked});
- activeDestination=id;selectedDestination=id;demoMode=['midgame','allies'].includes(id);testingMode=id==='training';recruitShowcase=id==='allies';
+ activeDestination=id;selectedDestination=id;demoMode=['midgame','allies'].includes(id);testingMode=id==='training';recruitShowcase=id==='allies';expeditionMode=id==='expedition';
  pendingDestination=null;$('#switchSessionConfirm').classList.add('hidden');
  const saved=destinationSessions.get(id);
  if(saved){
   ({profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview}=saved);
-  hubOpen=true;barSignature='';bindingLayout=null;selectedWrapper=null;armoryReturnFromLoadout=false;precisionReturnPanel=null;loadoutReturnPanel=null;
+  hubOpen=true;barSignature='';bindingLayout=null;selectedWrapper=null;armoryReturnFromLoadout=false;armyReturnFromLoadout=false;precisionReturnPanel=null;loadoutReturnPanel=null;
   syncSessionMenus();$('#trajectory').value=saved.trajectory;$('#showAssist').checked=saved.showAssist;attachLiveSkills();drawHotbar();
  }else{
   testingProtection=false;testingCollision=false;angle=20;power=100;$('#trajectory').value='1';$('#showAssist').checked=false;demoLaunch=demoMode?makeDemo({shootingMode:profile.shootingMode}):null;
-  profiles=new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':'Castledecks'});profile=profiles.active;setup();
+  profiles=expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':'Castledecks'});profile=profiles.active;setup();
  }
- document.title=demoMode?'Castledecks · Midgame demo':testingMode?'Castledecks · Training':'Castledecks · Campaign';
+ document.title=expeditionMode?'Castledecks · Wayfarer Charter':demoMode?'Castledecks · Midgame demo':testingMode?'Castledecks · Training':'Castledecks · Campaign';
  window.history?.replaceState(null,'',playDestinationURL(activeDestination,profile.shootingMode));
  $('#battleTitle').textContent=`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;
  $('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;$('#battleAngle').value=String(angle);$('#battleAngleOut').textContent=angle+'°';$('#battlePower').value=String(power);updatePowerMode();if(saved)battle.shooter.angleMode=saved.shooterAngleMode;$('#battleFire').classList[$('#showAssist').checked?'remove':'add']('hidden');now=performance.now();lastPaint=null;showHub();
@@ -161,39 +199,49 @@ function restartMidgameDemo(){
  status('Midgame demo reset · prepare Battle 13 · assisted');
 }
 function returnFromDemo(){if(!demoMode)return;if(destinationSessions.has('campaign')){showHub();selectedDestination='campaign';renderHub();requestDestination('campaign');return;}if(window.parent&&window.parent!==window){window.parent.postMessage({type:'bowmaster-preview-exit-demo'},window.location.origin);return;}$('#demoReturnNote').textContent='Your campaign is in its original tab. If this tab stays open, close it to return.';try{window.close?.();}catch{}}
-function cancelPendingImport(){loadGeneration++;if($('#introNotice').textContent==='Reading campaign file…')$('#introNotice').textContent='';for(const id of ['#saveStatus','#endingSaveStatus'])if($(id).textContent==='Reading campaign file…')$(id).textContent='Load cancelled. Your current campaign has been kept.';}
+function cancelPendingImport(){localCampaign?.cancel();loadGeneration++;const reading=text=>text==='Reading campaign file…'||text==='Reading charter file…';if(reading($('#introNotice').textContent))$('#introNotice').textContent='';for(const id of ['#saveStatus','#endingSaveStatus'])if(reading($(id).textContent))$(id).textContent=expeditionMode?'Load cancelled. Your current charter has been kept.':'Load cancelled. Your current campaign has been kept.';}
 
 function clearInput(){battle?.cancelPlayerShots();aimCamera=null;movementOwners.clear();liveSkills?.clear();aimPressPoint=null;aimGuideVisible=false;movementTap=null;const pointerId=aimPointerId;aimPointerId=null;if(pointerId!==null&&canvas.hasPointerCapture?.(pointerId))canvas.releasePointerCapture(pointerId);battle.input={left:false,right:false,up:false,down:false,mouseDown:false,digits:[],space:false};battle.queuedAim=null;battle.queuedSelection=null;battle.hotbar.wheel=0;activationPulse=0;heldSpace=false;battle.shooter.cancel();}
 function syncPanelShield(){for(const [id,panelId] of [['#pauseSkills','#skillsPanel'],['#openAim','#aimPanel']])$(id).setAttribute('aria-expanded',String(openPanelId===panelId));const active=!!openPanelId;$('#panelShield').classList[active?'remove':'add']('hidden');for(const selector of ['.topbar','.battle-screen','.command-deck','#intro','#pauseOverlay','#ending','#restartConfirm','#switchSessionConfirm'])$(selector).inert=active||!!pendingDestination&&selector!=='#switchSessionConfirm';}
 function syncPause(){syncPanelShield();const visible=started&&battle.paused&&!battle.outcome&&!openPanelId&&!hubOpen;$('#pauseOverlay').classList[visible?'remove':'add']('hidden');$('#pauseReason').textContent=pauseMessage;$('#battlePause').textContent=battle.paused?'▶ Resume':'Ⅱ Pause';$('#battlePause').setAttribute?.('aria-label',battle.paused?'Resume battle':'Pause battle');}
-function focusPanel(id){const node=$(id);node?.querySelector?.('button,input,select,[tabindex]')?.focus?.();}
+function focusPanel(id){const node=$(id);(modalFocusCandidates(node)[0]??node)?.focus?.();}
 
 function updateAimGuide(){const guides={classic:['Press the glowing ring at your castle. Pull back, then release to shoot.','Drag from the glowing ring to draw your bow','◎ ← ➶'],anywhere:['Press anywhere, pull opposite your shot, then release. The gold arrow starts at your hero; a longer pull adds power.','Pull anywhere; the gold arrow shows your hero’s launch direction and power','← ➶'],point_aim:['Tap the battlefield to shoot toward that point. Set power in Settings → precise controls.','Tap the battlefield to shoot in that direction','⊙ ➶'],auto_aim:['Tap where the target will be when your arrow arrives. The bow calculates an arc to that point; shots do not track.','Lead moving targets, then tap to fire a calculated arc','⌁ ➶']};const g=guides[profile.shootingMode]??guides.classic;$('#aimGuideTitle').textContent=['point_aim','auto_aim'].includes(profile.shootingMode)?'Choose your target.': 'Draw. Aim. Release.';$('#aimGuide').textContent=g[0];$('#aimTip').textContent=g[1];$('#aimDemo').textContent=g[2];canvas.setAttribute('aria-label',`Battlefield. ${g[0]} Movement and abilities are in the game HUD.`);$('#aimTip').classList.remove('hidden');}
-let armoryReturnFromLoadout=false;
+let armoryReturnFromLoadout=false,armyReturnFromLoadout=false;
+let armoryCatalog=null;
 function syncSessionMenus(){
+ armoryCatalog?.leave();
+ $('#profilesTitle').textContent=expeditionMode?'Charter banners':'Campaign profiles';$('#savePanelTitle').textContent=expeditionMode?'Charter vault':'Campaign vault';
+ for(const [id,normal,charter] of [['#introSaveLabel','Save campaign','Save charter'],['#introLoadLabel','Load campaign','Load charter'],['#saveGameLabel','Save campaign','Save charter'],['#loadGameLabel','Load campaign','Load charter'],['#endingSave','Save campaign','Save charter'],['#endingLoad','Load campaign','Load charter'],['#downloadSave','Download campaign file','Download charter file'],['#showSaveCode','Show campaign code','Show charter code'],['#importCode','Load campaign code','Load charter code'],['#chooseSaveFile','Choose campaign file','Choose charter file'],['#saveCodeLabel','Your campaign code','Your charter code'],['#loadCodeLabel','Saved campaign code','Saved charter code'],['#restoreTitle','Restore a campaign','Restore a charter'],['#profilesEyebrow','YOUR CAMPAIGNS','YOUR CHARTER BANNERS'],['#newProfileTitle','Begin a new campaign','Begin a new charter'],['#localManage','Manage local saves','Open charter vault']])$(id).textContent=expeditionMode?charter:normal;
+ $('#settingsSaveNote').textContent=expeditionMode?'Export your charter to keep these preferences.':'Save your campaign to keep these preferences.';
+ $('#restoreDescription').textContent=expeditionMode?'Restart a live field, or restore its settled result and route choice.':'Resume at the start of the saved battle.';
+ $('#importDescription').textContent=expeditionMode?'Loading replaces the charter banners in this tab. Crownroad local checkpoints stay unchanged. Export your current charter first if you want a copy.':'Imports are reviewed before opening in a new local slot or for this session only. Existing local saves stay unchanged.';
+ $('#saveCode').setAttribute('aria-label',expeditionMode?'Your charter code':'Your campaign code');$('#loadCode').setAttribute('aria-label',expeditionMode?'Paste a saved charter code':'Paste a saved campaign code');$('#loadCode').setAttribute('placeholder',expeditionMode?'Paste your charter code here':'Paste your campaign code here');$('#saveFile').setAttribute('aria-label',expeditionMode?'Import Wayfarer charter save file':'Import reconstruction save file');
  if(testingMode||demoMode)markTestingProfiles(profiles);
  for(const id of ['#openTesting','#introTesting','#pauseTesting','#endingTesting'])$(id).classList[testingMode?'remove':'add']('hidden');$('#launchTesting').classList[testingMode?'add':'remove']('hidden');$('#testModeBadge').classList[profile.cheated?'remove':'add']('hidden');$('#testModeBadge').textContent=demoMode?'DEMO':testingMode?'TEST':'ASSISTED';$('#testModeBadge').setAttribute('aria-label',demoMode?'Assisted midgame demo':testingMode?'Assisted playground':'Assisted profile');
  for(const section of document.querySelectorAll('[data-demo-only]'))section.classList[demoMode?'remove':'add']('hidden');$('#pauseDemo').classList[demoMode?'add':'remove']('hidden');$('#gameShell').dataset.demo=String(demoMode);$('#pauseAlliesDemo').classList[demoMode?'add':'remove']('hidden');$('#demoPresetDescription').textContent=recruitShowcase?'Assisted allies showcase · supplied Fire Dragon already on the field · Gorath hired and ready to summon. Tap his separate control, then command Earthshatter. New recreation mechanics and provisional balance.':'Assisted preset · rank 8 hero/basic arrow · rank 2 acquired skills · heavy infantry and cavalry · automatic army recruitment · 1,500 gold budget.';
  if(demoMode&&destinationSessions.has('campaign')){$('#demoReturn').textContent='Return to campaign lobby';$('#demoReturnNote').textContent='Your campaign is preserved in this tab. Choose Campaign in the player lobby to return.';for(const button of document.querySelectorAll('[data-demo-action="return"]'))button.textContent='Return to campaign lobby';for(const note of document.querySelectorAll('[data-demo-session-note]'))note.textContent='This assisted session has its own profile and gold. Your campaign is preserved in this tab.';}
  if(demoMode&&window.parent&&window.parent!==window){$('#demoReturn').textContent='Back to playground';$('#demoReturnNote').textContent='This is a separate demo inside the viewport lab.';for(const button of document.querySelectorAll('[data-demo-action="return"]'))button.textContent='Back to playground';}
  $('#introText').textContent=testingMode?'Assisted playground. Try any battle or ability with test controls. This separate profile is marked as assisted.':'Defend your flag. Destroy the enemy keep to cut off reinforcements, then defeat the remaining army. Or bring their flag home.';
- cancelPendingImport();$('#saveCode').value='';$('#loadCode').value='';$('#saveCodeArea').classList.add('hidden');openPanelId=null;syncPanelShield();$('#introNotice').textContent='';$('#saveStatus').textContent='Save a campaign file before closing. Progress is kept in this session only.';$('#endingSaveStatus').textContent='Save your progress before leaving. A file resumes at the start of the saved battle.';panelResume=false;loadoutReturnPanel=null;pendingDelete=null;bindingLayout=null;$('#battlePause').disabled=!started;updateAimGuide();$('#pauseOverlay').classList.add('hidden');$('#restartConfirm').classList.add('hidden');for(const id of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel'])$(id)?.classList.add('hidden');
+ cancelPendingImport();$('#saveCode').value='';$('#loadCode').value='';$('#saveCodeArea').classList.add('hidden');openPanelId=null;syncPanelShield();$('#introNotice').textContent='';$('#saveStatus').textContent=expeditionMode?'Export a charter file or code before closing. Charter progress stays in this tab.':'Local checkpoints are available for campaigns. Export a file for a backup.';$('#endingSaveStatus').textContent=expeditionMode?'Export a charter file or code to keep this settled result and route.':'Your settled result can be checkpointed locally. Export a file for a backup.';panelResume=false;loadoutReturnPanel=null;pendingDelete=null;bindingLayout=null;$('#battlePause').disabled=!started;updateAimGuide();$('#pauseOverlay').classList.add('hidden');$('#restartConfirm').classList.add('hidden');for(const id of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel','#campaignPanel','#expeditionPanel'])$(id)?.classList.add('hidden');
 }
 function attachLiveSkills(){
  liveSkills=createLiveSkillAdapter(battle,{canAct:()=>started&&!battle.paused&&!battle.outcome&&!battle.summary&&!openPanelId,onSummonResult:({skill,accepted,cancelled})=>{if(cancelled)return;status(accepted?SKILLS[skill.id].name+' squad queued':summonMessage(skill,profile,battle.friendlyQueue));visualDirty=true;}});
 }
 function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
  started=false;hubOpen=true;selectedDestination=activeDestination;
- armoryReturnFromLoadout=false;
+ armoryReturnFromLoadout=false;armyReturnFromLoadout=false;
  if(battle)clearInput();
  const demoOptions=demoLaunch;demoLaunch=null;portraitCenter=null;portraitOverview=false;
  aimCamera=null;aimGuideVisible=false;if(bindingLayout&&!bindingLayout.closed)bindingLayout.close();movementOwners.clear();liveSkills?.dispose();barSignature='';selectedWrapper=null;editorBar=0;
  combatPoses=createCombatPoseController();specialMotion=createSpecialMotionController();
  syncSessionMenus();
- const completed=profile.highestLevel>30,savedProgress=completed?{level:profile.level,scene:profile.scene,highestLevel:profile.highestLevel,highestScene:profile.highestScene}:null;
+ const campaignStartSnapshot=campaignBattleSnapshot(profile);
+ const completed=!expeditionMode&&profile.highestLevel>30,savedProgress=completed?{level:profile.level,scene:profile.scene,highestLevel:profile.highestLevel,highestScene:profile.highestScene}:null;
+ const dragonCounterGuide=createDragonCounterGuide();
  const onBattleEvent=event=>{
   combatPoses.event(event);specialMotion.event(event);
-  const elementalCue=elementalNotice(event);if(elementalCue)notices.push(elementalCue);
+  const elementalCue=dragonCounterGuide(event)??elementalNotice(event);if(elementalCue)notices.push(elementalCue);
   const cue=combatNotice(event);if(cue)notices.push(cue);if(event.type==='heal'&&event.amount>0)audio.play('heal');
   if(event.type==='sound')audio.play(event.kind);
   if(event.type==='shot'){audio.play('shot');$('#aimTip').classList.add('hidden');}
@@ -209,10 +257,11 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
   if(event.type==='summary'){
    $('#endingTitle').textContent=(profile.cheated?'Assisted · ':'')+(event.summary.campaignComplete?'Campaign complete':event.summary.outcome==='victory'?'Victory':'Defeat');
    $('#endingText').textContent=event.summary.campaignComplete?(profile.cheated?'Assisted final-battle result. Test profiles can jump ahead; this is not a verified 30-battle playthrough.':'You have completed all 30 battles in this reconstruction. Original-runtime parity remains under review.'):event.summary.outcome==='victory'?`Battle ${battle.level} won. Bonus: ${event.summary.gold} gold and ${event.summary.xp} XP.`:'Keep the gold and experience you earned. Visit the armory, then defend your flag again.';
-   $('#replay').textContent=event.summary.campaignComplete?completedCampaignLabel():event.summary.outcome==='victory'?`Continue to battle ${battle.level+1}`:'Retry battle';$('#ending').classList.remove('hidden');$('#replay').focus?.();
+   $('#replay').textContent=event.summary.campaignComplete?completedCampaignLabel():event.summary.outcome==='victory'?`Continue to battle ${battle.level+1}`:'Retry battle';if(activeDestination==='campaign'){const report=campaignSettlement(battle,battle.campaignStartSnapshot);renderCampaignRewards($('#campaignRewards'),report);if(report&&battle.campaignReplay&&report.won)$('#replay').textContent=report.nextLabel;}if(expeditionMode)syncExpeditionIdentity();$('#ending').classList.remove('hidden');$('#replay').focus?.();localCampaign?.checkpoint('result');
   }
  };
- battle=new CampaignBattle({...({profile,level,testing:testingMode,random:Math.random}),...(demoOptions??{}),onEvent:demoOptions?()=>{}:onBattleEvent});
+ battle=expeditionMode?new ExpeditionBattle({run:profiles.activeRun,onEvent:onBattleEvent}):new CampaignBattle({...({profile,level,testing:testingMode,random:Math.random}),...(demoOptions??{}),onEvent:demoOptions?()=>{}:onBattleEvent});
+ battle.campaignStartSnapshot=campaignStartSnapshot;battle.campaignReplay=activeDestination==='campaign'&&!completed&&level<campaignStartSnapshot.frontier;
  if(demoOptions){(recruitShowcase?prepareRecruitShowcaseBattle:prepareMidgameDemoBattle)(battle);battle.onEvent=onBattleEvent;}
  if(testingMode)protectTestBattle(battle,testingProtection);
  if(completed){Object.assign(profile,savedProgress);battle.outcome='victory';battle.summary={outcome:'victory',campaignComplete:true,gold:0,xp:0};}
@@ -221,15 +270,19 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
  clock=new SimulationClock({onTick:()=>{const actorsAdvanced=!battle.paused&&!battle.summary&&!battle.outcome;const tap=movementTap;movementTap=null;if(tap)battle.input[tap]=true;liveSkills.beforeTick();battle.step();liveSkills.afterTick();if(battle.outcome)liveSkills.clear();combatPoses.observeTick({actorsAdvanced});specialMotion.observeTick({actorsAdvanced});if(tap){battle.input[tap]=false;movementOwners.sync();}if(activationPulse>0)--activationPulse;battle.input.space=heldSpace||activationPulse>0;}});notices=[];now=performance.now();barSignature='';
  $('#battleTitle').textContent=`${testingMode?'Playground · ':profile.cheated?'Assisted · ':''}Battle ${battle.level}${profile.cheated?'':' · Capture the flag'}`;renderHub();
  $('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;updatePowerMode();drawHotbar();if(completed){$('#intro').classList.add('hidden');$('#ending').classList.remove('hidden');$('#endingTitle').textContent=(profile.cheated?'Assisted · ':'')+'Campaign complete';$('#endingText').textContent=profile.cheated?'This assisted profile has a final-battle result. Export it to keep the record, or begin a new campaign.':'This saved campaign has completed all 30 battles. Export it to keep the record, or begin a new campaign.';$('#replay').textContent=completedCampaignLabel();}
- syncPause();
+ if(expeditionMode){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}
+ syncPause();localCampaign?.checkpoint('ready');
 }
+localCampaign=createLocalCampaignUI({document,window,getState:()=>({profiles,battle,started,destination:activeDestination}),openVault:()=>showCampaignVault(),notify:status,onRestore:manager=>{profiles=manager;profile=profiles.active;started=false;setup();if(!battle.summary?.campaignComplete)showHub();}});
 setup();
 $('#pauseAlliesDemo').onclick=()=>startMidgameDemo(true);$('#pauseDemo').onclick=startMidgameDemo;$('#demoReturn').onclick=returnFromDemo;$('#demoRestart').onclick=restartMidgameDemo;
 for(const button of document.querySelectorAll('[data-demo-action]'))button.onclick=button.getAttribute('data-demo-action')==='return'?returnFromDemo:restartMidgameDemo;
 $('#buildLabel').textContent=`Build ${GAME_BUILD}`;$('#testingBuild').textContent=`Loaded build ${GAME_BUILD}`;
-function begin(){if(started||openPanelId||battle.summary?.campaignComplete)return;hubOpen=false;cancelPendingImport();canvas.focus?.();started=true;battle.paused=false;clearInput();$('#pauseOverlay').classList.add('hidden');$('#intro').classList.add('hidden');$('#ending').classList.add('hidden');$('#battlePause').disabled=false;syncPause();drawHotbar();status(profile.shootingMode==='classic'?'Pull back from the castle ring to fire. Watch for enemies carrying your flag.':'Aim on the battlefield. Protect your flag carriers.');now=performance.now();}
-function restart(){const level=battle.level;setup(level);begin();}
-$('#start').onclick=startFromHub;$('#pauseLobby').onclick=showHub;$('#endingLobby').onclick=showHub;$('#hubOpenSeparate').onclick=()=>openDestination(selectedDestination);$('#cancelSessionSwitch').onclick=cancelSessionSwitch;$('#confirmSessionSwitch').onclick=()=>{if(pendingDestination)switchDestination(pendingDestination);};$('#separateSessionSwitch').onclick=()=>{if(pendingDestination)openDestination(pendingDestination);cancelSessionSwitch();};$('#battleRestart').onclick=()=>{$('#restartConfirm').classList.remove('hidden');$('#confirmRestart').focus?.();};$('#confirmRestart').onclick=()=>{restart();};$('#cancelRestart').onclick=()=>{$('#restartConfirm').classList.add('hidden');$('#resumeGame').focus?.();};$('#replay').onclick=()=>{if(battle.summary?.campaignComplete){if(!profile.cheated&&profile.victories+profile.defeats===0){$('#endingText').textContent='This imported completion has no recorded battles. Choose Profiles to switch campaigns, or Load campaign to use another file.';status('Choose another profile or load a campaign file');return;}const chooseExisting=profiles.profiles.length>1;profile.scene=profile.highestScene=33;profiles.retireCurrent();profile=profiles.active;if(chooseExisting){started=false;setup();if(!battle.summary?.campaignComplete){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}showProfiles();status('Campaign retired. Choose a campaign when you’re ready.');return;}}setup();begin();};
+function begin(){if(started||openPanelId||battle.summary?.campaignComplete||expeditionMode&&(profiles.activeRun.choosing||profiles.activeRun.complete))return;if(!localCampaign.beforeBegin())return;hubOpen=false;cancelPendingImport();canvas.focus?.();started=true;battle.paused=false;clearInput();$('#pauseOverlay').classList.add('hidden');$('#intro').classList.add('hidden');$('#ending').classList.add('hidden');$('#battlePause').disabled=false;syncPause();drawHotbar();status(profile.shootingMode==='classic'?'Pull back from the castle ring to fire. Watch for enemies carrying your flag.':'Aim on the battlefield. Protect your flag carriers.');now=performance.now();}
+function restart(){const level=battle.level;if(expeditionMode)profiles.activeRun.retry();setup(level);begin();}
+for(const id of ['#introAtlas','#pauseAtlas','#endingAtlas'])$(id).onclick=showCampaignAtlas;$('#closeAtlas').onclick=()=>panel('#campaignPanel',false);
+for(const id of ['#introRoute','#pauseRoute','#endingRoute'])$(id).onclick=showExpeditionRoute;$('#closeRoute').onclick=()=>panel('#expeditionPanel',false);
+$('#start').onclick=startFromHub;$('#pauseLobby').onclick=showHub;$('#endingLobby').onclick=showHub;$('#hubOpenSeparate').onclick=()=>openDestination(selectedDestination);$('#cancelSessionSwitch').onclick=cancelSessionSwitch;$('#confirmSessionSwitch').onclick=()=>{if(pendingDestination)switchDestination(pendingDestination);};$('#separateSessionSwitch').onclick=()=>{if(pendingDestination)openDestination(pendingDestination);cancelSessionSwitch();};$('#battleRestart').onclick=()=>{$('#restartConfirm').classList.remove('hidden');$('#confirmRestart').focus?.();};$('#confirmRestart').onclick=()=>{restart();};$('#cancelRestart').onclick=()=>{$('#restartConfirm').classList.add('hidden');$('#resumeGame').focus?.();};$('#replay').onclick=()=>{if(expeditionMode){const run=profiles.activeRun;if(run.complete){profiles.retireCurrent();profile=profiles.active;setup();showHub();return;}if(run.choosing){showExpeditionRoute();return;}run.retry();setup();begin();return;}if(battle.summary?.campaignComplete){if(!profile.cheated&&profile.victories+profile.defeats===0){$('#endingText').textContent='This imported completion has no recorded battles. Choose Profiles to switch campaigns, or Load campaign to use another file.';status('Choose another profile or load a campaign file');return;}const chooseExisting=profiles.profiles.length>1;profile.scene=profile.highestScene=33;profiles.retireCurrent();profile=profiles.active;if(chooseExisting){started=false;setup();if(!battle.summary?.campaignComplete){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}showProfiles();status('Campaign retired. Choose a campaign when you’re ready.');return;}}setup();begin();};
 function pause(force,reason){if(!started||battle.summary||battle.outcome)return;const next=typeof force==='boolean'?force:!battle.paused;if(!next&&(hubOpen||openPanelId||!$('#restartConfirm').classList.contains('hidden')))return;battle.paused=next;clearInput();if(reason)pauseMessage=reason;else if(next)pauseMessage='Take your time. Your battlefield is frozen.';now=performance.now();syncPause();if(!next){cancelPendingImport();canvas.focus?.();status('Battle resumed');}else if(!openPanelId)$('#resumeGame').focus?.();}
 function displayModeMessage(text){pauseMessage=text;status(text);syncPause();}
 $('#toggleFullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if($('#gameShell').requestFullscreen)await $('#gameShell').requestFullscreen();else displayModeMessage('Full screen is unavailable here. Turn your device for landscape play.');}catch{displayModeMessage('Full screen could not open. Landscape play still works in the browser.');}};
@@ -313,9 +366,9 @@ document.addEventListener('pointerup',event=>finishAim(event));
 const keyMap={a:'left',d:'right',w:'up',s:'down'};
 document.addEventListener('keydown',event=>{
  const key=event.key.toLowerCase(),digitSlot=eventToSlot(event);
- if(key==='escape'){if(event.repeat){event.preventDefault();return;}if(!$('#switchSessionConfirm').classList.contains('hidden'))cancelSessionSwitch();else if(!$('#restartConfirm').classList.contains('hidden'))$('#cancelRestart').onclick();else if(openPanelId){if(openPanelId==='#shopPanel'&&armoryCatalog.back()){}else if(openPanelId==='#skillsPanel')closeLoadout();else if(openPanelId==='#aimPanel')closePrecision();else if(openPanelId===loadoutReturnPanel)closeChildPanel(openPanelId);else panel(openPanelId,false);}else if(document.fullscreenElement){clearInput();pause(true,'Leaving full screen. Resume when you’re ready.');Promise.resolve(document.exitFullscreen?.()).catch(()=>displayModeMessage('Full screen could not close. Use the browser’s exit control.'));}else if(started&&!battle.outcome&&!hubOpen)pause();event.preventDefault();return;}
+ if(key==='escape'){if(event.repeat){event.preventDefault();return;}if(!$('#switchSessionConfirm').classList.contains('hidden'))cancelSessionSwitch();else if(!$('#restartConfirm').classList.contains('hidden'))$('#cancelRestart').onclick();else if(openPanelId){if(openPanelId==='#expeditionPanel'&&expeditionRoute.cancelReset()){}else if(openPanelId==='#shopPanel'&&armoryCatalog.back()){}else if(openPanelId==='#queuePanel'&&armyCommand.back()){}else if(openPanelId==='#skillsPanel'){if(!loadoutCollection.back())closeLoadout();}else if(openPanelId==='#aimPanel')closePrecision();else if(openPanelId===loadoutReturnPanel)closeChildPanel(openPanelId);else panel(openPanelId,false);}else if(document.fullscreenElement){clearInput();pause(true,'Leaving full screen. Resume when you’re ready.');Promise.resolve(document.exitFullscreen?.()).catch(()=>displayModeMessage('Full screen could not close. Use the browser’s exit control.'));}else if(started&&!battle.outcome&&!hubOpen)pause();event.preventDefault();return;}
  const modal=!$('#switchSessionConfirm').classList.contains('hidden')?$('#switchSessionConfirm'):openPanelId?$(openPanelId):!$('#restartConfirm').classList.contains('hidden')?$('#restartConfirm'):!$('#pauseOverlay').classList.contains('hidden')?$('#pauseOverlay'):!$('#intro').classList.contains('hidden')?$('#intro'):!$('#ending').classList.contains('hidden')?$('#ending'):null;
- if(key==='tab'&&modal?.querySelectorAll){const items=[...modal.querySelectorAll('button:not(:disabled),input,select,a[href],[tabindex="0"]')].filter(n=>n.getClientRects().length);if(items.length){const i=items.indexOf(document.activeElement);if(event.shiftKey&&(i<=0)){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(i<0||i===items.length-1)){items[0].focus();event.preventDefault();}}return;}
+ if(key==='tab'&&modal?.querySelectorAll){const items=modalFocusCandidates(modal);if(items.length){const i=items.indexOf(document.activeElement);if(event.shiftKey&&(i<=0)){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(i<0||i===items.length-1)){items[0].focus();event.preventDefault();}}return;}
  if(['INPUT','SELECT','TEXTAREA'].includes(event.target?.tagName)||event.target?.isContentEditable||event.target?.closest?.('[contenteditable="true"]'))return;
  if(key==='p'&&!event.repeat&&!openPanelId){pause();event.preventDefault();return;}
  if(!started||battle.paused||battle.outcome||modal)return;
@@ -366,38 +419,15 @@ function drawHotbar(){
  $('#barLabel').textContent=state.label;$('#nextBar').setAttribute('aria-label',state.cycleLabel);$('#nextBar').classList[state.canCycle?'remove':'add']('hidden');$('#nextBar').disabled=!canAct;
  $('.live-hud').dataset.armyPage=String(state.currentHasSummons);$('#liveArmyResources').classList[state.currentHasSummons?'remove':'add']('hidden');$('#liveArmyResources').textContent=`${Math.floor(profile.gold)} gold · Army slots ${battle.regularArmyCount}/${battle.friendlyQueue.cap} · Reserve ${battle.friendlyQueue.population} · Queue ${battle.friendlyQueue.queue.length}`;
  for(const {skill,id,slot} of items){const button=$('#quick-'+id),info=liveSlotStatus(skill,SKILLS,profile,battle.friendlyQueue);button.disabled=!canAct;button.setAttribute('aria-pressed',String(skill===battle.activeSkill));button.setAttribute('aria-label',`${info.ariaLabel}, key ${slotToKey(slot)}`);button.dataset.affordable=String(info.affordable);button.dataset.cooling=String(info.remainingSeconds>0);button.dataset.kind=SKILLS[id].summon?'army':'bow';$('#quick-cd-'+id).textContent=info.remainingSeconds?`${info.remainingSeconds}s`:'';$('#quick-cd-'+id).classList[info.remainingSeconds?'remove':'add']('hidden');$('#quick-fill-'+id).style.width=`${100*info.fraction}%`;$('#quick-auto-'+id).classList[skill.autocast?'remove':'add']('hidden');}
- updateCombatHud(battle,{aiming:aimPointerId!==null,angle,power,autoAimStatus:currentAutoAimFeedback()});
+ updateCombatHud(battle,{aiming:aimPointerId!==null,angle,power,autoAimStatus:currentAutoAimFeedback()});if(expeditionMode){$('#combatBattleTitle').textContent=`Charter · ${profiles.activeRun.current.leg}/4`;if(profiles.activeRun.current.objective==='break-keep')$('#combatEnemyState').textContent=`Break keep · ${Math.ceil(battle.badCastle.hp/battle.badCastle.maxHp*100)}% HP`;}
 }
-let loadoutFilter='all',bindingArmed=false,bindingMessage='';
+let bindingArmed=false,bindingMessage='';
 const bindingLabel=binding=>binding<0?'Reserve':`Bar ${Math.floor(binding/10)+1} · key ${slotToKey(binding%10)}`;
-function renderAbilityFilters(id,active,entries,onChoose){
- $(id).innerHTML=ABILITY_CATEGORIES.map(([key,label])=>`<button data-ability-filter="${key}" aria-pressed="${key===active}">${label}<span>${entries.filter(([entry])=>key==='all'||abilityCategory(entry,SKILLS)===key).length}</span></button>`).join('');
- for(const button of $(id).querySelectorAll('button'))button.onclick=()=>onChoose(button.getAttribute('data-ability-filter'));
-}
 function selectLoadoutAbility(wrapper,focusId){
  selectedWrapper=wrapper;bindingArmed=true;bindingMessage='';drawOwnedSkills();if(focusId)$('#'+focusId)?.focus?.();
 }
-function drawOwnedSkills(){
- companionUI.renderLoadout();
- if(!bindingLayout||bindingLayout.closed)return;
- const wrappers=bindingLayout.dragIcons;selectedWrapper=wrappers.includes(selectedWrapper)?selectedWrapper:wrappers[0];
- $('#skillsResources').textContent=`${Math.floor(profile.gold).toLocaleString()} gold · ${wrappers.length} owned · ${bindingLayout.pending.length} unequipped`;
- renderAbilityFilters('#loadoutFilters',loadoutFilter,wrappers.map(w=>[w.skill.id]),key=>{loadoutFilter=key;drawOwnedSkills();$('#loadoutFilters').querySelector(`[data-ability-filter="${key}"]`)?.focus?.();});
- const visible=wrappers.filter(w=>loadoutFilter==='all'||abilityCategory(w.skill.id,SKILLS)===loadoutFilter);
- $('#inventoryCount').textContent=`${visible.length} abilities`;
- $('#ownedSkillList').innerHTML=visible.length?visible.map(w=>`<button id="owned-${w.skill.id}" class="ability-card" data-drag-ability="${w.skill.id}" aria-pressed="${w===selectedWrapper&&bindingArmed}" aria-label="${SKILLS[w.skill.id].name}, rank ${w.skill.rank}, ${bindingLabel(w.binding)}. Select to arrange."><span class="skill-icon" aria-hidden="true">${skillIcon(w.skill.id)}</span><span class="ability-card-copy">${SKILLS[w.skill.id].name}<small>${bindingLabel(w.binding)}</small></span><span class="ability-drag-handle" data-drag-handle="true" aria-hidden="true">⠿</span></button>`).join(''):'<p class="inventory-empty">No owned abilities in this category.</p>';
- for(const wrapper of visible)$('#owned-'+wrapper.skill.id).onclick=()=>selectLoadoutAbility(wrapper,'owned-'+wrapper.skill.id);
- const skill=selectedWrapper?.skill;
- $('#selectedSkillName').textContent=skill?SKILLS[skill.id].name:'No ability selected';$('#selectedSkillIcon').innerHTML=skill?skillIcon(skill.id):'';$('#selectedSkillDescription').textContent=skill?descriptions[skill.id]:'';
- $('#selectedSkillDetails').textContent=skill?`Rank ${skill.rank} · ${Math.ceil(SKILLS[skill.id].cooldown/66)}s reload · ${bindingLabel(selectedWrapper.binding)}`:'';
- $('#slotInstruction').textContent=bindingArmed&&skill?`${SKILLS[skill.id].name} selected. Choose a destination below.`:'Drag to rearrange, or tap an ability then a slot.';
- $('#bindingGrid').setAttribute('aria-label',`Bar ${editorBar+1}, keys 1 through 9, then 0`);
- $('#bindingGrid').innerHTML=bindingLayout.slots.slice(editorBar*10,editorBar*10+10).map(slot=>{const w=slot.holding,id=w?.skill.id,key=slotToKey(slot.index%10);const action=bindingArmed?(w===selectedWrapper?'Cancel selection':w?(selectedWrapper.binding<0?`Replace ${SKILLS[id].name}; return it to reserve`:`Swap with ${SKILLS[id].name}`):'Move selected ability here'):(w?'Select to move':'Choose an ability first');return `<button id="assign-${slot.index}" class="loadout-slot" data-drop-slot="${slot.index}" ${id?`data-drag-ability="${id}" data-drag-handle="true"`:''} data-current="${w===selectedWrapper&&bindingArmed}" data-empty="${!w}" aria-label="Bar ${editorBar+1}, key ${key}, ${id?SKILLS[id].name:'empty'}. ${action}"><span class="loadout-slot-key" aria-hidden="true">${key}</span><span class="skill-icon" aria-hidden="true">${id?skillIcon(id):'+'}</span><span class="loadout-slot-label">${id?(shortNames[id]??SKILLS[id].name):'Empty'}</span></button>`;}).join('');
- for(const slot of bindingLayout.slots.slice(editorBar*10,editorBar*10+10))$('#assign-'+slot.index).onclick=()=>{if(bindingArmed)moveBinding(slot.index);else if(slot.holding)selectLoadoutAbility(slot.holding,'assign-'+slot.index);else{$('#bindingStatus').textContent='Choose an ability from Your abilities first.';}};
- for(const button of document.querySelectorAll('[data-loadout-bar]'))button.setAttribute('aria-pressed',String(Number(button.getAttribute('data-loadout-bar'))===editorBar));
- $('#unbindSkill').disabled=!selectedWrapper||selectedWrapper.binding<0;$('#cancelBinding').classList[bindingArmed?'remove':'add']('hidden');
- $('#bindingStatus').textContent=bindingMessage||'Occupied slots swap. Reserve abilities stay owned.';
-}
+const loadoutCollection=createLoadoutCollectionUI({root:$('#skillsPanel'),records:buildArmoryRecords(SKILLS,COMPANIONS,descriptions),getState:()=>({layout:bindingLayout,selected:selectedWrapper,armed:bindingArmed,bar:editorBar,message:bindingMessage,profile}),icon:skillIcon,bindingLabel,onSelect:selectLoadoutAbility,onMove:moveBinding,onBar:bar=>{editorBar=bar;drawOwnedSkills();}});
+function drawOwnedSkills(){companionUI.renderLoadout();if(!bindingLayout||bindingLayout.closed)return;selectedWrapper=bindingLayout.dragIcons.includes(selectedWrapper)?selectedWrapper:bindingLayout.dragIcons[0];loadoutCollection.render();}
 const loadoutDrag=createLoadoutDrag({root:$('#skillsPanel'),
  getAbility:id=>bindingLayout?.dragIcons.some(w=>w.skill.id===id)?{name:SKILLS[id].name,icon:skillIcon(id)}:null,
  onStart:id=>{selectedWrapper=bindingLayout.dragIcons.find(w=>w.skill.id===id);bindingArmed=true;},
@@ -407,7 +437,7 @@ const loadoutDrag=createLoadoutDrag({root:$('#skillsPanel'),
  onBar:bar=>{editorBar=bar;drawOwnedSkills();}
 });
 function showSkills(){
- if(openPanelId==='#shopPanel')armoryReturnFromLoadout=true;
+ if(openPanelId==='#shopPanel'){armoryReturnFromLoadout=true;armyReturnFromLoadout=false;}
  loadoutDrag.cancel();loadoutOrigin=hubOpen?'lobby':battle.summary?'camp':started?'pause':'preparation';
  panel('#skillsPanel',true);
  const restored=recoverDuplicateBindings(profile.skills);
@@ -419,14 +449,16 @@ function showSkills(){
  }});selectedWrapper=bindingLayout.dragIcons.find(w=>w.skill===battle.activeSkill)??bindingLayout.dragIcons[0];editorBar=selectedWrapper?.binding>=0?Math.floor(selectedWrapper.binding/10):0;bindingArmed=false;
  bindingMessage=restored.length?`${restored.map(skill=>SKILLS[skill.id].name).join(', ')} restored to reserve from overlapping saved slots. Choose a slot to equip.`:'';
  $('#loadoutStage').textContent=loadoutOrigin==='lobby'?(started&&!battle.summary?'BATTLE PAUSED · LOBBY':'PLAYER LOBBY'):loadoutOrigin==='pause'?'BATTLE PAUSED':loadoutOrigin==='camp'?'ARMORY & LOADOUT':'PREPARE FOR BATTLE';
- $('#closeSkills').textContent=armoryReturnFromLoadout?'Back to armory':loadoutOrigin==='pause'?'Back to Pause':loadoutOrigin==='camp'?'Back to results':loadoutOrigin==='lobby'?'Back to lobby':'Back';$('#closeSkills').setAttribute('aria-label',$('#closeSkills').textContent);
+ $('#closeSkills').textContent=armyReturnFromLoadout?'Back to army':armoryReturnFromLoadout?'Back to armory':loadoutOrigin==='pause'?'Back to Pause':loadoutOrigin==='camp'?'Back to results':loadoutOrigin==='lobby'?'Back to lobby':'Back';$('#closeSkills').setAttribute('aria-label',$('#closeSkills').textContent);
  $('#loadoutContinue').textContent=loadoutOrigin==='lobby'?(started&&!battle.summary?`Resume battle ${battle.level}`:battle.summary?.campaignComplete?'Back to lobby':`${battle.summary?.outcome==='defeat'?'Retry':'Start'} battle ${battle.summary?.outcome==='victory'?battle.level+1:battle.level}`):loadoutOrigin==='pause'?'Done':battle.summary?.campaignComplete?'Back to results':battle.summary?.outcome==='defeat'?`Retry battle ${battle.level}`:`Begin battle ${battle.summary?battle.level+1:battle.level}`;
+ if(expeditionMode&&loadoutOrigin!=='pause'&&!battle.summary?.campaignComplete)$('#loadoutContinue').textContent=expeditionLaunchLabel(profiles.activeRun,{started,summary:battle.summary});
+ if(armyReturnFromLoadout)$('#loadoutContinue').textContent='Back to army';
  $('#loadoutArmory').classList[!battle.summary?.campaignComplete?'remove':'add']('hidden');drawOwnedSkills();
 }
-function closeLoadout(returnToOrigin=true){const returnToArmory=returnToOrigin!==false&&armoryReturnFromLoadout;armoryReturnFromLoadout=false;loadoutDrag.cancel();panel('#skillsPanel',false);drawHotbar();if(returnToArmory&&!battle.summary?.campaignComplete)shop();}
-for(const id of ['#pauseSkills','#introLoadout','#endingLoadout'])$(id).onclick=()=>{armoryReturnFromLoadout=false;showSkills();};$('#shopLoadout').onclick=showSkills;
+function closeLoadout(returnToOrigin=true){loadoutCollection.back();const returnToArmy=returnToOrigin!==false&&armyReturnFromLoadout,returnToArmory=returnToOrigin!==false&&armoryReturnFromLoadout;armoryReturnFromLoadout=false;armyReturnFromLoadout=false;loadoutDrag.cancel();panel('#skillsPanel',false);drawHotbar();localCampaign?.checkpoint('loadout');if(returnToArmy){panel('#queuePanel',true);renderQueue();}else if(returnToArmory&&!battle.summary?.campaignComplete)shop();}
+for(const id of ['#pauseSkills','#introLoadout','#endingLoadout'])$(id).onclick=()=>{armoryReturnFromLoadout=false;armyReturnFromLoadout=false;showSkills();};$('#shopLoadout').onclick=showSkills;
 $('#closeSkills').onclick=closeLoadout;
-$('#loadoutContinue').onclick=()=>{const origin=loadoutOrigin;closeLoadout(false);if(origin==='lobby'){selectedDestination=activeDestination;startFromHub();return;}if(origin==='pause'||battle.summary?.campaignComplete)return;if(battle.summary)$('#replay').onclick();else begin();};
+$('#loadoutContinue').onclick=()=>{if(armyReturnFromLoadout){closeLoadout();return;}const origin=loadoutOrigin;closeLoadout(false);if(origin==='lobby'){selectedDestination=activeDestination;startFromHub();return;}if(origin==='pause'||battle.summary?.campaignComplete)return;if(battle.summary)$('#replay').onclick();else begin();};
 $('#loadoutArmory').onclick=shop;
 for(const button of document.querySelectorAll('[data-loadout-bar]'))button.onclick=()=>{editorBar=Number(button.getAttribute('data-loadout-bar'));drawOwnedSkills();};
 function moveBinding(slot){
@@ -434,7 +466,7 @@ function moveBinding(slot){
  const result=placeLoadoutAbility(bindingLayout,selectedWrapper,slot);if(!result)return;
  const name=SKILLS[selectedWrapper.skill.id].name,other=result.displaced?SKILLS[result.displaced.skill.id].name:'';
  bindingMessage=result.kind==='unchanged'?`${name} stays in ${bindingLabel(slot)}.`:result.kind==='swap'?`${name} and ${other} swapped places.`:result.kind==='replace'?`${name} equipped. ${other} is now in reserve.`:result.kind==='reserve'?`${name} moved to reserve. It is still owned.`:`${name} moved to ${bindingLabel(slot)}.`;
- bindingArmed=false;drawOwnedSkills();barSignature='';$(slot<0?'#unbindSkill':'#assign-'+slot)?.focus?.();
+ bindingArmed=false;drawOwnedSkills();barSignature='';$(slot<0?'#loadoutSearch':'#assign-'+slot)?.focus?.({preventScroll:true});
 }
 $('#unbindSkill').onclick=()=>moveBinding(-1);
 $('#cancelBinding').onclick=()=>{bindingArmed=false;bindingMessage='Selection cancelled. Your action bar is unchanged.';drawOwnedSkills();};
@@ -442,18 +474,19 @@ let precisionReturnPanel=null;
 function closePrecision(){const back=precisionReturnPanel;precisionReturnPanel=null;if(back){panel(back,true);$('#openAim').focus?.();}else panel('#aimPanel',false);}
 $('#openAim').onclick=()=>{precisionReturnPanel=openPanelId==='#settingsPanel'?'#settingsPanel':null;panel('#aimPanel',true);};$('#closeAim').onclick=closePrecision;
 function showSettings(){$('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;syncAimSettings();panel('#settingsPanel',true);}
-function panel(id,show){if(show){cancelPendingImport();if(openPanelId==='#skillsPanel'&&id!=='#skillsPanel'&&bindingLayout&&!bindingLayout.closed){loadoutDrag.cancel();bindingLayout.close();}if(!openPanelId){panelFocus=document.activeElement;panelResume=started&&!battle.paused&&!battle.outcome;}for(const other of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel'])if(other!==id)$(other)?.classList.add('hidden');$(id).classList.remove('hidden');openPanelId=id;pause(true);syncPause();focusPanel(id);}else{if(id==='#skillsPanel'&&bindingLayout&&!bindingLayout.closed)bindingLayout.close();if(id==='#savePanel')cancelPendingImport();$(id).classList.add('hidden');if(openPanelId===id){openPanelId=null;if(panelResume)pause(false);panelResume=false;syncPause();if(hubOpen){renderHub();$('#start').focus?.();}else if(battle.paused)$('#resumeGame').focus?.();else if(panelFocus?.getClientRects?.().length&&!panelFocus.disabled)panelFocus.focus?.();else if(!$('#ending').classList.contains('hidden'))$('#replay').focus?.();else if(!$('#intro').classList.contains('hidden'))$('#start').focus?.();else canvas.focus?.();}}}
+function panel(id,show){if(openPanelId==='#shopPanel'&&(id!=='#shopPanel'||!show))armoryCatalog?.leave();if(show){cancelPendingImport();if(openPanelId==='#skillsPanel'&&id!=='#skillsPanel'&&bindingLayout&&!bindingLayout.closed){loadoutDrag.cancel();bindingLayout.close();}if(!openPanelId){panelFocus=document.activeElement;panelResume=started&&!battle.paused&&!battle.outcome;}for(const other of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel','#campaignPanel','#expeditionPanel'])if(other!==id)$(other)?.classList.add('hidden');$(id).classList.remove('hidden');openPanelId=id;pause(true);syncPause();focusPanel(id);}else{if(id==='#skillsPanel'&&bindingLayout&&!bindingLayout.closed)bindingLayout.close();if(id==='#savePanel')cancelPendingImport();$(id).classList.add('hidden');if(openPanelId===id){openPanelId=null;if(panelResume)pause(false);panelResume=false;syncPause();if(hubOpen){renderHub();$('#start').focus?.();}else if(battle.paused)$('#resumeGame').focus?.();else if(panelFocus?.getClientRects?.().length&&!panelFocus.disabled)panelFocus.focus?.();else if(!$('#ending').classList.contains('hidden'))$('#replay').focus?.();else if(!$('#intro').classList.contains('hidden'))$('#start').focus?.();else canvas.focus?.();}}localCampaign?.checkpoint('loadout');}
 function shop(){
  if(battle.summary?.campaignComplete){status('Choose a new campaign to use the armory');return;}
  loadoutReturnPanel=openPanelId==='#skillsPanel'?'#shopPanel':null;loadoutDrag.cancel();
- panel('#shopPanel',true);$('#closeShop').textContent=loadoutReturnPanel?'Back to loadout':hubOpen?'Back to lobby':battle.summary?'Back to results':'Back to Pause';
+ panel('#shopPanel',true);$('#shopPanel').dataset.battleContinuation=String(!hubOpen&&!!battle.summary);$('#closeShop').textContent=loadoutReturnPanel?'Back to loadout':hubOpen?'Back to lobby':battle.summary?'Back to results':'Back to Pause';
  $('#shopContinue').textContent=hubOpen?'Back to lobby':!battle.summary?'Back to Pause':battle.summary.outcome==='victory'?`Begin battle ${battle.level+1}`:`Retry battle ${battle.level}`;
  $('#shopStage').textContent=armoryPurchasesAllowed()?'PREPARE YOUR ARSENAL':'BATTLE PAUSED';
+ if(expeditionMode&&!hubOpen&&battle.summary)$('#shopContinue').textContent=expeditionLaunchLabel(profiles.activeRun,{started,summary:battle.summary});
  $('#shopStatus').textContent=armoryPurchasesAllowed()?'Unlock an ability, then arrange your loadout.':'Browse and arrange owned cards. Finish this battle before purchasing new cards.';renderShop();
 }
-const armoryCatalog=createArmoryCatalogUI({
+armoryCatalog=createArmoryCatalogUI({
  root:$('#armoryCatalogHost'),records:buildArmoryRecords(SKILLS,COMPANIONS,descriptions),
- getSnapshot:()=>({...createArmorySnapshot(profile),purchaseBlockedReason:armoryPurchasesAllowed()?null:'Finish this battle to purchase'}),icon:skillIcon,nameForId:id=>SKILLS[id]?.name??COMPANIONS[id]?.name??id,keyLabel:slotToKey,bindingLabel,announce:text=>{$('#shopStatus').textContent=text;status(text);},
+ getSnapshot:()=>({...createArmorySnapshot(profile),purchaseBlockedReason:armoryPurchasesAllowed()?null:'Finish this battle to purchase'}),getSessionKey:()=>profile,icon:skillIcon,nameForId:id=>SKILLS[id]?.name??COMPANIONS[id]?.name??id,keyLabel:slotToKey,bindingLabel,announce:text=>{$('#shopStatus').textContent=text;status(text);},
  startRefined:window.matchMedia?.('(min-width:1101px) and (min-height:601px)').matches??false,
  isPortrait:()=>window.matchMedia?.('(max-width:620px) and (orientation:portrait)').matches??false,
  onPurchase:item=>{
@@ -470,7 +503,12 @@ const armoryCatalog=createArmoryCatalogUI({
    const skill=profile.skills.find(skill=>skill.id===item.id);
    $('#shopStatus').textContent=`${item.name} unlocked · ${bindingLabel(skill.binding)}. Arrange it in your loadout.`;status(`${item.name} unlocked`);
   }
-  updateShopBalance();return true;
+  updateShopBalance();localCampaign?.checkpoint('purchase');return true;
+ },
+ onCheckout:lines=>{
+  const activeProfile=profile,result=checkoutArmoryCart(profile,lines,{canPurchase:candidate=>candidate===profile&&profile===activeProfile&&openPanelId==='#shopPanel'&&armoryPurchasesAllowed()});
+  if(!result.ok)return result;
+  battle.hotbar.skills=profile.skills;battle.refreshHotbar();barSignature='';drawHotbar();visualDirty=true;companionUI.renderLive();updateShopBalance();localCampaign?.checkpoint('purchase');return result;
  },
  onEquip:(item,destination)=>{
   if(openPanelId!=='#shopPanel'||battle.summary?.campaignComplete||item.kind!=='skill'||!profile.owned.has(item.id)||!Number.isInteger(destination)||destination< -1||destination>29)return false;
@@ -484,7 +522,7 @@ const armoryCatalog=createArmoryCatalogUI({
  onAutocast:(item,enabled)=>{const skill=profile.skills.find(skill=>skill.id===item.id);if(openPanelId!=='#shopPanel'||battle.summary?.campaignComplete||!skill||!SKILLS[item.id]?.summon)return false;skill.autocast=!!enabled;barSignature='';drawHotbar();$('#shopStatus').textContent=`${item.name} auto-summon ${enabled?'on':'off'}.`;return true;},
  onCompanionEquip:(item,equip)=>{if(openPanelId!=='#shopPanel'||battle.summary?.campaignComplete||battle.companions.unit||!profile.companionOwned.has(item.id))return false;profile.equipCompanion(equip?item.id:null);companionUI.renderLive();$('#shopStatus').textContent=equip?`${item.name} equipped in the companion slot.`:'Companion moved to reserve.';return true;},
  onArrange:item=>{
-  if(item.kind==='companion'){showSkills();$('#companionLoadout').scrollIntoView?.({block:'nearest'});$('#equipCompanion')?.focus?.({preventScroll:true});}
+  if(item.kind==='companion'){showSkills();$('#loadoutCompanionSection').open=true;$('#companionLoadout').scrollIntoView?.({block:'nearest'});$('#equipCompanion')?.focus?.({preventScroll:true});}
   else arrangeArmoryAbility(item.id);
  }
 });
@@ -495,23 +533,24 @@ function updateShopBalance(){
 function renderShop(){updateShopBalance();armoryCatalog.refresh();}
 function arrangeArmoryAbility(id){
  showSkills();const wrapper=bindingLayout.dragIcons.find(w=>w.skill.id===id);
- if(wrapper){selectedWrapper=wrapper;bindingArmed=true;editorBar=wrapper.binding>=0?Math.floor(wrapper.binding/10):0;loadoutFilter='all';bindingMessage=`${SKILLS[id].name} · ${bindingLabel(wrapper.binding)}. Choose a destination to rearrange.`;drawOwnedSkills();$('#owned-'+id)?.focus?.({preventScroll:true});}
+ if(wrapper){selectedWrapper=wrapper;bindingArmed=true;editorBar=wrapper.binding>=0?Math.floor(wrapper.binding/10):0;loadoutCollection.model.reveal(id,bindingLayout.dragIcons);bindingMessage=`${SKILLS[id].name} · ${bindingLabel(wrapper.binding)}. Choose a destination to rearrange.`;drawOwnedSkills();$('#owned-'+id)?.focus?.({preventScroll:true});}
 }
-$('#shopContinue').onclick=()=>{if(openPanelId!=='#shopPanel')return;const returnToHub=hubOpen,hasResult=!!battle.summary;loadoutReturnPanel=null;armoryReturnFromLoadout=false;panel('#shopPanel',false);if(returnToHub){renderHub();return;}if(hasResult)$('#replay').onclick();};$('#openShop').onclick=shop;$('#endingShop').onclick=shop;$('#closeShop').onclick=()=>closeChildPanel('#shopPanel');$('#openSettings').onclick=showSettings;$('#closeSettings').onclick=()=>panel('#settingsPanel',false);
-$('#applySettings').onclick=()=>{battle.applyOptions({difficulty:$('#difficulty').value,shootingMode:$('#aimMode').value});updateAimGuide();updatePowerMode();panel('#settingsPanel',false);status('Settings applied. Export to keep them after closing.');};
-$('#downloadSave').onclick=()=>{try{const blob=new Blob([profiles.exportBundle()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=testingMode?'bowmaster-testing.json':'bowmaster-campaign.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#vaultStatus').textContent='Download started. Check that the campaign file was saved.';$('#saveStatus').textContent='Campaign download started. Keep the downloaded file; it restarts the saved battle.';$('#endingSaveStatus').textContent='Download started. Check that your campaign file was saved.';}catch{$('#vaultStatus').textContent='Download could not start. You can show and copy a campaign code instead.';$('#saveStatus').textContent='This campaign could not be exported. Your current session is still available.';$('#endingSaveStatus').textContent='Save failed. Your session is still available; try again before leaving.';}};
-function showCampaignVault(restore=false){$('#saveCode').value='';$('#saveCodeArea').classList.add('hidden');panel('#savePanel',true);$('#vaultStatus').textContent=restore?'Paste a saved code below, or choose a campaign file. Loading replaces the profiles in this tab.':'Your progress is in this tab. Keep a file or code before closing it.';if(started&&!battle.summary)$('#vaultStatus').textContent+=' Loading a campaign replaces this paused battlefield and starts the imported battle from the beginning.';if(restore)$('#loadCode').focus?.();}
+$('#shopContinue').onclick=()=>{if(openPanelId!=='#shopPanel')return;const returnToHub=hubOpen,hasResult=!!battle.summary;loadoutReturnPanel=null;armoryReturnFromLoadout=false;armyReturnFromLoadout=false;panel('#shopPanel',false);if(returnToHub){renderHub();return;}if(hasResult)$('#replay').onclick();};$('#openShop').onclick=shop;$('#endingShop').onclick=shop;$('#closeShop').onclick=()=>closeChildPanel('#shopPanel');$('#openSettings').onclick=showSettings;$('#closeSettings').onclick=()=>panel('#settingsPanel',false);
+$('#applySettings').onclick=()=>{battle.applyOptions({difficulty:$('#difficulty').value,shootingMode:$('#aimMode').value});updateAimGuide();updatePowerMode();panel('#settingsPanel',false);localCampaign?.checkpoint('settings');status('Settings applied. '+localCampaign.message());};
+$('#downloadSave').onclick=()=>{try{const blob=new Blob([profiles.exportBundle()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=expeditionMode?'castledecks-wayfarer-charter.json':testingMode?'bowmaster-testing.json':'bowmaster-campaign.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#vaultStatus').textContent=expeditionMode?'Download started. Check that the charter file was saved.':'Download started. Check that the campaign file was saved.';$('#saveStatus').textContent=expeditionMode?'Charter download started. Live fields restart on load; settled results and route choices are preserved.':'Campaign download started. Keep the downloaded file; it restarts the saved battle.';$('#endingSaveStatus').textContent=expeditionMode?'Download started. Check that your charter file was saved.':'Download started. Check that your campaign file was saved.';}catch{$('#vaultStatus').textContent=expeditionMode?'Download could not start. You can show and copy a charter code instead.':'Download could not start. You can show and copy a campaign code instead.';$('#saveStatus').textContent=expeditionMode?'This charter could not be exported. Your current session is still available.':'This campaign could not be exported. Your current session is still available.';$('#endingSaveStatus').textContent='Save failed. Your session is still available; try again before leaving.';}};
+function showCampaignVault(restore=false){$('#saveCode').value='';$('#saveCodeArea').classList.add('hidden');panel('#savePanel',true);$('#vaultStatus').textContent=restore?'Paste a saved code below, or choose a file. Review the import before opening it.':localCampaign.message();if(expeditionMode)$('#vaultStatus').textContent='This is a separate Wayfarer charter save. Crownroad files do not load here. A live field restarts on load; settled results and route choices are preserved.';if(started&&!battle.summary)$('#vaultStatus').textContent+=expeditionMode?' Loading a charter replaces this paused field.':' Loading a campaign replaces this paused battlefield and starts the imported battle from the beginning.';localCampaign?.render();if(restore)$('#loadCode').focus?.();}
 $('#saveGame').onclick=()=>showCampaignVault();
 $('#closeSave').onclick=()=>panel('#savePanel',false);
-$('#showSaveCode').onclick=()=>{try{$('#saveCode').value=profiles.exportBundle();$('#saveCodeArea').classList.remove('hidden');$('#vaultStatus').textContent='Campaign code created. Select and copy it somewhere safe; showing it here does not save it elsewhere.';}catch{$('#vaultStatus').textContent='This campaign could not be encoded. Your current session is still available.';}};
+$('#showSaveCode').onclick=()=>{try{$('#saveCode').value=profiles.exportBundle();$('#saveCodeArea').classList.remove('hidden');$('#vaultStatus').textContent=(expeditionMode?'Charter':'Campaign')+' code created. Select and copy it somewhere safe; showing it here does not save it elsewhere.';}catch{$('#vaultStatus').textContent=expeditionMode?'This charter could not be encoded. Your current session is still available.':'This campaign could not be encoded. Your current session is still available.';}};
 $('#selectSaveCode').onclick=()=>{$('#saveCode').focus();$('#saveCode').select?.();$('#vaultStatus').textContent='Code selected. Copy it and keep it somewhere safe.';};
-function applyCampaignText(text){profiles.importBundle(text);profile=profiles.active;started=false;setup();if(!battle.summary?.campaignComplete){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}$('#saveStatus').textContent='Campaign imported. Begin to restart its saved battle.';status('Campaign loaded');$('#introNotice').textContent='Campaign loaded. Ready to begin.';$(battle.summary?.campaignComplete?'#replay':'#start').focus?.();}
-$('#importCode').onclick=()=>{cancelPendingImport();try{applyCampaignText($('#loadCode').value);}catch{$('#vaultStatus').textContent='That code is not a valid reconstruction campaign. Your current progress has been kept.';}};
+function applyCampaignText(text){const localImport=localCampaign.requestImport(text);if(localImport.handled){for(const id of ['#saveStatus','#endingSaveStatus'])$(id).textContent='Campaign file validated. Review how to open it in the vault.';$('#introNotice').textContent='Review the campaign import in the vault.';return;}profiles.importBundle(text);profile=profiles.active;started=false;setup();if(!battle.summary?.campaignComplete){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}$('#saveStatus').textContent=expeditionMode?'Charter imported. Live fields restart; settled results and route choices are preserved.':'Campaign imported. Begin to restart its saved battle.';status(expeditionMode?'Charter loaded':'Campaign loaded');$('#introNotice').textContent=expeditionMode?(profiles.activeRun.choosing?'Charter loaded. Choose the next road.':profiles.activeRun.complete?'Completed charter loaded. Its result is preserved.':'Charter loaded. Ready to restart its current field.'):'Campaign loaded. Ready to begin.';$(battle.summary?.campaignComplete?'#replay':'#start').focus?.();}
+$('#importCode').onclick=()=>{cancelPendingImport();try{applyCampaignText($('#loadCode').value);}catch{$('#vaultStatus').textContent=expeditionMode?'That code is not a valid Wayfarer charter. Your current charter has been kept.':'That code is not a valid reconstruction campaign. Your current progress has been kept.';}};
 $('#endingSave').onclick=()=>$('#saveGame').onclick();$('#endingProfiles').onclick=()=>showProfiles();$('#endingLoad').onclick=()=>$('#loadGame').onclick();$('#loadGame').onclick=()=>showCampaignVault(true);$('#chooseSaveFile').onclick=()=>$('#saveFile').click();
 $('#saveFile').addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file)return;
+ cancelPendingImport();
  const generation=++loadGeneration;event.target.value='';
- $('#saveStatus').textContent='Reading campaign file…';$('#introNotice').textContent='Reading campaign file…';$('#endingSaveStatus').textContent='Reading campaign file…';
+ for(const id of ['#saveStatus','#introNotice','#endingSaveStatus'])$(id).textContent=expeditionMode?'Reading charter file…':'Reading campaign file…';
  try{
   if(file.size>1048576)throw new Error('too-large');
   const text=await file.text();
@@ -521,9 +560,9 @@ $('#saveFile').addEventListener('change',async event=>{
   applyCampaignText(text);
  }catch{
   if(generation!==loadGeneration)return;
-  $('#saveStatus').textContent='That file is not a valid reconstruction save. Your current campaign has been kept.';
-  $('#introNotice').textContent='That file could not be loaded. Choose a reconstruction campaign file; your current progress has been kept.';
-  $('#endingSaveStatus').textContent='That file could not be loaded. Your current campaign has been kept.';
+  $('#saveStatus').textContent=expeditionMode?'That file is not a valid Wayfarer charter. Your current charter has been kept.':'That file is not a valid reconstruction save. Your current campaign has been kept.';
+  $('#introNotice').textContent=expeditionMode?'That file could not be loaded. Choose a Wayfarer charter file; your current charter has been kept.':'That file could not be loaded. Choose a reconstruction campaign file; your current progress has been kept.';
+  $('#endingSaveStatus').textContent=expeditionMode?'That file could not be loaded. Your current charter has been kept.':'That file could not be loaded. Your current campaign has been kept.';
  }
 });
 const html=text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -531,14 +570,14 @@ function showProfiles(){pendingDelete=null;$('#deleteConfirm').classList.add('hi
 function renderProfiles(){
  $('#profileSelect').innerHTML=profiles.profiles.map((p,i)=>`<option value="${i}">${html(p.name||'(unnamed)')}${p.cheated?' · assisted':''} · battle ${Math.min(30,p.highestLevel)} · rank ${p.rank}</option>`).join('');$('#profileSelect').value=String(profiles.activeIndex);
  $('#deleteProfile').disabled=profiles.profiles.length<=1;$('#createProfile').disabled=profiles.profiles.length>=9;
- $('#retiredProfiles').innerHTML=profiles.retired.length?profiles.highScores().map(p=>`<div class="record-row"><strong>${html(p.name)}${p.cheated?' · assisted':''}</strong><span>${p.gold.toLocaleString()} score · ${p.victories} wins · ${p.defeats} defeats</span></div>`).join(''):'<p class="footnote">No completed campaigns yet</p>';
- $('#profileStatus').textContent=(started&&!battle.summary?'Choosing or creating a profile replaces this paused battlefield. The selected battle starts from the beginning. ':'')+`${profiles.profiles.length} of 9 active profiles · ${profiles.retired.length} completed. Export to keep this session.`;
+ $('#retiredProfiles').innerHTML=profiles.retired.length?profiles.highScores().map(p=>`<div class="record-row"><strong>${html(p.name)}${p.cheated?' · assisted':''}</strong><span>${p.gold.toLocaleString()} score · ${p.victories} wins · ${p.defeats} defeats</span></div>`).join(''):`<p class="footnote">${expeditionMode?'No archived charters yet':'No completed campaigns yet'}</p>`;
+ $('#profileStatus').textContent=(started&&!battle.summary?'Choosing or creating a profile replaces this paused battlefield. The selected battle starts from the beginning. ':'')+`${profiles.profiles.length} of 9 active profiles · ${profiles.retired.length} completed. ${localCampaign.message()}`;
 }
 function useProfile(){profile=profiles.active;started=false;setup();if(!battle.summary?.campaignComplete){$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');}$('#battlePause').disabled=true;panel('#profilesPanel',false);$('#deleteConfirm').classList.add('hidden');status('Profile selected. Begin to restart its saved battle.');$(battle.summary?.campaignComplete?'#replay':'#start').focus?.();}
 $('#openProfiles').onclick=showProfiles;$('#closeProfiles').onclick=()=>panel('#profilesPanel',false);
 $('#switchProfile').onclick=()=>{if(profiles.select(Number($('#profileSelect').value)))useProfile();};
 $('#createProfile').onclick=()=>{const name=$('#newProfileName').value;if(profiles.create(name,{shootingMode:$('#newAimMode').value||'classic'})){useProfile();$('#newProfileName').value='';}else $('#profileStatus').textContent=name===''?'Enter a profile name first':'Nine active profiles are already available';};
-$('#deleteProfile').onclick=()=>{pendingDelete=profiles.profiles[Number($('#profileSelect').value)];if(!pendingDelete)return;$('#deleteConfirmText').textContent=`Remove “${pendingDelete.name}” from this session? Export first if you want to keep it.`;$('#deleteConfirm').classList.remove('hidden');};$('#cancelDelete').onclick=()=>$('#deleteConfirm').classList.add('hidden');
+$('#deleteProfile').onclick=()=>{pendingDelete=profiles.profiles[Number($('#profileSelect').value)];if(!pendingDelete)return;$('#deleteConfirmText').textContent=expeditionMode?`Delete “${pendingDelete.name}” and its charter route from this session? Export a charter file first if you want a copy.`:`Delete “${pendingDelete.name}” from this campaign? Future local checkpoints will reflect the deletion. Export a file first if you want a separate copy.`;$('#deleteConfirm').classList.remove('hidden');};$('#cancelDelete').onclick=()=>$('#deleteConfirm').classList.add('hidden');
 $('#confirmDelete').onclick=()=>{const index=profiles.profiles.indexOf(pendingDelete);if(index<0)return;profiles.select(index);pendingDelete=null;if(profiles.deleteCurrent()){profile=profiles.active;renderProfiles();useProfile();}};
 function showTesting(){if(!testingMode)return;loadoutReturnPanel=openPanelId==='#skillsPanel'?'#testingPanel':null;$('#testVictory').disabled=!!battle.outcome;$('#testDefeat').disabled=!!battle.outcome;$('#testLevel').value=String(battle.level);$('#testProtection').checked=testingProtection;$('#testingStatus').textContent=`Battle ${battle.level} · ${Math.floor(profile.gold)} gold. All progress in this playground is assisted.`;panel('#testingPanel',true);}
 for(const id of ['#openTesting','#introTesting','#pauseTesting','#endingTesting'])$(id).onclick=showTesting;$('#closeTesting').onclick=()=>closeChildPanel('#testingPanel');
@@ -551,15 +590,16 @@ window.addEventListener('message',event=>{if(event.source!==window.parent||event
 $('#testProtection').addEventListener('change',()=>{if(!testingMode)return;testingProtection=$('#testProtection').checked;protectTestBattle(battle,testingProtection);$('#testingStatus').textContent=testingProtection?'Hero damage and natural defeat are disabled. Enemy combat continues.':'Ordinary damage and defeat rules restored.';});
 $('#testLevelApply').onclick=()=>{if(!testingMode)return;const level=selectTestLevel(profile,Number($('#testLevel').value));started=false;setup(level);$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');$('#start').focus?.();status(`Assisted battle ${level} is ready`);};
 for(const [id,outcome] of [['#testVictory','victory'],['#testDefeat','defeat']])$(id).onclick=()=>{if(!testingMode||battle.outcome)return;panel('#testingPanel',false);if(!started)begin();else{hubOpen=false;$('#intro').classList.add('hidden');pause(false);}finishTestBattle(battle,outcome);status(`Assisted ${outcome}. Finishing the normal battle summary…`);};
-function renderQueue(){const queue=battle.friendlyQueue;const summons=profile.skills.filter(skill=>SKILLS[skill.id].summon);$('#armyAutoList').innerHTML=summons.length?summons.map(skill=>`<button id="armyAuto-${skill.id}" aria-pressed="${skill.autocast}">${SKILLS[skill.id].name} auto: ${skill.autocast?'on':'off'}</button>`).join(''):'<p>No troop abilities unlocked yet.</p>';for(const skill of summons)$('#armyAuto-'+skill.id).onclick=()=>{skill.autocast=!skill.autocast;renderQueue();drawHotbar();};$('#queueStatus').textContent=`Army slots ${battle.regularArmyCount}/${battle.friendlyQueue.cap} · Reserve ${queue.population} · ${queue.queue.length} queued · ${battle.goodTeam.filter(u=>u!==battle.hero&&!u.isCompanion&&u.hp>0).length} living`;$('#queueList').innerHTML=queue.queue.length?queue.queue.map((ticket,index)=>`<div class="queue-row"><span>${SKILLS[ticket.type]?.name??ticket.type} · rank ${ticket.rank??0}</span><button id="cancelQueue${index}" aria-label="Cancel queued ${SKILLS[ticket.type]?.name??ticket.type} ${index+1}">Cancel · +${ticket.cost} population</button></div>`).join(''):'<p>No reinforcements are waiting. Summon a squad from its ability button.</p>';queue.queue.forEach((ticket,index)=>{$('#cancelQueue'+index).onclick=()=>{queue.cancel(index);renderQueue();};});}
+const armyCommand=createArmyCommandUI({root:$('#queuePanel'),records:buildArmoryRecords(SKILLS,COMPANIONS,descriptions),getState:()=>({profile,battle,started,active:openPanelId==='#queuePanel'}),icon:skillIcon,onChanged:()=>{barSignature='';drawHotbar();},onLoadout:()=>{loadoutReturnPanel=null;armyReturnFromLoadout=true;showSkills();},onArmory:()=>{loadoutReturnPanel=null;shop();}});
+function renderQueue(){armyCommand.render();$('#closeQueue').textContent=loadoutReturnPanel==='#queuePanel'?'Back to loadout':hubOpen?'Back to lobby':battle.summary?'Back to results':panelResume?'Back to battle':'Back to Pause';}
 function closeChildPanel(id){const back=loadoutReturnPanel===id;loadoutReturnPanel=null;panel(id,false);if(back)showSkills();}
-for(const id of ['#openQueue','#pauseQueue'])$(id).onclick=()=>{loadoutReturnPanel=openPanelId==='#skillsPanel'?'#queuePanel':null;panel('#queuePanel',true);renderQueue();};$('#closeQueue').onclick=()=>closeChildPanel('#queuePanel');
+for(const id of ['#openQueue','#pauseQueue'])$(id).onclick=()=>{loadoutReturnPanel=openPanelId==='#skillsPanel'?'#queuePanel':null;panel('#queuePanel',true);renderQueue();};$('#closeQueue').onclick=()=>{if(!armyCommand.back())closeChildPanel('#queuePanel');};
 
 // Management navigation changes workspaces without resuming the battle.
 for(const button of document.querySelectorAll('[data-menu-route]'))button.onclick=()=>{
  const route=button.getAttribute('data-menu-route'),target={loadout:'#skillsPanel',army:'#queuePanel',settings:'#settingsPanel',profiles:'#profilesPanel',vault:'#savePanel'}[route];
  if(!target||openPanelId===target)return;
- loadoutReturnPanel=null;precisionReturnPanel=null;
+ loadoutReturnPanel=null;precisionReturnPanel=null;armyReturnFromLoadout=false;
  if(route==='loadout')showSkills();else if(route==='army'){panel(target,true);renderQueue();}else if(route==='profiles')showProfiles();else if(route==='vault')showCampaignVault();else if(route==='settings')showSettings();else panel(target,true);
 };
 
@@ -580,10 +620,7 @@ function troop(unit){if(combatPoses.draw(ctx,unit))return;if(!Number.isFinite(un
  else{line(5,-25,17,-29,metal,3);line(18,-13,19,-46,dark,3);if(tall)poly([[19,-47],[30,-46],[29,-32],[19,-33]],metal);else line(19,-45,19,-24,metal,3);circle(-12,-22,tall?10:7,dark);}
  ctx.restore();if(unit!==battle.hero){ctx.fillStyle='#253124';ctx.fillRect(unit.x-14,unit.y-height-11,28,3);ctx.fillStyle=good?'#94c7cc':'#d29a78';ctx.fillRect(unit.x-14,unit.y-height-11,28*unit.hp/unit.maxHp,3);}}
 function drawArrow(projectile){const pose=projectile.draw??projectile;if(!Number.isFinite(pose.x)||!Number.isFinite(pose.y))return;ctx.save();ctx.translate(pose.x,pose.y);ctx.rotate(pose.angle??projectile.angle??0);const kind=projectile.kind??'',tint=kind.includes('ice')||kind.includes('comet')?'#a5e1e3':kind.includes('fire')||kind.includes('meteor')?'#f3b263':kind.includes('poison')?'#c4d67e':kind.includes('thunder')?'#e7e6a8':'#f2ddb0';if(kind.endsWith('_wave_arrow')){ctx.scale(Math.max(1,Math.min(2.5,.55/worldCamera.scale)),Math.max(1,Math.min(2.5,.55/worldCamera.scale)));circle(0,0,8,'#17272b');circle(0,0,6,tint);line(-15,0,-6,0,tint+'99',4);poly([[0,-9],[4,-3],[9,0],[4,3],[0,9],[-3,3],[-7,0],[-3,-3]],tint);circle(0,0,2,'#fff5d8');}else if(['meteor','comet','fire_ball','ice_ball'].includes(kind)){circle(0,0,kind==='meteor'||kind==='comet'?15:7,tint);line(-8,0,-36,0,tint+'80',5);}else if(kind==='trebuchet_ammo')circle(0,0,5,'#4b4737');else{const glyphScale=Math.max(1,Math.min(2.5,.38/worldCamera.scale));ctx.scale(glyphScale,glyphScale);const strokeScale=worldCamera.scale*glyphScale;line(-18,0,6,0,'#17272b',2.7/strokeScale);line(-18,0,6,0,tint,1.2/strokeScale);poly([[8,0],[0,-3],[0,3]],'#eee0b9');line(-15,0,-21,-4,'#dbc391',1.2/strokeScale);}ctx.restore();}
-function drawBackdrop(width,height){
- if(background?.complete&&background.naturalWidth){const cover=Math.max(width/background.naturalWidth,height/background.naturalHeight),w=background.naturalWidth*cover,h=background.naturalHeight*cover;ctx.drawImage(background,(width-w)/2,(height-h)/2,w,h);}
- else{ctx.save();ctx.scale(width/2000,height/1000);const sky=ctx.createLinearGradient(0,0,0,850);sky.addColorStop(0,'#455e61');sky.addColorStop(.68,'#a6ad8b');sky.addColorStop(1,'#c3bc92');ctx.fillStyle=sky;ctx.fillRect(0,0,2000,1000);circle(1500,170,59,'#e2d69f');poly([[0,620],[150,411],[370,560],[610,280],[840,548],[1070,370],[1280,592],[1570,347],[1800,493],[2000,306],[2000,1000],[0,1000]],'#7a8e7c');poly([[0,694],[170,572],[410,650],[720,495],[940,682],[1170,576],[1410,691],[1760,531],[2000,660],[2000,1000],[0,1000]],'#59765e');ctx.restore();}
-}
+function drawBackdrop(width,height){campaignRegionArt.drawBackdrop(ctx,width,height,battle.levelData,{pixelRatio:window.devicePixelRatio??1,contrast:regionContrast?.matches??false});}
 
 function changePortraitView(center,overview=false,focus=true){clearInput();portraitCenter=center;portraitOverview=overview;visualDirty=true;if(focus)canvas.focus?.();}
 $('#viewCenter').addEventListener('input',()=>changePortraitView(Number($('#viewCenter').value),false,false));
@@ -604,8 +641,8 @@ function renderPortraitView(camera){
 function render(){notices=notices.filter(n=>battle.tick-n.tick<(n.life??40));const active=battle.activeSkill;const camera=measureScene();if(!camera.renderable)return;
  ctx.setTransform(backingStore.pixelRatioX,0,0,backingStore.pixelRatioY,0,0);ctx.globalAlpha=1;ctx.clearRect(0,0,camera.width,camera.height);drawBackdrop(camera.width,camera.height);
  ctx.save();ctx.translate(camera.offsetX,camera.offsetY);ctx.scale(camera.scale,camera.scale);
- const terrainView=extendTerrainForCamera(battle.terrain.samples,camera),ground=terrainView.surface,groundInk=ctx.createLinearGradient(0,500,0,1200);groundInk.addColorStop(0,'#58694c');groundInk.addColorStop(.45,'#384f43');groundInk.addColorStop(1,'#263e37');poly(terrainView.polygon,groundInk);ctx.strokeStyle='#91a477';ctx.lineWidth=3;ctx.beginPath();ground.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();
- for(let i=0;i<40;i++){const x=(i*153.13)%2000,y=battle.elevationAt(x);line(x,y,x+7,y-8-(i%5),'#a8b77c60',2);}for(const building of battle.structures)castle(building);
+ const terrainView=extendTerrainForCamera(battle.terrain.samples,camera);campaignRegionArt.drawTerrain(ctx,terrainView,battle.levelData,{contrast:regionContrast?.matches??false});
+ for(const building of battle.structures)castle(building);
  for(const flag of [battle.ownFlag,battle.enemyFlag]){if(!Number.isFinite(flag.y))continue;const color=flag===battle.ownFlag?'#93c2d1':'#d99a75';line(flag.x,flag.y,flag.x,flag.y-52,'#e2d9b8',2);poly([[flag.x,flag.y-52],[flag.x+30,flag.y-44],[flag.x,flag.y-34]],color);}
  for(const unit of [...battle.goodTeam,...battle.badTeam]){if(unit===battle.hero&&unit.garrisoned()&&unit.hp>0){const station=garrisonStation(unit.garrisonBuilding);drawCombatTroop(ctx,{...unit,...station.hero,visible:true},combatPoses.pose(unit));}else troop(unit);drawStatusBadges(ctx,unit,{reactiveElements:battle.reactiveElements,scale:camera.scale});}for(const projectile of battle.objects.items)if(projectile.active&&Number.isFinite(projectile.vx)&&projectile.kind)drawArrow(projectile);for(const reactive of battle.reactiveElements)drawReactiveElement(ctx,reactive,camera.scale);for(const spell of battle.spells){if(spell.kind==='thunder_cloud'&&Number.isFinite(spell.x)&&Number.isFinite(spell.y)){circle(spell.x,spell.y,30,'#54697bad');circle(spell.x-26,spell.y+5,21,'#54697bad');circle(spell.x+24,spell.y+5,21,'#54697bad');}}
  const origin=battle.hero.launchPosition,dragMode=profile.shootingMode==='classic'||profile.shootingMode==='anywhere';

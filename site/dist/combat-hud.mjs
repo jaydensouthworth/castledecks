@@ -1,11 +1,13 @@
 /** Read-only presentation state for the live combat HUD.
  * No input or engine mutation, listeners, timers, or side effects on import.
  */
+import {shelteredEnemyCount} from './garrison-intel.mjs';
 import {SKILLS} from './engine/progression.mjs';
 
 export function enemyHudProgress(battle){
  const living=battle.badTeam.filter(unit=>unit.hp>0&&!unit.dead&&!unit.destroyed).length;
  if(!battle.enemies.finalStand)return `${living} enemies · ${battle.enemies.remaining} incoming`;
+ if(living&&shelteredEnemyCount(battle)===living)return `Final stand · ${living} in towers`;
  if(living)return `Final stand · ${living} ${living===1?'enemy':'enemies'}`;
  return battle.enemies.remaining?'Final stand · Gorath incoming':'Final stand · Clearing field';
 }

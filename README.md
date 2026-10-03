@@ -36,7 +36,11 @@ The check validates source syntax, local asset references, packaging hygiene and
 
 ## Current scope
 
-The prototype includes a 30-field campaign configuration, a lobby, campaign profile import/export, three action-bar pages, an ability-card armory, 12 regular recruit types and a companion. Balance, presentation and mobile input are still under development.
+See [release 45 notes](docs/releases/45.md) for this snapshot and its known limits.
+
+The prototype includes a 30-field campaign atlas, an illustrated command hall, a separate Wayfarer Charter expedition mode, campaign profile import/export, device-local checkpoints, three action-bar pages, an illustrated ability-card armory, a loadout collection, an Army command ledger, 12 regular recruit types and a companion. Balance, presentation and mobile input are still under development.
+
+Campaign checkpoints stay in this browser, using three collection slots and two verified checkpoint copies per slot. They preserve battle openings and settled results, not a live battlefield. Clearing site data removes local checkpoints; export a file or code for a portable backup. Rehearsals and expeditions remain separate from earned campaign progress. There is no backend or account service.
 
 The test harness is not a browser emulator. Automated passes do not prove native touch behavior, layout correctness, long-session stability, game balance or exact compatibility with the original Flash game. See the development guide for the manual acceptance checklist.
 

@@ -23,6 +23,8 @@ test('dev server serves the index and extensionless game modes', async t => {
 test('dev server serves modules with JavaScript MIME and HEAD without a body', async t => {
   const get = await withServer(t), result = await get({path: '/battle.mjs', method: 'HEAD'});
   assert.equal(result.status, 200); assert.equal(result.body, ''); assert.match(result.headers['content-type'], /javascript/); assert.ok(Number(result.headers['content-length']) > 100);
+  const image = await get({path: '/images/command-hall.webp', method: 'HEAD'});
+  assert.equal(image.status, 200); assert.equal(image.headers['content-type'], 'image/webp'); assert.ok(Number(image.headers['content-length']) > 100);
 });
 test('dev server rejects traversal, hidden files and malformed paths', async t => {
   const get = await withServer(t);

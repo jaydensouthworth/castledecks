@@ -36,7 +36,7 @@ export class ArmoryCatalog {
   const tie=(a,b)=>a.order-b.order,byName=(a,b)=>a.name.localeCompare(b.name)||tie(a,b);
   this.orders={catalog:this.records,price:[...this.records].sort((a,b)=>a.price-b.price||tie(a,b)),'price-desc':[...this.records].sort((a,b)=>b.price-a.price||tie(a,b)),name:[...this.records].sort(byName),reload:[...this.records].sort((a,b)=>(a.reloadSeconds??Infinity)-(b.reloadSeconds??Infinity)||tie(a,b))};
   this.counts=new Map(ARMORY_CATEGORIES.map(([key])=>[key,key==='all'?this.records.length:this.records.filter(item=>item.category===key).length]));
-  this.view={query:'',department:'all',role:'all',collection:false,category:'all',trait:'all',status:'all',sort:'catalog',page:0};
+  this.view={query:'',department:'all',role:'all',collection:false,wishlist:false,category:'all',trait:'all',status:'all',sort:'catalog',page:0};
   this.selectedId=this.byId.has(selectedId)?selectedId:this.records[0]?.id??null;
  }
  setView(patch){
@@ -45,17 +45,19 @@ export class ArmoryCatalog {
   if('department' in patch)next.department=(patch.department==='all'||this.departments.has(patch.department))?patch.department:'all';
   if('role' in patch)next.role=(patch.role==='all'||this.roles.has(patch.role))?patch.role:'all';
   if('collection' in patch)next.collection=!!patch.collection;
+  if('wishlist' in patch)next.wishlist=!!patch.wishlist;
   for(const [key,options]of [['category',ARMORY_CATEGORIES],['trait',ARMORY_TRAITS],['status',ARMORY_STATUSES],['sort',ARMORY_SORTS]])if(key in patch)next[key]=hasOption(options,patch[key])?patch[key]:'all';
   if(!this.orders[next.sort])next.sort='catalog';
-  const changed=['query','department','role','collection','category','trait','status','sort'].some(key=>old[key]!==next[key]);
+  const changed=['query','department','role','collection','wishlist','category','trait','status','sort'].some(key=>old[key]!==next[key]);
   next.page=changed?0:('page'in patch?Math.max(0,Math.floor(Number(patch.page)||0)):old.page);
   this.view=next;return changed;
  }
  select(id){if(this.byId.has(id))this.selectedId=id;}
  query(snapshot){
-  const {query,department,role,collection,category,trait,status,sort}=this.view,tokens=normalize(query).trim().split(/\s+/).filter(Boolean),matches=[];
+  const {query,department,role,collection,wishlist,category,trait,status,sort}=this.view,tokens=normalize(query).trim().split(/\s+/).filter(Boolean),matches=[];
   for(const item of this.orders[sort]){
-   if(!collection&&item.storefront===false||department!=='all'&&item.department!==department||role!=='all'&&item.role!==role)continue;
+   if(wishlist&&!snapshot.wishlist?.has(item.id))continue;
+   if(!collection&&!wishlist&&item.storefront===false||department!=='all'&&item.department!==department||role!=='all'&&item.role!==role)continue;
    if(category!=='all'&&item.category!==category||trait!=='all'&&!item.traits.includes(trait)||!tokens.every(token=>item.search.includes(token)))continue;
    const state=armoryCardState(item,snapshot);
    if(collection&&!state.owned||status==='equipped'&&(!state.owned||!state.equipped)||status==='reserve'&&(!state.owned||state.equipped))continue;
@@ -68,7 +70,7 @@ export class ArmoryCatalog {
  }
  revealSelected(snapshot){
   let result=this.query(snapshot);
-  if(result.selectedIndex<0){this.setView({query:'',department:'all',role:'all',category:'all',trait:'all',status:'all'});result=this.query(snapshot);}
+  if(result.selectedIndex<0){this.setView({query:'',department:'all',role:'all',category:'all',trait:'all',status:'all',wishlist:false});result=this.query(snapshot);}
   this.view.page=Math.max(0,Math.floor(result.selectedIndex/this.pageSize));return this.query(snapshot);
  }
 }

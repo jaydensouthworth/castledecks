@@ -22,9 +22,9 @@ test('legacy overlapping bindings recover only hidden losers while preserving la
 test('gallery shows every legacy owned ability, safe swaps, reserve, re-open and tab selection do not run combat',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=test'});unlock(ui);
  const p=ui.battle.profile;p.skills[1].binding=0;const cd=p.skills[1].cooldown;
- ui.click('introLoadout');assert.equal(ui.get('ownedSkillList').querySelectorAll('button').length,25);assert.match(ui.get('bindingStatus').textContent,/restored to reserve/);assert.equal(p.skills[0].binding,-1);
- ui.document.querySelector('[data-loadout-bar="0"]').click();ui.click('owned-arrow');ui.click('assign-0');assert.equal(p.skills[0].binding,0);assert.equal(p.skills[1].binding,-1);assert.match(ui.get('bindingStatus').textContent,/Fire Arrow is now in reserve/);
- ui.click('owned-fireArrow');ui.document.querySelector('[data-loadout-bar="2"]').click();ui.click('assign-29');assert.equal(p.skills[1].binding,29);assert.match(ui.get('assign-29').getAttribute('aria-label'),/key 0/);
+ ui.click('introLoadout');assert.equal(ui.get('ownedSkillList').querySelectorAll('article').length,12);assert.match(ui.get('bindingStatus').textContent,/restored to reserve/);assert.equal(p.skills[0].binding,-1);
+ ui.document.querySelector('[data-loadout-bar="0"]').click();ui.get('loadoutSearch').value='basic arrow';ui.dispatch(ui.get('loadoutSearch'),'input');ui.click('owned-arrow');ui.click('assign-0');assert.equal(p.skills[0].binding,0);assert.equal(p.skills[1].binding,-1);assert.match(ui.get('bindingStatus').textContent,/Fire Arrow is now in reserve/);
+ ui.get('loadoutSearch').value='fire arrow';ui.dispatch(ui.get('loadoutSearch'),'input');ui.click('owned-fireArrow');ui.document.querySelector('[data-loadout-bar="2"]').click();ui.click('assign-29');assert.equal(p.skills[1].binding,29);assert.match(ui.get('assign-29').getAttribute('aria-label'),/key 0/);
  ui.click('closeSkills');ui.click('introLoadout');assert.match(ui.get('owned-fireArrow').textContent,/key 0/);assert.equal(p.skills[1].cooldown,cd);assert.equal(ui.battle.tick,0);assert.equal(ui.battle.stats.shotsFired,0);
  const bound=p.skills.map(s=>s.binding).filter(n=>n>=0);assert.equal(new Set(bound).size,bound.length);
 });

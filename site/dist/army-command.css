@@ -1,0 +1,187 @@
+@import url('./card-identity.css');
+/* A compact mustering desk, not a stack of settings. Scoped to Army. */
+#queuePanel.army-command-panel{display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse at 4% 45%,#55413135,transparent 45%),linear-gradient(115deg,#261c23,#35222c 58%,#26191f);isolation:isolate}
+#queuePanel .panel-head{position:relative;top:auto;flex:none;min-height:70px;padding:12px 22px;background:linear-gradient(90deg,#452934,#30212b);border-bottom:1px solid #b48c515e}
+#queuePanel .panel-head h2{font-size:29px;line-height:1.05}
+#queuePanel .panel-head .eyebrow{font-size:9px;margin-bottom:5px;letter-spacing:.17em}
+#queuePanel button,#queuePanel input,#queuePanel select,#queuePanel summary{min-height:44px;touch-action:manipulation}
+#queuePanel button:focus-visible,#queuePanel input:focus-visible,#queuePanel select:focus-visible,#queuePanel summary:focus-visible{outline:2px solid #efce85;outline-offset:2px}
+#queuePanel button{font-size:12px;line-height:1.2;padding:9px 12px}
+#queuePanel .army-header-tools{display:flex;gap:6px;align-items:center;margin-left:auto}
+#queuePanel .army-header-tools button{white-space:nowrap}
+#queuePanel .army-header-tools .menu-back{background:#211721;min-width:92px}
+#queuePanel .army-muster-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));flex:none;background:linear-gradient(#1d1820,#241b20);border-bottom:1px solid #bc945555;padding:8px 22px;gap:16px}
+#queuePanel .army-muster-strip>div{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-right:18px;border-right:1px solid #a37f4f45}
+#queuePanel .army-muster-strip>div:last-child{border-right:0;padding-right:0}
+#queuePanel .army-muster-strip span{color:#c9b998;font-size:11px}
+#queuePanel .army-muster-strip strong{font:700 23px Georgia,serif;color:#f2d8a1;font-variant-numeric:tabular-nums}
+#queuePanel .army-workspace{display:grid;grid-template-columns:150px minmax(0,1fr);min-height:0;flex:1;overflow:hidden}
+#queuePanel .army-command-rail{min-width:0;padding:16px 12px;background:linear-gradient(100deg,#17171cca,#3223278c);border-right:1px solid #a981493f;overflow:auto}
+#queuePanel .army-seal{width:54px;height:62px;margin:0 auto 8px;color:#caa669}
+#queuePanel .army-seal svg{width:100%;height:100%;fill:#7b354048;stroke:currentColor;stroke-width:2}
+#queuePanel .army-rail-caption{font:9px Georgia,serif;letter-spacing:.12em;text-align:center;color:#d2b980;margin:0 0 12px}
+#queuePanel .army-view-tabs{display:grid;gap:7px}
+#queuePanel .army-view-tabs button{min-height:46px;text-align:left;font-size:13px;background:#2b2028;border:1px solid #a984514f;position:relative}
+#queuePanel .army-view-tabs button[aria-pressed=true]{border-color:#d9ad62;background:linear-gradient(90deg,#80513666,#3f2d31);color:#ffe4ad;box-shadow:inset 3px 0 #d9ad62}
+#queuePanel #armyContractCount{font-size:11px;line-height:1.6;color:#cdbb9b;margin:13px 0}
+#queuePanel .army-rules{border-top:1px solid #a984513a;color:#cdbb9b;font-size:11px;line-height:1.55}
+#queuePanel .army-rules summary{display:flex;align-items:center;cursor:pointer;color:#e4c994;font-size:11px}
+#queuePanel .army-rules summary:after{content:'+';margin-left:auto;font-size:17px}
+#queuePanel .army-rules[open] summary:after{content:'−'}
+#queuePanel .army-rules p{font-size:11px;margin:0 0 12px;line-height:1.55}
+#queuePanel .army-contracts-view{display:flex;flex-direction:column;min-width:0;min-height:0;padding:12px 16px;overflow:hidden}
+#queuePanel .army-roster-tools{display:grid;grid-template-columns:minmax(140px,1fr) 126px 133px 60px;gap:7px;flex:none}
+#queuePanel .army-roster-tools form{display:flex;min-width:0;gap:3px}
+#queuePanel .army-roster-tools input,#queuePanel .army-roster-tools select{width:100%;min-width:0;min-height:44px;border:1px solid #ae864b60;border-radius:3px;background:#1c1921;color:#ead8b2;font:12px system-ui,sans-serif;padding:9px}
+#queuePanel .army-roster-tools form button{padding:9px;min-width:44px;background:#31252e}
+#queuePanel .army-roster-tools form button .menu-icon{display:none}
+#queuePanel .army-roster-tools label{min-width:0}
+#queuePanel .army-roster-caption{display:flex;justify-content:space-between;gap:12px;flex:none;font-size:11px;color:#bba98c;padding:10px 0}
+#queuePanel .army-roster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;overflow:auto;min-height:0;align-content:start;padding:3px 3px 9px;overscroll-behavior:contain;scroll-padding:8px}
+#queuePanel .army-contract{min-width:0;border:1px solid color-mix(in srgb,var(--card-accent) 53%,transparent);border-radius:4px;background:linear-gradient(150deg,#473038,#211b24 70%);overflow:hidden;box-shadow:0 5px 11px #08090a50}
+#queuePanel .army-card-inspect{display:flex;align-items:stretch;flex-direction:column;gap:0;border:0;border-radius:0;min-height:0;width:100%;padding:0;text-align:left;background:transparent;color:#f1ddb6}
+#queuePanel .army-card-role{display:flex;justify-content:space-between;align-items:center;gap:5px;min-height:29px;padding:6px 9px;font-size:9px;letter-spacing:.03em;color:var(--card-accent);background:#14131c66}
+#queuePanel .army-card-role b{font:700 11px system-ui,sans-serif}
+#queuePanel .army-card-art{display:block;height:100px;width:100%;border-block:1px solid #c09b5645;overflow:hidden}
+#queuePanel .army-card-inspect>strong{font:700 16px Georgia,serif;line-height:1.1;margin:10px 10px 6px;min-height:18px}
+#queuePanel .army-card-cost{font-size:11px;margin:0 10px;color:#d4be97}
+#queuePanel .army-card-cost>span{color:#977849;padding:0 3px}
+#queuePanel .army-card-ready{font-size:10px;color:#bba896;margin:7px 10px 9px}
+#queuePanel .army-card-ready[data-ready=true]{color:#bdd492}
+#queuePanel .army-card-auto{display:flex;align-items:center;gap:5px;width:100%;border:0;border-top:1px solid #af874449;border-radius:0;padding:7px 9px;font-size:11px;min-height:44px;background:#15182085;text-align:left}
+#queuePanel .army-card-auto>span:last-child{margin-left:auto;font-size:9px;color:#c1ae90}
+#queuePanel .army-auto-light{width:6px;height:6px;border-radius:50%;background:#88756b;box-shadow:0 0 0 2px #ac99732e}
+#queuePanel .army-card-auto[aria-pressed=true] .army-auto-light{background:#bed88b;box-shadow:0 0 0 2px #bed88b25,0 0 7px #bed88b33}
+#queuePanel .army-pagination{display:flex;align-items:center;justify-content:center;gap:12px;padding-top:7px;flex:none;font-size:12px}
+#queuePanel .army-footer{flex:none;border-top:1px solid #ba965945;padding:10px 22px;background:#18151de6}
+#queuePanel .army-footer p{font-size:11px;color:#d8c4a1;margin:0;line-height:1.35}
+#queuePanel .army-empty{grid-column:1/-1;display:flex;align-items:center;flex-direction:column;text-align:center;padding:30px 10px;color:#ccb896}
+#queuePanel .army-empty-seal{width:54px;height:54px;border:1px solid #aa8a5655;border-radius:50%;display:grid;place-items:center;margin-bottom:12px}
+#queuePanel .army-empty h3{font-size:23px;margin:0 0 8px}
+#queuePanel .army-empty p{font-size:13px;max-width:360px;margin:0 0 15px;line-height:1.5}
+#queuePanel .army-muster-view{min-height:0;overflow:auto;padding:16px;display:grid;grid-template-columns:minmax(210px,.9fr) minmax(240px,1.1fr);gap:24px;align-content:start;overscroll-behavior:contain}
+#queuePanel .army-muster-view h3{font-size:21px;margin:0 0 10px}
+#queuePanel .army-position-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:12px}
+#queuePanel .army-position-counts span{display:flex;align-items:center;gap:8px;background:#15182055;border:1px solid #a6854833;padding:8px;font-size:10px;color:#cabb9c}
+#queuePanel .army-position-counts b{font-size:19px;color:#eed6a2;font-variant-numeric:tabular-nums}
+#queuePanel .army-field-roster{display:grid;gap:6px}
+#queuePanel .army-field-tile{display:flex;align-items:center;gap:9px;min-height:53px;padding:8px;background:#1b182066;border-left:2px solid var(--card-accent)}
+#queuePanel .army-field-tile .army-field-icon{width:32px;flex:none}
+#queuePanel .army-field-tile>div{display:flex;flex-direction:column;gap:4px;flex:1}
+#queuePanel .army-field-tile strong{font-size:13px;color:#ead7b1}
+#queuePanel .army-field-tile span{font-size:10px;color:#bda98c;line-height:1.35}
+#queuePanel .army-field-tile>b{font:700 23px Georgia,serif;color:var(--card-accent)}
+#queuePanel .army-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#queuePanel #armyQueueFlow{font-size:12px;line-height:1.5;color:#d5c2a2;margin:0 0 12px}
+#queuePanel .army-small-note,#queuePanel .army-empty-note{font-size:11px;color:#bca98d;line-height:1.55;margin:10px 0 0}
+#queuePanel #queueList{display:grid;gap:6px}
+#queuePanel .army-ticket{display:flex;align-items:center;gap:8px;padding:7px;background:#14151c66;border:1px solid #a886483a}
+#queuePanel .army-ticket-order{width:20px;text-align:center;font:14px Georgia,serif;color:#b29970}
+#queuePanel .army-ticket>.skill-icon{width:28px;flex:none}
+#queuePanel .army-ticket>div{flex:1;display:flex;flex-direction:column;gap:3px}
+#queuePanel .army-ticket strong{font-size:12px;color:#edd5ab}
+#queuePanel .army-ticket>div>span{font-size:10px;color:#baa48b}
+#queuePanel .army-ticket>button{font-size:10px;padding:7px;background:#33242c;color:#e5c798}
+#queuePanel .army-inspector{position:absolute;inset:8px;z-index:10;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--card-accent);border-radius:6px;background:radial-gradient(ellipse at top left,var(--card-wash),transparent 65%),#251d25;box-shadow:0 0 0 20px #0c0a10cc,0 20px 80px #000a}
+#queuePanel .army-inspector>header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 18px;border-bottom:1px solid #c9aa6555;flex:none;background:#211924bf}
+#queuePanel .army-inspector h3{font-size:27px;line-height:1.1;margin:4px 0 0}
+#queuePanel .army-inspector .eyebrow{font-size:10px;letter-spacing:.08em;color:var(--card-accent)}
+#queuePanel .army-inspector-body{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px;overflow:auto;padding:18px;min-height:0;overscroll-behavior:contain;align-content:start}
+#queuePanel .army-inspect-art{height:180px;border:1px solid #c2a36455;margin-bottom:12px}
+#queuePanel #armyInspectDescription{font-size:13px;line-height:1.5;margin:0 0 12px;color:#dfcaaa}
+#queuePanel .army-inspect-costs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 0 12px}
+#queuePanel .army-inspect-costs>div{background:#17151d99;padding:8px 5px;border-top:1px solid #be9b5e66;text-align:center}
+#queuePanel .army-inspect-costs dt{font-size:10px;color:#c5ad88;margin-bottom:5px}
+#queuePanel .army-inspect-costs dd{margin:0;font-size:17px;color:#f3d6a0;font-weight:700}
+#queuePanel .army-inspect-station{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#d2bb96;line-height:1.5;margin:7px 0}
+#queuePanel #armyInspectLoadout{width:100%;margin-top:6px}
+#queuePanel .army-order-state{border-left:2px solid var(--card-accent);padding:9px 12px;background:#17161c66;margin-bottom:12px}
+#queuePanel .army-order-state strong{font:700 19px Georgia,serif;color:#f0d7a7}
+#queuePanel .army-order-state p,#queuePanel #armyAutoHelp{font-size:12px;color:#d5c0a0;line-height:1.5;margin:6px 0 0}
+#queuePanel #armyRecruit,#queuePanel #armyInspectAuto{width:100%;min-height:48px;font-size:13px}
+#queuePanel #armyInspectAuto{margin-top:16px;background:#1d2221;color:#c9d7a1;border-color:#9fa47766}
+#queuePanel #armyInspectAuto[aria-pressed=false]{background:#27202b;color:#cbb590;border-color:#aa87534a}
+#queuePanel .army-doctrine{margin-top:20px;border-top:1px solid #ac8b5047}
+#queuePanel .army-doctrine summary{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#ead1a1;cursor:pointer}
+#queuePanel .army-doctrine summary:after{content:'+';font-size:20px}
+#queuePanel .army-doctrine[open] summary:after{content:'−'}
+#queuePanel #armyInspectFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 15px}
+#queuePanel #armyInspectFacts>div{padding:8px;background:#16141c6e;border:1px solid #b2945333}
+#queuePanel #armyInspectFacts dt{font-size:10px;color:#baa587}
+#queuePanel #armyInspectFacts dd{font-size:14px;margin:4px 0;color:#edcf9a}
+#queuePanel #armyInspectFacts small{font-size:9px;line-height:1.4;color:#ad9b83;display:block}
+#queuePanel #armyInspectNotes p{font-size:12px;line-height:1.5;color:#cab89b;margin:0 0 10px}
+.army-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:1100px){#queuePanel .army-roster{grid-template-columns:repeat(3,minmax(0,1fr))}#queuePanel .army-workspace{grid-template-columns:124px minmax(0,1fr)}#queuePanel .army-roster-tools{grid-template-columns:minmax(140px,1fr) 115px 118px 52px;gap:5px}#queuePanel .army-muster-strip{gap:10px}#queuePanel .army-muster-strip>div{padding-right:9px}#queuePanel .army-muster-strip span{font-size:10px}}
+@media(max-height:600px) and (orientation:landscape){
+ #queuePanel .panel-head{min-height:52px;padding:4px 14px}#queuePanel .panel-head h2{font-size:23px}#queuePanel .panel-head .eyebrow{font-size:8px;margin-bottom:2px}#queuePanel .army-header-tools button{font-size:11px}
+ #queuePanel .army-muster-strip{padding:5px 14px;gap:10px}#queuePanel .army-muster-strip strong{font-size:20px}#queuePanel .army-muster-strip span{font-size:10px}
+ #queuePanel .army-workspace{grid-template-columns:106px minmax(0,1fr)}#queuePanel .army-command-rail{padding:7px}#queuePanel .army-seal,#queuePanel .army-rail-caption{display:none}#queuePanel .army-view-tabs{gap:5px}#queuePanel .army-view-tabs button{font-size:11px;padding:8px;min-height:44px}#queuePanel #armyContractCount{font-size:9px;margin:7px 0}#queuePanel .army-rules summary{font-size:10px}#queuePanel .army-rules p{font-size:10px}
+ #queuePanel .army-contracts-view{padding:7px 10px}#queuePanel .army-roster-tools{grid-template-columns:minmax(115px,1fr) 103px 106px 46px;gap:4px}#queuePanel .army-roster-tools input,#queuePanel .army-roster-tools select{font-size:11px;padding:7px}#queuePanel .army-roster-tools button{font-size:10px;padding:6px}
+ #queuePanel .army-roster-caption{font-size:10px;padding:5px 0}#queuePanel .army-roster{gap:8px}#queuePanel .army-card-art{height:76px}#queuePanel .army-card-role{font-size:8px;min-height:24px;padding:5px 7px}#queuePanel .army-card-inspect>strong{font-size:14px;margin:7px 8px 4px}#queuePanel .army-card-cost{font-size:10px;margin:0 8px}#queuePanel .army-card-ready{font-size:9px;margin:5px 8px 7px}#queuePanel .army-card-auto{font-size:10px;padding:6px}#queuePanel .army-card-auto>span:last-child{font-size:8px}
+ #queuePanel .army-footer{padding:5px 14px}#queuePanel .army-footer p{font-size:10px}#queuePanel .army-muster-view{padding:10px;gap:15px;grid-template-columns:minmax(190px,.9fr) minmax(250px,1.1fr)}#queuePanel .army-muster-view h3{font-size:18px}#queuePanel .army-inspector>header{padding:5px 12px}#queuePanel .army-inspector h3{font-size:22px}#queuePanel .army-inspector-body{padding:10px 12px;gap:16px}#queuePanel .army-inspect-art{height:95px;margin-bottom:7px}#queuePanel #armyInspectDescription{font-size:11px}#queuePanel .army-inspect-costs dd{font-size:14px}#queuePanel .army-inspect-costs dt{font-size:9px}#queuePanel .army-order-state{padding:8px;margin-bottom:8px}#queuePanel .army-order-state p,#queuePanel #armyAutoHelp{font-size:11px}#queuePanel .army-doctrine{margin-top:10px}
+}
+@media(max-width:700px) and (orientation:portrait){
+ #queuePanel.army-command-panel{inset:max(8px,env(safe-area-inset-top),var(--preview-safe-top,0px)) max(7px,env(safe-area-inset-right),var(--preview-safe-right,0px)) max(8px,env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) max(7px,env(safe-area-inset-left),var(--preview-safe-left,0px))}
+ #queuePanel .panel-head{padding:8px 10px;min-height:60px;gap:7px}#queuePanel .panel-head h2{font-size:24px}#queuePanel .panel-head .eyebrow{font-size:7px;letter-spacing:.1em}#queuePanel .army-header-tools{gap:4px}#queuePanel .army-header-tools button{font-size:10px;padding:7px;min-width:44px}#queuePanel .army-header-tools .menu-back{min-width:52px;max-width:66px;white-space:normal}
+ #queuePanel .army-muster-strip{padding:8px 10px;gap:7px}#queuePanel .army-muster-strip>div{display:flex;flex-direction:column;gap:3px;padding-right:5px}#queuePanel .army-muster-strip span{font-size:8px;white-space:nowrap}#queuePanel .army-muster-strip strong{font-size:22px}
+ #queuePanel .army-workspace{display:flex;flex-direction:column}#queuePanel .army-command-rail{display:flex;align-items:center;gap:8px;padding:5px 10px;border-right:0;border-bottom:1px solid #ab875148;overflow:visible;flex:none}#queuePanel .army-seal,#queuePanel .army-rail-caption,#queuePanel .army-rules{display:none}#queuePanel .army-view-tabs{display:flex;gap:5px;flex:none}#queuePanel .army-view-tabs button{font-size:12px;min-height:44px;padding:9px 13px}#queuePanel #armyContractCount{font-size:9px;margin:0 0 0 auto;text-align:right;line-height:1.4;max-width:89px}
+ #queuePanel .army-contracts-view{padding:8px 8px 0;flex:1}#queuePanel .army-roster-tools{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 46px;gap:5px}#queuePanel .army-roster-tools form{grid-column:1/-1}#queuePanel .army-roster-tools input{font-size:16px;padding:8px}#queuePanel .army-roster-tools select{font-size:11px;padding:7px}#queuePanel .army-roster-tools button{font-size:10px;padding:7px}#queuePanel .army-roster-tools form button{min-width:49px}#queuePanel .army-roster-caption{font-size:9px;padding:7px 2px;gap:8px}#queuePanel .army-roster{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-bottom:9px}#queuePanel .army-card-art{height:86px}#queuePanel .army-card-role{font-size:8px;padding:5px 7px;min-height:25px}#queuePanel .army-card-inspect>strong{font-size:15px;margin:8px 8px 5px}#queuePanel .army-card-cost{font-size:10px;margin-inline:8px}#queuePanel .army-card-ready{font-size:9px;margin:6px 8px 7px}#queuePanel .army-card-auto{font-size:10px;padding:6px 7px}#queuePanel .army-card-auto>span:last-child{font-size:8px}#queuePanel .army-footer{padding:7px 10px}#queuePanel .army-footer p{font-size:10px;line-height:1.4}
+ #queuePanel .army-muster-view{display:block;padding:12px;flex:1}#queuePanel .army-muster-view h3{font-size:21px}#queuePanel .army-queue-section{border-top:1px solid #af894951;margin-top:17px;padding-top:16px}#queuePanel .army-ticket{gap:5px;padding:5px}#queuePanel .army-ticket>.skill-icon{width:22px}#queuePanel .army-ticket-order{width:15px}#queuePanel .army-ticket>button{font-size:9px;max-width:104px;padding:6px}#queuePanel .army-ticket strong{font-size:12px}
+ #queuePanel .army-inspector{inset:4px}#queuePanel .army-inspector>header{padding:9px 10px;gap:7px}#queuePanel .army-inspector h3{font-size:24px}#queuePanel .army-inspector .eyebrow{font-size:9px}#queuePanel #armyCloseInspector{font-size:10px;white-space:normal;max-width:78px;padding:7px}#queuePanel .army-inspector-body{display:flex;flex-direction:column;padding:10px;gap:12px}#queuePanel .army-inspect-overview{display:grid;grid-template-columns:96px minmax(0,1fr);gap:7px 10px}#queuePanel .army-inspect-art{height:99px;margin:0;grid-row:1/3}#queuePanel #armyInspectDescription{font-size:11px;line-height:1.4;margin:0}#queuePanel .army-inspect-costs{grid-column:1/-1;margin:0;gap:4px}#queuePanel .army-inspect-costs>div{padding:7px 3px}#queuePanel .army-inspect-costs dt{font-size:9px;margin-bottom:4px}#queuePanel .army-inspect-costs dd{font-size:16px}#queuePanel .army-inspect-station{grid-column:2;grid-row:2;gap:2px;margin:0;font-size:10px;align-content:start}#queuePanel #armyInspectLoadout{grid-column:1/-1;margin:0;font-size:11px}#queuePanel .army-order-state{padding:8px 10px;margin-bottom:8px}#queuePanel .army-order-state strong{font-size:19px}#queuePanel .army-order-state p,#queuePanel #armyAutoHelp{font-size:11px}#queuePanel .army-small-note{font-size:10px}#queuePanel #armyInspectAuto{margin-top:11px}#queuePanel .army-doctrine{margin-top:12px}
+}
+@media(max-width:390px) and (orientation:portrait){#queuePanel .army-header-tools button{font-size:9px;padding:6px}#queuePanel .army-header-tools .menu-back{max-width:55px}#queuePanel .panel-head h2{font-size:22px}#queuePanel .army-view-tabs button{padding:8px 10px;font-size:11px}#queuePanel .army-card-art{height:78px}#queuePanel .army-card-inspect>strong{font-size:14px}}
+@media(forced-colors:active){#queuePanel .army-contract,#queuePanel .army-inspector,#queuePanel .army-muster-strip,#queuePanel .army-field-tile,#queuePanel .army-ticket{border:1px solid CanvasText}#queuePanel .army-auto-light{background:CanvasText}#queuePanel .army-view-tabs button[aria-pressed=true]{outline:2px solid Highlight}}
+#queuePanel .hidden,#queuePanel.hidden{display:none!important}
+
+#queuePanel .army-more{position:relative;margin-bottom:5px;flex:none}
+#queuePanel .army-more summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;min-height:44px;border:1px solid #a984513f;padding:7px 10px;border-radius:3px;font-size:11px;color:#cbb28b;list-style:none;background:#211b24}
+#queuePanel .army-more summary:after{content:'⋯';font-size:18px;margin-left:7px;line-height:1}
+#queuePanel .army-more summary::-webkit-details-marker{display:none}
+#queuePanel .army-more nav{position:absolute;top:100%;left:0;z-index:6;display:grid;gap:4px;padding:5px;min-width:140px;border:1px solid #b98f53;background:#241c25;box-shadow:0 8px 20px #09070dbb}
+#queuePanel .army-more nav button{text-align:left;white-space:nowrap;font-size:12px}
+@media(max-width:700px) and (orientation:portrait){#queuePanel #armyContractCount{max-width:66px;font-size:8px}#queuePanel .army-more{margin:0}#queuePanel .army-more summary{font-size:0;padding:7px;min-width:44px;justify-content:center}#queuePanel .army-more summary:after{margin:0;font-size:20px}#queuePanel .army-more nav{left:auto;right:0}}
+
+/* Native43 acceptance: auto-sized rows compressed twelve troop cards into
+   27px/38px strips. Keep their intrinsic size and scroll the roster instead. */
+#queuePanel .army-roster{grid-auto-rows:max-content}
+#queuePanel .army-contract{align-self:start}
+@media(max-height:600px) and (orientation:landscape){
+ /* Use the existing header for the resource ledger. This releases a full row
+    of vertical workspace without reducing type or touch target sizes. */
+ #queuePanel .panel-head{justify-content:flex-end}
+ #queuePanel .panel-head>div:first-child{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+ #queuePanel .army-muster-strip{position:absolute;left:14px;top:5px;z-index:1;width:calc(100% - 310px);height:42px;padding:0;background:none;border:0;gap:8px;pointer-events:none}
+ #queuePanel .army-muster-strip>div{flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding-right:6px}
+ #queuePanel .army-muster-strip span{line-height:1.05}
+ #queuePanel .army-muster-strip strong{line-height:1.05}
+ #queuePanel .army-command-rail:before{content:'ARMY';display:block;font:700 12px Georgia,serif;letter-spacing:.13em;color:#ddc496;margin:4px 2px 9px}
+ #queuePanel .army-roster-caption{display:none}
+ #queuePanel .army-roster{margin-top:6px;scroll-snap-type:y proximity;scroll-padding:3px}
+ #queuePanel .army-contract{scroll-snap-align:start}
+ /* A complete short-landscape card: portrait, name, cost, state and one
+    44px Auto command. Deep facts remain in the inspector. */
+ #queuePanel .army-card-inspect{display:grid;grid-template-columns:minmax(60px,40%) minmax(0,1fr);grid-template-rows:24px auto auto auto;column-gap:8px}
+ #queuePanel .army-card-role{grid-column:1/-1;grid-row:1}
+ #queuePanel .army-card-art{grid-column:1;grid-row:2/5;height:88px;align-self:start;border-top:0}
+ #queuePanel .army-card-inspect>strong{grid-column:2;grid-row:2;align-self:end;margin:7px 7px 4px 0;min-height:0;line-height:1.1}
+ #queuePanel .army-card-cost{grid-column:2;grid-row:3;margin:0 7px 0 0;align-self:start;line-height:1.25}
+ #queuePanel .army-card-cost>span{padding:0 1px}
+ #queuePanel .army-card-ready{grid-column:2;grid-row:4;margin:4px 7px 7px 0;align-self:start;line-height:1.15}
+}
+/* Functional card labels stay readable, including in the compact face. */
+#queuePanel .army-card-cost,#queuePanel .army-card-ready{font-size:11px}
+#queuePanel .army-card-auto{font-size:12px}
+#queuePanel .army-card-auto>span:last-child{font-size:11px}
+@media(max-height:600px) and (orientation:landscape){
+ #queuePanel .army-roster-tools button,#queuePanel .army-muster-strip span,#queuePanel .army-footer p{font-size:11px}
+}
+/* Native44: paint the ledger above the inherited opaque z3 header, and return
+   the6px gap to the roster so a complete158px row fits at740×320. */
+@media(max-height:600px) and (orientation:landscape){
+ #queuePanel .army-muster-strip{z-index:4}
+ #queuePanel .army-roster{margin-top:0}
+}
+
+/* Short labels keep the reserve pool and queued units readable on phones. */
+#queuePanel .army-muster-strip span{font-size:12px}

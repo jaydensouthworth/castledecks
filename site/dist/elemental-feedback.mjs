@@ -98,8 +98,10 @@ export function drawElementalNotice(ctx, notice, tick, scale = 1) {
     ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     // Fixed cap avoids measuring text or changing the canvas/font cache in the
     // simulation. The longest cue fits in 132 screen pixels.
-    ctx.fillStyle = '#162528e8'; ctx.fillRect(-66, y - 8, 132, 16);
+    const advice=typeof notice.advice==='string'?notice.advice:null;
+    ctx.fillStyle = '#162528e8'; ctx.fillRect(-66, y - 8, 132, advice?30:16);
     ctx.fillStyle = ELEMENTS[notice.element].light; ctx.fillText(notice.text, 0, y);
+    if(advice){ctx.fillStyle='#f4edcf';ctx.fillText(advice,0,y+13);}
   }
   ctx.restore(); return true;
 }

@@ -10,7 +10,7 @@ const switchTo=(ui,id)=>{select(ui,id);ui.click('start');if(ui.visible('switchSe
 const snapshot=b=>JSON.stringify({tick:b.tick,level:b.level,profile:b.profile,stats:b.stats,good:b.goodTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),bad:b.badTeam.map(u=>[u.id,u.type,u.x,u.y,u.hp]),wave:b.wave.countdown,population:b.friendlyQueue.population,queue:b.friendlyQueue.queue,projectiles:b.projectiles.map(p=>[p.x,p.y,p.vx,p.vy]),outcome:b.outcome,summary:b.summary});
 
 test('registry distinguishes the real campaign from implemented practice destinations',()=>{
- assert.deepEqual(PLAY_DESTINATIONS.map(d=>[d.id,d.kind]),[['campaign','CAMPAIGN'],['midgame','PRACTICE'],['allies','PRACTICE'],['training','PRACTICE']]);
+ assert.deepEqual(PLAY_DESTINATIONS.map(d=>[d.id,d.kind]),[['campaign','CAMPAIGN'],['expedition','EXPEDITION'],['midgame','PRACTICE'],['allies','PRACTICE'],['training','PRACTICE']]);
  assert.equal(playDestinationURL('allies','point_aim'),'./battle?mode=demo&showcase=companions&aim=point_aim');
  assert.throws(()=>playDestinationURL('pvp'),/Unknown/);
  assert.equal(canPurchaseInArmory({started:false}),true);assert.equal(canPurchaseInArmory({started:true}),false);assert.equal(canPurchaseInArmory({started:true,summary:{outcome:'victory'}}),true);assert.equal(canPurchaseInArmory({summary:{campaignComplete:true}}),false);
@@ -18,7 +18,7 @@ test('registry distinguishes the real campaign from implemented practice destina
 
 test('all direct entry routes show a frozen player lobby and require one explicit start',async t=>{
  for(const search of ['', '?mode=test','?mode=demo','?mode=demo&showcase=companions&aim=point_aim'])await t.test(search||'campaign',async t=>{
-  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'Player lobby');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
+  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'The command hall');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
   ui.frames(120);assert.equal(snapshot(b),before);ui.click('start');ui.click('start');assert.equal(ui.battle,b);assert.equal(ui.visible('intro'),false);ui.frames(2);assert.ok(b.tick>JSON.parse(before).tick);assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,0);
  });
 });
@@ -69,7 +69,7 @@ test('hub cannot interrupt pending settlement; settled result starts the next ba
 });
 
 test('existing save bundles still import into a ready lobby at the saved battle start',async t=>{
- const p=new PlayerProfile('Saved');p.highestLevel=7;p.highestScene=8;p.level=7;p.scene=8;p.gold=999;const bundle=new CampaignProfiles({profiles:[p]}).exportBundle();const ui=await loadGameUI(t);ui.click('introLoad');ui.get('loadCode').value=bundle;ui.click('importCode');assert.equal(ui.visible('intro'),true);assert.equal(ui.battle.level,7);assert.equal(ui.battle.tick,0);assert.equal(ui.battle.profile.gold,999);assert.equal(ui.battle.profile.cheated,false);assert.match(ui.get('saveStatus').textContent,/restart its saved battle/);ui.click('start');assert.equal(ui.battle.level,7);
+ const p=new PlayerProfile('Saved');p.highestLevel=7;p.highestScene=8;p.level=7;p.scene=8;p.gold=999;const bundle=new CampaignProfiles({profiles:[p]}).exportBundle();const ui=await loadGameUI(t);ui.click('introLoad');ui.get('loadCode').value=bundle;ui.click('importCode');if(ui.visible('localConfirm'))ui.click('localImportSession');assert.equal(ui.visible('intro'),true);assert.equal(ui.battle.level,7);assert.equal(ui.battle.tick,0);assert.equal(ui.battle.profile.gold,999);assert.equal(ui.battle.profile.cheated,false);assert.match(ui.get('saveStatus').textContent,/restart its saved battle/);ui.click('start');assert.equal(ui.battle.level,7);
 });
 
 test('session switching preserves actual shooter controls, live companion and per-battle input adapter',async t=>{

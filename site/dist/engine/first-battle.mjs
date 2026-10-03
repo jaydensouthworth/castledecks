@@ -2,6 +2,8 @@
  * Game-object scheduling is emulator-source-grounded, not a recorded Flash run.
  * Geometry retains explicit static-measurement/twip-edge uncertainty.
  */
+import {validateBattleEncounter} from './battle-encounter.mjs';
+import {HeightField} from './terrain.mjs';
 import {FRIENDLY_RECRUIT_GEOMETRY,RECRUIT_SKILLS} from './recruitment.mjs';
 import {CompanionController,GorathCompanion} from './companions.mjs';
 import {Arrow,containsPoint,sampleStandardHit} from './ballistics.mjs';
@@ -79,20 +81,21 @@ class BattleArrow extends Arrow {
 }
 
 export class FirstBattle {
-  constructor({profile=new PlayerProfile(),level=1,random=seededRandom(1234),createSpecialProjectile=buildSpecialProjectile,unitFactories={},geometryKinds={},onEvent=()=>{},testing=false}={}){
+  constructor({profile=new PlayerProfile(),level=1,random=seededRandom(1234),createSpecialProjectile=buildSpecialProjectile,unitFactories={},geometryKinds={},onEvent=()=>{},testing=false,encounter=null}={}){
+    this.encounter=validateBattleEncounter(encounter);
     this.testing=testing===true;this.protectedTesting=false;if(this.testing)profile.cheated=true;this.profile=profile;this.random=random;this.createSpecialProjectile=createSpecialProjectile;this.onEvent=onEvent;
-    this.tick=0;this.width=2000;this.gravity=.3;this.level=level;this.scene=level+1;this.levelData=getLevel(level);this.unitFactories={...classFor,...unitFactories};this.geometryKinds=geometryKinds;this.paused=false;this.outcome=null;this.summary=null;
-    this.terrain=levelTerrain(level);this.objects=new WorldObjects();this.goodTeam=[];this.badTeam=[];this.airUnits=[];this.structures=[];this.goodStructures=[];this.badStructures=[];this.neutralStructures=[];this.garrisons=[];this.projectiles=[];this.spells=[];this.reactiveElements=[];this.activationObjects=[];this.input={left:false,right:false,up:false,down:false,mouseDown:false};
+    this.tick=0;this.width=2000;this.gravity=.3;this.level=level;this.scene=level+1;this.levelData=this.encounter?{...getLevel(level),scenery:this.encounter.scenery,timeOfDay:this.encounter.timeOfDay,heights:this.encounter.heights}:getLevel(level);this.unitFactories={...classFor,...unitFactories};this.geometryKinds=geometryKinds;this.paused=false;this.outcome=null;this.summary=null;
+    this.terrain=this.encounter?new HeightField(this.encounter.heights):levelTerrain(level);this.objects=new WorldObjects();this.goodTeam=[];this.badTeam=[];this.airUnits=[];this.structures=[];this.goodStructures=[];this.badStructures=[];this.neutralStructures=[];this.garrisons=[];this.projectiles=[];this.spells=[];this.reactiveElements=[];this.activationObjects=[];this.input={left:false,right:false,up:false,down:false,mouseDown:false};
     this.goodHomeBoundary=325;this.badHomeBoundary=1725;
     this.friendlyQueue=new FriendlyReinforcements({population:10+Math.floor(profile.rank*10)});
     this.stats={shotsFired:0,bodyShots:0,headShots:0,goldEarned:0,goldSpent:0,populationGiven:this.friendlyQueue.population};
-    this.wave=new WaveBudget({level,random});this.enemies=new BattleDirector({roster:campaignRoster(level,random),level,difficulty:profile.difficulty,wave:this.wave});this.friendlyQueue.cap=battleFieldLimits(level).friendly;
+    this.wave=new WaveBudget({level,random});this.enemies=new BattleDirector({roster:this.encounter?.roster??campaignRoster(level,random),level,difficulty:profile.difficulty,wave:this.wave});this.friendlyQueue.cap=battleFieldLimits(level).friendly;
     this.hero=this.objects.add(new Hero({x:100,y:this.elevationAt(100),rank:profile.rank,world:this,structures:()=>this.garrisons,input:()=>({...this.input,shooterX:this.shooter?.shootingX}),services:{stateChange:()=>this.checkOutcome()}}));
     this.hero.regionKind='hero';this.assignGeometry(this.hero);this.goodTeam.push(this.hero);
     this.goodCastle=this.createCastle('good',350,8000+profile.rank*400);
     this.hero.x=this.goodCastle.x;this.hero.y=this.goodCastle.y;this.hero.garrisonInto(this.goodCastle);
-    for(const x of towerPlacements(level,random))this.createTower(x);
-    this.badCastle=this.createCastle('bad',1800,Math.floor(8000*(1+level/30)));
+    for(const x of (this.encounter?.towers??towerPlacements(level,random)))this.createTower(x);
+    this.badCastle=this.createCastle('bad',1800,this.encounter?.enemyKeepHP??Math.floor(8000*(1+level/30)));
     this.ownFlag=this.objects.add(new FlagState({x:325,y:this.elevationAt(325)}));
     this.enemyFlag=this.objects.add(new FlagState({x:1725,y:this.elevationAt(1725)}));
     this.shooter=createShooter({origin:this.hero.launchPosition,mode:profile.shootingMode,aimSolver:assistedAutoAim,onFailure:()=>this.emit({type:'aim-unreachable'})});

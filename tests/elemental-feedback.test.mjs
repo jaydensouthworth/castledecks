@@ -168,9 +168,11 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  const ui=readFileSync(new URL('../site/dist/battle.mjs',import.meta.url),'utf8');
  assert.match(ui,/iceArrow:'Ice damage that slows affected targets\.'/);assert.doesNotMatch(ui,/iceArrow:'[^']*freeze|iceWave:'Freezing/);
  // Snapshot updated only after source-reviewed siege/roster/scheduler corrections
- // plus recruitment/flyer protection, finite-ground safeguards the modern finite squad director and bounded Auto range assist.
+ // plus recruitment/flyer protection, finite-ground safeguards the modern finite squad director, bounded Auto range assist, and validated
+ // opt-in authored encounter data. expedition-engine-parity41.test.mjs compares
+ // default Battle 1/16/30 simulation with the exact frozen41 constructor source.
  // See the dedicated source, recruitment, and flying-friendly-fire regressions.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'fe30babc4cdcadd932382c58ba8d238f3488e964c94525d416e4d372a1711ccd','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'c64e07ec1fba62600d38363c336eaae2fb48f19740378603858fa73c562fcab2','reviewed engine boundary');
 });

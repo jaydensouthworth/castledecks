@@ -26,7 +26,7 @@ test('assisted battle selection, protection and final campaign retirement remain
  assert.equal(ui.battle.level,1);assert.equal(ui.battle.profile.cheated,true);assert.equal(ui.battle.profile.gold,0);assert.equal(ui.battle.profile.victories,0);
 });
 test('normal route imports assisted bundles with a visible provenance badge and no test tools',async t=>{
- const p=new PlayerProfile('Assisted');p.cheated=true;const text=new CampaignProfiles({profiles:[p]}).exportBundle();const ui=await loadGameUI(t);await ui.load({size:text.length,text:async()=>text});
+ const p=new PlayerProfile('Assisted');p.cheated=true;const text=new CampaignProfiles({profiles:[p]}).exportBundle();const ui=await loadGameUI(t);await ui.load({size:text.length,text:async()=>text});ui.click('localImportSession');
  assert.equal(ui.battle.testing,false);assert.equal(ui.battle.profile.cheated,true);assert.equal(ui.visible('testModeBadge'),true);assert.equal(ui.get('testModeBadge').getAttribute('aria-label'),'Assisted profile');assert.equal(ui.visible('openTesting'),false);
 });
 for(const mode of ['point_aim','auto_aim'])test(`${mode} retains a quick tap between frames, but cancellation never fires`,async t=>{

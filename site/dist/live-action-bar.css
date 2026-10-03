@@ -276,3 +276,19 @@
  .live-alert,.live-toast{top:calc(var(--lh-t) + 165px);max-width:calc(100% - 28px);}
  .live-hud:has(.live-alert:not(.hidden)) .live-toast{top:calc(var(--lh-t) + 197px);}
 }
+
+/* Precision is an optional edge utility, not a floating target over the battle.
+   The context lives directly under the safe-area deck. At 740px + 44px side
+   insets its right edge is 96px, clear of the ordinary launch ring and keeps.
+   Both 44px controls fit above movement, with no camera or input changes. */
+@media(orientation:landscape) and (max-height:500px){
+ .live-deck>.live-context{position:absolute;top:auto;right:auto;bottom:70px;left:0;display:flex;flex-direction:column;align-items:start;gap:6px;width:52px;pointer-events:none}
+ .live-hud .live-context .live-fire,.live-hud .live-context .live-activation{width:52px;min-width:52px;max-width:52px;height:44px;min-height:44px;padding:3px;gap:2px;border-radius:5px;font:650 11px/1.05 system-ui,sans-serif;pointer-events:auto}
+ /* The contextual Enter button is raised above movement near a keep. */
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-deck>.live-context{bottom:126px}
+ .live-context .live-fire::before,.live-context .live-activation::before{display:none}
+ .live-context .live-fire::after,.live-context .live-activation::after{font-size:8px;line-height:1.05;letter-spacing:0}
+}
+/* The relocated context now shares the safe-area deck as its containing block. */
+@media(orientation:landscape) and (min-height:501px){.live-deck>.live-context{right:18px;bottom:80px}}
+@media(min-width:1050px) and (min-height:560px) and (hover:hover) and (pointer:fine){.live-deck>.live-context{right:18px;bottom:6px}}

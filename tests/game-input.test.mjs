@@ -214,6 +214,7 @@ test('a newer selected save wins when file reads finish out of order', async t =
   const oldLoad = ui.load(older.file);
   assert.equal(ui.get('saveFile').value, '', 'the same file can be selected again while reading');
   await ui.load(fileWith(bundle('Newer load')));
+  ui.click('localImportSession');
   const newerBattle = ui.battle;
   const message = ui.get('introNotice').textContent;
   assert.equal(newerBattle.profile.name, 'Newer load');
@@ -229,6 +230,7 @@ test('a stale read error cannot replace the successful newer import notice', asy
   const older = deferredFile();
   const oldLoad = ui.load(older.file);
   await ui.load(fileWith(bundle('Newest')));
+  ui.click('localImportSession');
   const message = ui.get('saveStatus').textContent;
   older.reject(new Error('old read failed'));
   await oldLoad;
@@ -281,6 +283,7 @@ test('retiring a completed campaign with another profile requires choosing befor
   const next = new PlayerProfile('Next campaign');
   Object.assign(next, {level: 6, highestLevel: 6, scene: 7, highestScene: 7});
   await ui.load(fileWith(new CampaignProfiles({profiles: [completed, next]}).exportBundle()));
+  ui.click('localImportSession');
   assert.equal(ui.visible('ending'), true);
   assert.equal(ui.get('replay').textContent, 'Retire and choose campaign');
   ui.click('replay');

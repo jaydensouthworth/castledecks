@@ -4,7 +4,7 @@
 
 The application is a static web game. `site/dist/battle.html` supplies the UI and loads `battle.mjs`; engine modules own simulation and game rules. The simulation runs at a fixed 33 Hz while presentation follows browser animation frames. Keep simulation state changes separate from rendering so frame rate cannot change combat outcomes.
 
-The campaign, armory, loadout, profile manager, recruit army and companion UI share the running battle state. Menu transitions must preserve pause state and clear interrupted input. Profiles are explicit own-format files: do not silently introduce storage, telemetry or network submissions.
+The campaign, atlas, armory, loadout, profile manager, recruit army and companion UI share the running battle state. Menu transitions must preserve pause state and clear interrupted input. Campaign checkpoints use device-local browser storage with same-origin Web Locks, two-bank validation, conflict checks and newer-version protection. Checkpoints cover safe openings and settled results, never an in-progress battlefield. Portable own-format files/codes remain the backup route. Preserve clear player feedback, session-only fallbacks and the separation of rehearsal/expedition state from earned campaign progress. There is no backend, account service or telemetry.
 
 The `dist` folder is the source of truth for the runtime, not generated build output. Edit its modules directly. The development landing page is `index.html`; the playable entry is `battle.html`. Additional lab and phone-preview pages are development surfaces.
 
@@ -16,7 +16,7 @@ Run `npm start` for a loopback-only development server. It supports the same ext
 - `npm test`: all committed engine and UI tests
 - `npm run check`: both gates, as used in CI
 
-The suites use Node's built-in test runner and assertions. Two pixel-level rendering suites also use the pinned test-only `@napi-rs/canvas` package. Run `npm ci --ignore-scripts --no-audit --no-fund` before testing; native canvas packages are platform-specific. Tests require no private files or machine-specific runtime paths. Some tests deliberately select deterministic random numbers or start with clearly identified funded/assisted profiles. Preserve those distinctions when adding coverage.
+The suites use Node's built-in test runner and assertions, with two concurrent test files to keep the full UI harness's memory use bounded. Two pixel-level rendering suites also use the pinned test-only `@napi-rs/canvas` package. Run `npm ci --ignore-scripts --no-audit --no-fund` before testing; native canvas packages are platform-specific. Tests require no private files or machine-specific runtime paths. Some tests deliberately select deterministic random numbers or start with clearly identified funded/assisted profiles. Preserve those distinctions when adding coverage.
 
 `tests/helpers/game-ui-harness.mjs` loads the real UI module and engine with a small deterministic DOM/canvas surface. It verifies event/state behavior. It does not verify browser layout, pointer capture, rendering, focus order or real device lifecycle behavior.
 
@@ -32,7 +32,9 @@ After input, menu, HUD, camera or responsive-layout edits, test in a real browse
 4. Manual, point and Auto aiming; action-bar selection; keyboard shortcuts
 5. Desktop, narrow portrait and short landscape layouts, with rotation and resizing
 6. A real touch device for touch capture, orientation and app/background interruptions
-7. An extended session for memory, frame pacing and accumulated state
+7. Local checkpoint recovery, reload, cancelled import, quota/unavailable-storage fallback and two-tab conflicts
+8. Campaign atlas/replay, Wayfarer route/rewards, card-market inspection and Army ledger across viewport sizes
+9. An extended session for memory, frame pacing and accumulated state
 
 Record what was actually tested. Do not infer device acceptance from the Node harness.
 

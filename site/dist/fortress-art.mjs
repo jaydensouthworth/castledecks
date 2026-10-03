@@ -1,6 +1,7 @@
 /** Original fortifications, drawn around the simulation's current collision bounds.
  * No art transform or decorative shape is sent back to the simulation.
  */
+import {hostileTowerOccupantCount} from './garrison-intel.mjs';
 import {unitRegions} from './engine/collision.mjs';
 
 const TAU = Math.PI * 2;
@@ -118,6 +119,16 @@ function masonry(ctx,g,tower,cloth){
 function flag(ctx,g,cloth){const x=g.centerX,y=g.body.y;line(ctx,x,y+2,x,y-34,ink.warm,2);poly(ctx,[[x+1,y-34],[x+27,y-27],[x+1,y-17]],cloth);}
 function flame(ctx,x,y,strength,tick){const h=(22+Math.sin(tick*.13+x)*4)*strength;poly(ctx,[[x-7,y],[x-8,y-h*.5],[x-3,y-h*.3],[x,y-h],[x+5,y-h*.4],[x+8,y-h*.6],[x+6,y]],'#c9673bcc');poly(ctx,[[x-3,y],[x-1,y-h*.55],[x+4,y-h*.2],[x+4,y]],'#f1cf78dd');}
 
+/** Fixed-screen occupant cue above the flag, clear of the shootable stone. */
+export function drawHostileTowerOccupants(ctx,building,{scale=1}={}){
+ const count=hostileTowerOccupantCount(building),g=fortificationGeometry(building);if(!count||!g)return false;
+ const s=Number.isFinite(scale)&&scale>0?scale:1;
+ ctx.save();ctx.translate(g.centerX,g.body.y-38);ctx.scale(1/s,1/s);
+ ctx.fillStyle='#352329ed';ctx.fillRect(-32,-22,64,18);ctx.strokeStyle='#dba18b';ctx.lineWidth=1;ctx.strokeRect(-32,-22,64,18);
+ ctx.fillStyle='#ffead2';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`${count} inside`,0,-13);
+ ctx.restore();return true;
+}
+
 export function drawFortification(ctx,building,{scale=1,tick=0,elevationAt}={}){
  const g=fortificationGeometry(building);if(!g)return false;
  ctx.save();ctx.lineJoin='round';
@@ -134,5 +145,5 @@ export function drawFortification(ctx,building,{scale=1,tick=0,elevationAt}={}){
  const fraction=building.maxHp>0?building.hp/building.maxHp:1;
  if(fraction<.5){const strength=Math.min(1.4,(.5-fraction)*2+.3);flame(ctx,g.centerX-g.body.width*.23,g.body.y+50,strength,tick);flame(ctx,g.centerX+g.body.width*.25,g.body.y+20,strength*.8,tick+9);}
  if(fraction<1){const width=g.body.width,y=building.y+11;rect(ctx,g.body.x,y,width,5,'#1b2a28');rect(ctx,g.body.x+1,y+1,(width-2)*Math.max(0,fraction),3,team==='bad'?'#d7a07d':'#a3c4b9');}
- ctx.restore();return true;
+ ctx.restore();drawHostileTowerOccupants(ctx,building,{scale});return true;
 }

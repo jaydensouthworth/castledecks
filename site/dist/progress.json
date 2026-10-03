@@ -1,34 +1,35 @@
 {
-  "updated": "2026-10-03T03:50:49.033390+00:00",
-  "stage": "campaign-prototype",
-  "internal_tests_passing": 717,
+  "updated": "2026-10-03T08:45:32.533237+00:00",
+  "stage": "playable-campaign-and-expedition",
+  "internal_tests_passing": 1030,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
-  "browser_ui_verified": false,
+  "browser_ui_verified": true,
   "original_assets_included": false,
-  "save_mode": "manual own-format profile files",
+  "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "original-runtime comparison",
-    "build36 desktop/portrait/short-landscape native acceptance",
-    "Android touch and orientation",
-    "extended browser stability"
+    "Build 45 native follow-through for keyboard recovery and resource labels",
+    "Physical Android touch, orientation and lifecycle",
+    "Extended browser stability",
+    "Native portable save-file round trip",
+    "Original-runtime comparison"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
   "original_reference_available": true,
   "browser_verified_flows": [
-    "profile and start",
-    "drag firing",
-    "moving enemies and advancing waves",
-    "visible pause and nested menus",
-    "403px narrow layout",
-    "natural defeat, unaffordable armory, retry"
+    "Earned Battle 1 firing, natural defeat, retained combat rewards and checkpoint reload",
+    "Assisted purchase cart, comparison, direct equipment and loadout return",
+    "Crownroad map frontier centering, region selection, rotation, locked-field guard and explicit battle start",
+    "Assisted Army paid Queue, cancel with reserve refund, Auto toggle and Loadout return while paused",
+    "Compact Armory galleries at 915\u00d7360, 740\u00d7320, 360\u00d7640 and 412\u00d7780 CSS viewports",
+    "Landscape Precise Shot, airborne activation, Leave/Enter, arc toggle and Battle 16 high-ground shot"
   ],
-  "latest_gameplay_fix": "Castledecks working title; finite reactive squad director and keep-supply cutoff; bounded Auto range assistance; redesigned storefront, comparison and inline equipment.",
-  "build": 36,
+  "latest_gameplay_fix": "Visual command hall and spatial campaign atlas; compact illustrated Armory; Army contracts, muster and paid recruitment; usable modal keyboard focus.",
+  "build": 45,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "New regular enemy recruits and companion mechanics use provisional recreation balance."
+  "extension_scope": "Modern recruitment, companions, reactive squads, assisted Auto aim reach and a separate branching Wayfarer charter use recreation rules."
 }
