@@ -1,11 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRequire} from 'node:module';
+import {createCanvas} from '@napi-rs/canvas';
 import {FirstBattle} from '../site/dist/engine/first-battle.mjs';
 import {seededRandom} from '../site/dist/engine/combat.mjs';
 import {createWorldCamera,worldToScreen,screenToWorld} from '../site/dist/world-camera.mjs';
 import {drawFortification,drawFortificationCollision,fortificationGeometry} from '../site/dist/fortress-art.mjs';
-const require=createRequire(import.meta.url),{createCanvas}=require('/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/@napi-rs/canvas/index.js');
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const battle=(level=1)=>new FirstBattle({level,random:seededRandom(3441)});
 

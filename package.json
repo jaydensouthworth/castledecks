@@ -12,5 +12,8 @@
     "test": "node --test tests/*.test.mjs tests-recruitment/*.test.mjs",
     "validate": "node scripts/validate-source.mjs",
     "check": "npm run validate && npm test"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "0.1.100"
   }
 }

@@ -16,7 +16,7 @@ Run `npm start` for a loopback-only development server. It supports the same ext
 - `npm test`: all committed engine and UI tests
 - `npm run check`: both gates, as used in CI
 
-The suites use Node's built-in test runner and assertions. They require no package dependencies or access to private files. Some tests deliberately select deterministic random numbers or start with clearly identified funded/assisted profiles. Preserve those distinctions when adding coverage.
+The suites use Node's built-in test runner and assertions. Two pixel-level rendering suites also use the pinned test-only `@napi-rs/canvas` package. Run `npm ci --ignore-scripts --no-audit --no-fund` before testing; native canvas packages are platform-specific. Tests require no private files or machine-specific runtime paths. Some tests deliberately select deterministic random numbers or start with clearly identified funded/assisted profiles. Preserve those distinctions when adding coverage.
 
 `tests/helpers/game-ui-harness.mjs` loads the real UI module and engine with a small deterministic DOM/canvas surface. It verifies event/state behavior. It does not verify browser layout, pointer capture, rendering, focus order or real device lifecycle behavior.
 

@@ -2,7 +2,7 @@
 
 Castledecks is a browser-based archery and army campaign prototype. Defend your keep, recruit allies, equip ability cards, and progress through a campaign. It began with BowMaster Prelude-inspired mechanics and is developing its own presentation and game systems.
 
-The game uses native JavaScript modules, HTML, CSS, and Canvas. There is no bundler or dependency installation step. `site/dist/` contains the editable runtime source, despite its directory name.
+The game uses native JavaScript modules, HTML, CSS, and Canvas. There is no bundler or runtime dependency installation step. `site/dist/` contains the editable runtime source, despite its directory name.
 
 ## Run locally
 
@@ -16,9 +16,10 @@ Open <http://127.0.0.1:8000/battle>. Use the lobby to start a campaign or choose
 
 ## Validate and test
 
-Use Node.js 22 or later. No `npm install` is needed.
+Use Node.js 22 or later. Rendering regressions use the pinned, test-only `@napi-rs/canvas` package; the game and local server themselves require no dependencies.
 
 ```sh
+npm ci --ignore-scripts --no-audit --no-fund
 npm run check
 ```
 

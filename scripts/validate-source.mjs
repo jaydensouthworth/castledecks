@@ -27,6 +27,7 @@ for (const file of files) {
   if (file.endsWith('.mjs')) execFileSync(process.execPath, ['--check', file], {stdio: 'pipe'});
   if (!/\.(mjs|html|css|json|md|yml)$/.test(file)) continue;
   const content = readFileSync(file, 'utf8');
+  if (file.endsWith('.mjs')) assert(!/(?:from\s*|import\s*|require\s*\()\s*['"](?:\/|file:)/.test(content), `Machine-specific module import: ${path.relative(root, file)}`);
   assert(!/https:\/\/chatgpt\.com\/space\//.test(content), `Private project link excluded: ${path.relative(root, file)}`);
   assert(!/(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|AKIA[A-Z0-9]{16})/.test(content), `Possible credential: ${path.relative(root, file)}`);
   if (file.startsWith(dist + path.sep) && /\.(html|css|mjs)$/.test(file)) {
