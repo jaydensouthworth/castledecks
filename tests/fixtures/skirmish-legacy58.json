@@ -1,0 +1,1442 @@
+[
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "ca0b2caa975b1daf2f952bb725dc927c615a6d1b85fb30bca19db5c8a8721624"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "d8c5c9ad806a168bfaceaaca80f3bf8cb701f0f8245d6feae0115028e55cbb6c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "941d0e771f2cee0f879566d38dd262fd84016a7447b5ac6a371a743ce0f0906b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "acd96aac2369a109f543168eaf86bad0185f7e608cc00279ae4c536f622d1c07"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "ee75860d4e2b4ac18f1375ac9a7814e032d875727557da1e18789cadfb1d244d"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "00003aff579388522c4fc5002e4f78be57e57bdc140840fc771f909f38454d9e"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "c5dbf7aab666f6bc3a24c5f4f508858fb36aba9056da6b0c58e51ca608212edb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "9beef9f41002329bb510612052df44acaaf45237bd1832cb5b70d62209334b35"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "fc0cc6b9547a82ab7188b68de5f7d4c7ab7819d49e62b7f239fb1dabde0435bd"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "530ced57de55737a5558615251ff56f6934001a062f70c30e73c303de7c95bf1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "4289639411a435065615d8e618c9b60deb0945f30e26d0154d0ec0cb8bb282e1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "67edabfddf5f62e49f613b4edfcdb24e8de3b9c1d31dad82f0cf08c7a4647c2a"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "9722b02b448a478bc6df4f27e7f767cd3d546d62d3e2bc5e929294bd038aa758"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "4e2e6f5e58e4195eafa5e5a361bd39ac5e1ca93821e2ba22cd11cb5f143fed42"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "228d00a3a7518ade0cd7b6c22f69b99233074d5621e0da9b26158c8f457eaa1a"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "45d26d7133dc9500654aca716126b87adbb12c41899ba0d5b87f30b557db01ee"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "e4fd5d5b922890c4066ebd79a197dd3bec23f900a1b19e5fc18b992e6b8abeeb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "4cb02532c484feb8d3b4a011785d9af5cfb24e5d38825a5060408699ea6a585a"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "f378d82f62c1424cf1183d2a79e859fb4d454ae4788317048cdff8c078d40e04"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "fb4e4491dd9a6a6f799cf166fa5c99b5d57f9a03cef9d05bf58ddd62fc907679"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "93650336da911ed543f6dfec0ff80c556dd71cdd22323bd0583eecc9ef70a808"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "b0d404ac5b83864edf20732e019fd957ad60280f4fbbadb90a00603a1ed035b1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "d5743543a8b2719d0a3294ce35f32a8a37025a0bb9564d6926dff905455dddd5"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "c9f1aa13548366b6caa3f517409587aa5bc44be7a9d19749e466af2e7de6ddd5"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "818cf2e171eb245a4cb24869dd18184e10ead653429b279c6ebd632aaefab826"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "fdbbbd7170f5ab4931a0813b13c02dd6776d716d69296a98b67179042ebc7c68"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "12f090f320b23b53367ebe159c677d073f857f1ec0911252c5cf9ef61dc981b8"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "8a49f751c13e5c462ec197b058de9d21e5454bc32c33d27e3cb5cb66af53e746"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "e330a8508c10b0597be4fb6d46f38cb2742ae23c566503442655273129d83669"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "29ef855d10447857e5df9b7d033d81bbf4efb9b21e295b33fc770295dbfeaebe"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "f20dfba1b5feddd0970e12f0e3939092ce9f5d9091f477fd6fbc00727f2af9ab"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "dd65087ddb25c48fd3fd80ef6333ac23e35d85a772c6cddd8172d8d312db5738"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "f941293bb8bffd1742b288bb6538e654a95affaedf830543377b5bf66bb3a2fb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "61fc43f40245ef8e380a2c4a76a0b4d10a85f7678a470fe1e9afdf84dd86185a"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "478fbb8a4ff73ef621d15b3fd28e99cf359d717345db8baeaaada5724916aa92"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "oaks",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "1bbc8894685a8f5c911ec8fa6a61914640a23bc3edbdb3e242c2d92717d2a8a1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "06b2990338853ac1868998749cb7ea47e2754047b807a8f49222b90cea16119c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "0db8459d7a62c0bbee95fa8a2461584b0f188c7a87e5b751e01183cd0d734988"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "c5b01575305c8cee8c4cc4ccad0081b5ca7ee2f8141a38dd335268d3c25ad0fd"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "96aba70af99205234c86ef4fed6dff791f09fd5d96b985456f85fe270873b270"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "5d13e340a312a1c3bd4839b19066bcc8ca5dd15a683c71d0846dfeb06ad338c4"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "489c2d0636425f177104d29211dc803eb84d6d8f38e260557087536d1ceb89ad"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "ca01521ccbbcb6c88eaa71f09fcb96b6c2138abf9bff0f74a986724b4867af9f"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "7c20d7b43d9e91bff597c4186e9537d0e66717e2928745cd4bc3be211d92adba"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "9db06b67b82d5cbe186890c13d35f9e0435458f09bce7a551dcf48180cfad362"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "b27468bd84da615d19f4e55cb6f645a58c15cee86a542990e06014340c1af168"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "0bd2291d4d32ed451a87f49fcb2c79846a2b994e850daa346d4eb6491ead9b5b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "196ab12baa2a8fb3b04a6476f6281bafbc4964b3fb83ce1d9d9fc32061d801f9"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "cbe58709277bd8cae0849888c96dfdd05f1e10ef07c2fdbd49e569cb9dd534ab"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "00602f86ec3000ac66b41b5f25a7216e8aba3a9d9735b9b1cba9539770a034e1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "4e4921a98402cb9178a58e31e792a41746bd3c70579abb1f700ebf7e458ff2c9"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "e4c4d8b29668a61d5a9deee001673d146ba7dead0ed385c05b7a78fd5a6f79b4"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "5dab32a3cbd562aa49e5f0713666993838a6f876c121631c5c077779124194bc"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "4453e10a23fb2d4f0a7c855bc0f58d70d45e90ee78292016d61352121228571e"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "944871d7373acfd11a3d43dbbf73257bdbc6c7ea7cd740199e9a65e10ca087d5"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "465e29ce3d43f7704751a4e726034962f0482730934f47cbc4d7723ade33b3dc"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "ff8ad66704d862c039995b2e8a1258dcd19182ce001b68ad4bd73838eace92d4"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "a7b805b0eaddc4a1b0191caababe1d258209eccd6d10f464f2792cc1d60b4551"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "8caa8a15983bd33c7f41f408a9073ca8cabca343851425bd1360f376c918dec6"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "d83b10641456f80145ad610dabd5e2017db453f01d76cac3e6c91a708699b8af"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "08a03c21143402467bbe1c3ab526c7991a1ada114cfc1b13fcb423014a402b99"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "d9a772138d6cbdafd1b7ee6c9db354d69e85e300af4674ccbfee39c23b3691f7"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "f46b269dcb9a17bea6a231dff1523c9a114f65c320fab0d1e21ef5bc9695b7d1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "942aeb87f83e7167dbd0f87404b013dbbcde19fa0cf199aa9c26194f99be2573"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "dedd6c6f1639f969729788697746e7ffa7e8b9e71753f5d8d4870ab3a79999f1"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "19073995ef5e475912c9eea334f9bb8954098563a3aeb31cd22a2b8fe1ad671e"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "30115e5dc1f347df238174eddc5d014dffda67819d7c39fa750c4fd456feb50e"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "924233799fa2ec744e632c1288704019e71173f8802315d4e1b32b72648c7864"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "7d5fd6efa468e8995e32b54914c3efc861c78aabfdbf1d5348ad3fbae1772e55"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "ee27ac4070629b012bb18e9ee44b2de25e120d16ad1e7c65fac125aa184ca545"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "aec83a046411edf8b5af29849ec08f8bef26ae90aea37c0e44bfb490f93ad7a0"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "lowlands",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "1dc9fa3e2bfb127a52302b85a0b3f03248ae4ca89b16adf1af20e7626064f447"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "41a3abfd284145553ca864bf2b825634dcc0dc33ca45a17ffa6d907df297a299"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "8f0d79bfcc6d91ee72d6cb5cf194828710ba0f4a3bc2429c3f501cdbe8d2959b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "2e9c854b23d541f7b60fc19f1f4f8613a665db14478ce056d01c2c5b9aca6240"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "06d35816664a8fe21db9447e203d889fecc4b595460bc6c0b312b23685c3a752"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "ccd680c3315473edc1b983e3a8f9b64f6226be3642bc213c37aadab82090e549"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "01369711644043e5135cf38f8ca86de79ac994c654527a75ac95da10dbbb4b7d"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "bcddb58cba29cc7388f212064e28d2b84fc1520d3336ee8b4ac3672c09041f68"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "6662a65377d209fd22a3409b1f6d35e4c30e9329fb3dc15a23a32a47ac663a99"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "1bd2a8046e6a588541b4a91ab6cb5f2c3a34ef5dd2f35f756f601d050b2b48d0"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "6a52cb42dfdf9f28255a769bfe1267d44d2548eff13c582f2f67370a91115c2d"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "d35a1ef5671856729d586398053ef403c3886317d6ff7f1552c5371b9bdb4a22"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "151c5cca87d7c0e131a76f356143adace7e4822e86d22bda9e426b141ed9de20"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "5836bda0df5b5b15d3b8d37138b55aea0fd568d3ee1c36699ab2a2ec71413536"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "7b12ff4edf479468890c5547d7f38ec2c6ea89c3129c8d84823a08760b248d99"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "1a85b6a8602d435a400ae1ebb597ab47cd291d1b004d22e5009dced9f7946b71"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "4dc1ecc499ac8b4de1e229302903bd2a71fa2d62c6aa8e4bcde7c203f4b6658f"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "bab927daa15f224057efab61602bc792227ba6f783e95518c340edf85494114e"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "68ee27892b0015e9d8b5b6fb0f020e9331324bbad5a464e87ff94f1a62eb1f1b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "e9c66a9dedf1540b452c264e0b3f660b2ada91baf5cefe41377791cf9db3056a"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "8b23f4f1b1ab7c5bf07abfb0caf4f9fc52c92d87f3fc217d2ab6701bcc644cd2"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "ada939beb47e9bfc99a28a35ca2968baa0b776971697bc505126615b7fbab283"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "a19142ffde73bf85ee96b195e1e7922fd599b706660f30b5b0d7f5d1a0612aea"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "f35df0a9c76cbf0d6bbbdea84d994e18f80c1f4bb300d652360bb1030b98ec63"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "8243c743ef9d17ecd8666ff040693d07bd3884d60e3dde48f45f354d6dd18af4"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "a5589097d367f6ced514147b958ffe9f831c69437de76291148da2cf4d9238e8"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "ed8e348d11bd226c536602a81dacb1b4b977f31717c5be549ba0da99585f0c09"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "f8cbd363d7be3a0debc721291ef9b2ad8e8e7ace8bd79a7e38d9e2141bfd5e12"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "0f9f8a7b82e924ff8027d74e608e5254b53bf18b2c75e60a570109fd1120feed"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "35a0abd49558a5d79ee7feac0f3889b1c5dbf7550adbe276ea6f115a31bcabbb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "297413f959796c269b755cdac81165d1dc6934da39b43322965fa739a928737d"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "dc40c46b32aa2bbdd43df35b5a02715854eef0b44f0a228efc4e209119f9e3f4"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "f9c9b8d355f73d9b7619910b8800dd13bcaa6133234a3da760eaf80180c52b78"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "b6ba4caea075139280628a81095b3011d2942272c3159774353f387aa9ec3ce6"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "e8c409670225752ff6ea370780eb2eb820e100cf724ec92a8f933f2efc88b861"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "ffd82e55a8e28773a2ee6f22f9d220e5b9e5974ce7687ed2ce3d921ba60c7feb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "pines",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "1a646525c87a56b547cd44d406b9e9b5094819e582b9cb8d9e6fa4dc773087cd"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "fc26d6ca64bbea22be3c70df70d8d5080b8cd5d4c5a30d54b56fe6c63e1be562"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "169307bd20aadf51a808802be9fc6942ef9797d15fe1324475e7ab57fa7b763c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "b366db2e24fb939f483bc0c6173edcc6875593dddb6e6a499f8609f3a29119b2"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "vanguard"
+    },
+    "sha256": "9989b1a3e23907474dbe9aac9b895c7d75a07e70b983bbc3443f99ad67378c13"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "be568d6b9b31c3648d31a290ffe6818b81ad32381e7e6ca4a35dd63a8e17fb63"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "bbb91228aae6ef6c6c9b2d2432cf1269833519341cc4b12861dc13baf5c840fd"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "15d1aebd709b5848a974d9343bc42d71625d73c280a6fc5e8c6016f8eb263a57"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "skywatch"
+    },
+    "sha256": "6800b2a1a90ea2ba3c1982f4effc3106eafeae8e09c3dfc1f0d32a082433a2a2"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "196d84882ed2fa8dc104ae3fef87dfc6166666096dbc12c2e8b0958733a8bb65"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "f47a393123d4b71b75c5f50a5175e01e5f3034b7a262e2e263f1f929ca96601c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "730fff9cbabff48e78f9bb49ea4576fa11ca44e22ec47c9378e8828579b7d739"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "scout",
+      "doctrine": "siege"
+    },
+    "sha256": "2b578b4bebff096a52c43c404c4e7bed2aa6632e0401a7a50682ce2d803f8ebe"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "ab5821b49034caadcb0fe9f147bdc6ad3b1bd7fc7ca4a51a83b9649ebf6eaa69"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "6113fd29533782a13935e8e7dc14d82293e92acc81a9824e13efb194235a24de"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "5c2a716a2aab42aa6c6a504b86a10583b9b33be46957fa6579d46ff323b847de"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "vanguard"
+    },
+    "sha256": "7068561356ba5a56118b75353fbcb9eaff099e5e683bc8383c72178f34005721"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "d91bc6274c324aa35c70aed0a6ca57687c8ff340461695efb1d169d42e084aa6"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "7cad65c83a6fa346415fa7f1255df32f8400c526a8c744b861f658f03f5edf23"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "6166102ddd36b7dbeaaf5d1e1897cda3621619567fc92e67649fed8ef7146e90"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "skywatch"
+    },
+    "sha256": "2a082d32501745912227a0a6f41f3fee46ba87bbbb52e29fe3b6f6d64a9af81c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "8094534719eda8b2d3f2b14d5764dccc5d491ecdaf20a74a2f88a2734a84b6a6"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "c709ba56e4dfea8f397acf9c138069da3df082b4b8b100fce00eb3aa742af104"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "4840a4c5b0bb11c262315de8607a4a8fbda33c1e17ab4ae7f85f92e0679b3d44"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "standard",
+      "doctrine": "siege"
+    },
+    "sha256": "713cb3f3beb2b918a8df51ea9c859e63d8381c79c65e319e0c13592217f4c75c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "790dc524033c124f5bc456f368359062e6917ae4a3ffc0810351d8ba37f1915b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "3cb2aa94d7a9f9a47f36a8e3186effcd70ad8d6d7c7ff849e9598ed1ab7b5c60"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "e08272e418decd719544e0ae3d1804e9aba3b633c583b66d8479ce56f104bc84"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "vanguard"
+    },
+    "sha256": "6592e179ebfef49c80c3f3b59f42d9613509f422b4178cfb6b7514089a10b42c"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "913d1cdd15e0c511d8ec7926dc2f0dc4c4c0233c06d75b2648e0ef9214b04ab5"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "b8f86551cfbfcffd9a2b3ba28ae2d9516e84c80e78390507cc773fdf6fec4959"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "f6a13424f2144bde91abd6a51079151bc6285aa05e21fbacb4946f55ac5ce613"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "skywatch"
+    },
+    "sha256": "88367c96edfcb2f1f8b20e36cab11a08ca0a484bd96a63c83075018ad734f028"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 1,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "55b7ac432ea939789b07a89b8c032aec073dd55a4c21fe10b4143be8dbf46deb"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 42,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "5bd67a68609f24c17daba085768d3c6d06708161b68efd192e73ef483664aa2b"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 73421,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "c2dec3310534db736ea6e5d87a9851ca6ddd98f2f3aad7e40f504f6e9a7d9fda"
+  },
+  {
+    "descriptor": {
+      "version": 1,
+      "seed": 4294967295,
+      "biome": "wasteland",
+      "threat": "veteran",
+      "doctrine": "siege"
+    },
+    "sha256": "37bcc79d12f4153a4820f9cc192e42cf8a9a26ca4afcd7c31bdfd9c10d690812"
+  }
+]

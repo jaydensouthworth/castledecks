@@ -2,6 +2,7 @@
  * Ordinary combat/economy remain active; no supplied kit can become a campaign.
  */
 import {CampaignBattle} from './engine/first-battle.mjs';
+import {BatteryObjective,BATTERY_OBJECTIVE,BATTERY_TARGETS,BATTERY_ESCORT} from './engine/battery-objective.mjs';
 import {PlayerProfile} from './engine/progression.mjs';
 import {HeightField} from './engine/terrain.mjs';
 import {CampaignProfiles} from './engine/profile-manager.mjs';
@@ -36,7 +37,33 @@ export class SkirmishBattle extends CampaignBattle{
   super({profile:liveProfile,level:scenario.level,random:skirmishCombatRandom(scenario.descriptor),encounter:scenario.encounter,onEvent});
   this.terrain=new SkirmishHeightField(this.encounter.heights);
   usedProfiles.add(liveProfile);this.skirmish=scenario;Object.assign(liveProfile,progress);
+  if(this.encounter.objective===BATTERY_OBJECTIVE){
+   this.batteryObjective=new BatteryObjective(this);
+   for(const target of BATTERY_TARGETS){
+    if(this.enemies.take('trebuchet')!=='trebuchet')throw new Error('Required siege engine missing from finite company');
+    const unit=this.createUnit('trebuchet');
+    unit.x=target.x;unit.y=this.elevationAt(unit.x);unit.facing=unit.forward;unit.vx=0;this.updateGeometry(unit);
+    this.batteryObjective.bind(target.id,unit);
+   }
+   for(const entry of BATTERY_ESCORT){
+    if(this.enemies.take(entry.type)!==entry.type)throw new Error('Required escort missing from finite company');
+    const unit=this.createUnit(entry.type);unit.x=entry.x;unit.y=this.elevationAt(unit.x);unit.facing=unit.forward;unit.vx=0;this.updateGeometry(unit);
+   }
+  }
   if(this.hotbar.bar!==0)this.hotbar.change(1);this.activeSkill=this.hotbar.active;
+ }
+ get objectiveProgress(){return this.batteryObjective?.snapshot??null;}
+ get objectiveMarkers(){return this.objectiveProgress?.targets??Object.freeze([]);}
+ checkOutcome(){
+  if(this.encounter?.objective!==BATTERY_OBJECTIVE){super.checkOutcome();return;}
+  if(this.outcome||!this.batteryObjective||this.batteryFrame)return;
+  this.batteryObjective.update();const outcome=this.batteryObjective.outcome();
+  if(outcome)this.finishOutcome(outcome);
+ }
+ step(){
+  if(!this.batteryObjective||this.paused||this.outcome||this.summary){super.step();return;}
+  this.batteryFrame=true;try{super.step();}finally{this.batteryFrame=false;}
+  this.checkOutcome();
  }
  finishOutcome(outcome){const progress=Object.fromEntries(progressionKeys.map(key=>[key,this.profile[key]])),accepted=super.finishOutcome(outcome);Object.assign(this.profile,progress);return accepted;}
  applyOptions({shootingMode=this.profile.shootingMode}={}){super.applyOptions({difficulty:this.skirmish.difficulty,shootingMode});}

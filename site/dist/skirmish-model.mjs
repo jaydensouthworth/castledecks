@@ -4,6 +4,7 @@
  */
 import {seededRandom} from './engine/combat.mjs';
 import {validateBattleEncounter} from './engine/battle-encounter.mjs';
+import {BATTERY_OBJECTIVE} from './engine/battery-objective.mjs';
 import {validateAutoAimZones} from './engine/assisted-auto-aim.mjs';
 export const SKIRMISH_VERSION=1;
 export const SKIRMISH_BIOMES=Object.freeze({
@@ -21,6 +22,7 @@ export const SKIRMISH_DOCTRINES=Object.freeze({
  vanguard:Object.freeze({name:'Vanguard',description:'Mounted flag runners backed by heavy infantry. Watch the ground lanes.'}),
  skywatch:Object.freeze({name:'Skywatch',description:'A smaller ground escort with aerial pressure. Lead flyers and keep elemental counters ready.'}),
  siege:Object.freeze({name:'Siege train',description:'Slow artillery and healer-supported infantry. Disrupt the escort before it reaches your keep.'}),
+ battery:Object.freeze({name:'Battery interception',description:'Silence two marked ordinary trebuchets. Infantry, healers and riders screen the battery. Protect your hero and home flag; taking their flag or breaking their keep does not finish this challenge.'}),
 });
 export const SKIRMISH_KIT=Object.freeze({rank:6,basicRank:5,skillRank:2,gold:1200,reserve:70,skills:Object.freeze(['arrow','fireArrow','iceArrow','bombArrow','flakArrow','grunt','archer','priest','mount','trebuchet']),autoRecruit:Object.freeze([])});
 export const DEFAULT_SKIRMISH=Object.freeze({version:1,seed:73421,biome:'oaks',threat:'standard',doctrine:'vanguard'});
@@ -39,7 +41,7 @@ export function validateSkirmishDescriptor(value){
 export function encodeSkirmishDescriptor(value){const d=validateSkirmishDescriptor(value);return `SK${d.version}:${d.seed.toString(36).toUpperCase()}:${d.biome}:${d.threat}:${d.doctrine}`;}
 export function decodeSkirmishDescriptor(text){
  if(typeof text!=='string'||text.length>100)throw new TypeError('Enter a Skirmish seed code under 100 characters.');
- const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege)$/i.exec(text.trim());
+ const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege|battery)$/i.exec(text.trim());
  if(!match)throw new TypeError('That is not a complete Skirmish seed code.');
  const seed=parseInt(match[2],36),value=validateSkirmishDescriptor({version:Number(match[1]),seed,biome:match[3].toLowerCase(),threat:match[4].toLowerCase(),doctrine:match[5].toLowerCase()});
  if(encodeSkirmishDescriptor(value).split(':')[1]!==match[2].toUpperCase())throw new TypeError('Seed code has a noncanonical number.');
@@ -78,6 +80,14 @@ function makeTerrain(d,attenuation=1){
 }
 function makeCompany(d){
  const r=stream(d,'company'),tier=Object.keys(SKIRMISH_THREATS).indexOf(d.threat),spec=SKIRMISH_THREATS[d.threat],count=spec.base+Math.floor(r()*(spec.variance+1));
+ if(d.doctrine==='battery'){
+  // Original optional challenge: a smaller, finite escort around two ordinary
+  // predeployed engines. No extra armor, enemy buffs, reinforcements or kit.
+  const counts={grunt:5+tier*2+Math.floor(r()*3),tallGrunt:1+tier,archer:1+tier,priest:1+(tier>0?1:0),mount:2+tier,trebuchet:2};
+  const roster=Object.entries(counts).flatMap(([type,n])=>Array(n).fill(type));
+  for(let i=roster.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[roster[i],roster[j]]=[roster[j],roster[i]];}
+  return {counts,roster};
+ }
  const counts={grunt:Math.max(8,count-8-2*tier),archer:2+Math.floor(r()*3),priest:1+(tier>0?1:0),tallGrunt:1+Math.floor(r()*3)};
  if(d.doctrine==='vanguard'){counts.mount=3+tier+Math.floor(r()*3);counts.tallGrunt+=tier;}
  if(d.doctrine==='skywatch'){counts.air=2+tier;counts.mount=1;if(tier>0)counts[d.biome==='pines'?'iceDragon':d.biome==='wasteland'?'fireDragon':r()<.5?'iceDragon':'fireDragon']=tier;counts.grunt-=2;}
@@ -101,7 +111,7 @@ export function createSkirmish(value=DEFAULT_SKIRMISH){
  for(const scale of [1,.72,.4,0]){heights=makeTerrain(descriptor,scale);reach=sampledReach(heights,towers);attempt++;if(reach.ok)break;}
  if(!reach.ok)throw new Error('The bounded fallback did not pass the sampled reach check.');
  const company=makeCompany(descriptor),light=['dawn','noon','dusk'][Math.floor(r()*3)],enemyKeepHP=Math.round(spec.keepHP*(.9+r()*.2)/100)*100;
- const code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:'standard'});
+ const code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:descriptor.doctrine==='battery'?BATTERY_OBJECTIVE:'standard'});
  const nameR=stream(descriptor,'name'),prefix=['Amber','Broken','Hidden','Last','Quiet','Silver','Windward','Red'],suffix=['Crossing','Watch','Hollow','Rise','Causeway','Pass','Reach','Vale'];
  return Object.freeze({descriptor,code,name:`${prefix[Math.floor(nameR()*prefix.length)]} ${suffix[Math.floor(nameR()*suffix.length)]}`,level:spec.level,difficulty:spec.difficulty,encounter,counts:Object.freeze({...company.counts}),reach:Object.freeze({...reach,attempts:attempt}),kit:SKIRMISH_KIT});
 }

@@ -1,0 +1,8 @@
+/* Optional objective stays in the existing battle standard and Pause report.
+   Scope avoids changing the geometry or typography of the original modes. */
+.live-battle-standard[data-objective="intercept-battery"] strong{letter-spacing:.015em}
+.live-battle-standard[data-objective="intercept-battery"] span{white-space:normal;text-wrap:balance;overflow:visible;text-overflow:clip}
+#batteryObjectiveBrief{font:12px/1.5 system-ui,sans-serif;color:#ead5a4;margin:8px 0 12px}
+@media(orientation:landscape) and (min-width:700px) and (max-height:500px){
+ .live-topbar .live-battle-standard[data-objective="intercept-battery"] #combatEnemyState{font-size:10px;line-height:1.2;overflow:visible;text-overflow:clip}
+}

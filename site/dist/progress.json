@@ -1,14 +1,15 @@
 {
-  "updated": "2026-10-03T20:40:00.669881+00:00",
-  "stage": "branching-route-board-and-readable-siege-tactics",
-  "internal_tests_passing": 1483,
+  "updated": "2026-10-03T21:06:08.651209+00:00",
+  "stage": "optional-battery-interception-candidate",
+  "internal_tests_passing": 1528,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
-  "browser_ui_verified": true,
+  "browser_ui_verified": false,
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
+    "Native acceptance of optional Battery interception candidate",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -39,11 +40,11 @@
     "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim"
   ],
   "latest_gameplay_fix": "Spatial Wayfarer route board; fixed Rear/Center/Forward rally lines with live control; recruited trebuchets attack distant hostile buildings when no distant troop target remains.",
-  "build": 59,
+  "build": 60,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,

@@ -181,5 +181,5 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // See the dedicated source, recruitment, and flying-friendly-fire regressions.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'c8e8904e9021b78f4c78683ed5a7ebf4d734b203851d7bb9494bbdd7720fd864','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'d48f8b8664e05a0f15bd44c0007c00e7160873b858599f21cc4e8c9e1fa03e22','reviewed engine boundary');
 });

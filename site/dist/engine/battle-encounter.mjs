@@ -9,9 +9,11 @@ export function validateBattleEncounter(value){
  if(Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))throw new TypeError('Invalid battlefield encounter fields');
  if(typeof value.id!=='string'||!value.id||value.id.length>64)throw new TypeError('Invalid encounter identity');
  if(!['oaks','lowlands','pines','wasteland'].includes(value.scenery)||!['dawn','noon','default','dusk','night'].includes(value.timeOfDay))throw new RangeError('Unknown encounter scenery');
- if(!['standard','break-keep'].includes(value.objective))throw new RangeError('Unknown encounter objective');
+ if(!['standard','break-keep','intercept-battery'].includes(value.objective))throw new RangeError('Unknown encounter objective');
  if(!Array.isArray(value.heights)||value.heights.length!==101||value.heights.some(h=>!Number.isFinite(h)||h<300||h>850))throw new RangeError('Encounter needs 101 finite terrain heights');
  if(!Array.isArray(value.roster)||!value.roster.length||value.roster.length>500||value.roster.some(type=>!enemyTypes.has(type)))throw new RangeError('Invalid finite encounter roster');
+ if(value.objective==='intercept-battery'&&value.roster.filter(type=>type==='trebuchet').length!==2)throw new RangeError('Battery interception needs exactly two finite-roster trebuchets');
+ if(value.objective==='intercept-battery'&&['grunt','tallGrunt','mount','priest'].some(type=>!value.roster.includes(type)))throw new RangeError('Battery interception needs its finite opening escort');
  if(!Array.isArray(value.towers)||value.towers.length>3||new Set(value.towers).size!==value.towers.length||value.towers.some(x=>!Number.isFinite(x)||x<450||x>1550))throw new RangeError('Invalid encounter towers');
  if(!Number.isSafeInteger(value.enemyKeepHP)||value.enemyKeepHP<500||value.enemyKeepHP>40000)throw new RangeError('Invalid enemy keep health');
  return Object.freeze({...value,heights:Object.freeze([...value.heights]),roster:Object.freeze([...value.roster]),towers:Object.freeze([...value.towers])});

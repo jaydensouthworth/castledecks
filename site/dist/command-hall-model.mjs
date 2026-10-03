@@ -1,4 +1,5 @@
 /** Read-only preparation view. Browsing never changes a profile, route or battle. */
+import {BATTERY_BRIEF} from './objective-feedback.mjs';
 import {SKILLS} from './engine/progression.mjs';
 import {COMPANIONS} from './engine/recruitment.mjs';
 import {campaignProgress,encounterBrief} from './campaign-atlas-model.mjs';
@@ -11,6 +12,7 @@ export function hallPreparation({profile,battle,destination='campaign',run=null,
  const matched=decks.find(d=>d.companion===(profile.companionId??null)&&d.slots?.length===30&&d.slots.every((id,i)=>id===slots[i]));
  const brief=destination==='campaign'?encounterBrief(Math.min(30,Math.max(1,battle.level)),{profile,battle}):null;
  let title=brief?.name??run?.current?.name??battle.skirmish?.name??`Battle ${battle.level}`,objective=brief?.objective??run?.current?.objectiveText??'Protect your flag and hero. Defeat the company or bring the enemy flag home.',advice=brief?.advice??run?.current?.tradeoff??'Practice supplies belong to this session. Inspect the field and arrange your action bars before departing.';
+ if(destination==='skirmish'&&battle.objectiveProgress?.type==='intercept-battery'){title=`${battle.skirmish.name} · ${BATTERY_BRIEF.title}`;objective=BATTERY_BRIEF.goal;advice=`${BATTERY_BRIEF.opening} ${BATTERY_BRIEF.counterplay}`;}
  const roster=battle.enemies?.roster??battle.skirmish?.encounter?.roster??[],threats=brief?.threats.filter(t=>(t.count??t.maximum)>0).map(t=>({name:t.name,count:t.count}))??Object.entries(roster.reduce((a,id)=>(a[id]=(a[id]??0)+1,a),{})).map(([id,count])=>({name:SKILLS[id]?.name??id.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()),count}));
  const progress=brief?campaignProgress(profile):null;
  const queue=battle.friendlyQueue;

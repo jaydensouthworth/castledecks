@@ -20,6 +20,12 @@ Wayfarer presents six fields in a branching route board; a run still contains fo
 
 Rally positions are fixed Rear/Center/Forward world landmarks, independent of hero movement and camera motion. Advance retains the ordinary AI path. Keep orders transient: no save schema, costs or combat values change. Allied recruited trebuchets may fall back to a living hostile keep or occupied hostile tower when normal distant-actor selection finds nothing. Validate live ownership both before release and at impact, retain actor priority/range limits, and preserve enemy siege behavior. The reviewed engine fingerprint changes with these deliberately tested extensions.
 
+## Optional Battery interception candidate
+
+Battery interception is a supplied Skirmish doctrine with two explicitly bound ordinary enemy trebuchets and a finite escort. Only those original identities count. Resolve both marked engines and return the home flag to base; hero death or home-flag capture takes precedence over completion in the same full simulation tick. Ordinary enemy-keep or enemy-flag victories cannot bypass the objective. Retry creates a fresh supplied attempt. Do not apply this objective to earned campaign saves.
+
+Objective presentation reads the engine state into the existing HUD, portrait status, Pause brief and Canvas labels. Keep markers in CSS-pixel geometry without new input targets, timers, RNG, spawns or resource mutations. The generated legacy Skirmish JSON fixture records our own deterministic implementation outputs, not original-game assets or recovered code. Native browser acceptance of this candidate remains a separate gate.
+
 ## Diagnostics
 
 Optional battle diagnostics are disabled initially and stay in bounded memory. They capture an explicit allowlist of gameplay facts, with no profile identity, save/replay payload, network transmission or automatic export. Keep enable/reset/export actions explicit and ensure diagnostics cannot consume gameplay RNG or mutate the engine.
