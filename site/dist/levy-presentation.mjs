@@ -36,3 +36,17 @@ export function updateLevyFeedback(battle,root=globalThis.document){
  write('#combatBattleTitle',s.title);write('#combatEnemyState',s.status);write('#viewStatus',s.portrait);
  const brief=root?.querySelector('#batteryObjectiveBrief');brief?.classList.remove('hidden');write('#batteryObjectiveBrief',s.brief);return s;
 }
+
+/** Reuse the existing paused Army entry; never adds a live HUD control. */
+export function levyMusterEntryState(battle){
+ if(!battle?.auxiliaries||battle.stressField)return null;
+ const view=battle.auxiliaries.snapshot;
+ const suffix={ready:'Call 5 levies',pause:'Levies ready',dispatching:`${view.pending} levies arriving`,slots:'Levy slots needed',spent:'Levies spent',closed:'Defense ended',preparation:'Prepare levies'}[view.code];
+ const reason=view.code==='slots'?`Need five free temporary slots; ${view.free} are free. Fallen bodies retain slots.`:view.code==='dispatching'?`${view.pending} already committed, deploying after Resume.`:view.code==='ready'||view.code==='pause'?'Five levies can be committed from Muster.':view.code==='spent'?'All four finite waves have been used.':view.code==='preparation'?'Start the field before calling a wave.':'This defense is finished.';
+ return {label:`Army · ${suffix}`,aria:`Army and ground-line orders. ${view.closed?'No further levy calls.':`${view.wavesLeft} levy waves remain.`} ${reason}`,code:view.code};
+}
+export function updateLevyMusterEntry(battle,root=globalThis.document){
+ const button=root?.querySelector('#pauseQueue');if(!button)return null;
+ const view=levyMusterEntryState(battle);button.textContent=view?.label??'Army & ground line';
+ if(view)button.setAttribute('aria-label',view.aria);else button.removeAttribute('aria-label');return view;
+}

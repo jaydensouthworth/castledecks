@@ -1,0 +1,8 @@
+#cloudAccounts[hidden],#openCloudAccounts[hidden]{display:none!important}
+.cloud-account-panel{border:1px solid #ad8958;border-radius:.6rem;padding:1rem;margin-block:1rem;background:#211b18;color:#f3e7d1}
+.cloud-account-panel [hidden]{display:none!important}
+.cloud-account-panel button,.cloud-account-panel select,.cloud-account-panel a{min-height:44px;margin:.25rem;padding:.55rem .75rem;font:inherit}
+.cloud-account-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+.cloud-account-panel a{color:#ffd891;display:inline-flex;align-items:center}
+.cloud-account-panel p{max-width:65ch;overflow-wrap:anywhere}
+.cloud-account-panel button:disabled{opacity:.55}

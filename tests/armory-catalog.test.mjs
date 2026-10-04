@@ -70,7 +70,8 @@ test('query, sort, pages, zero results, reveal and reopen keep the chosen card a
 test('paused frames never rebuild a catalog, and repeated selections remain bounded',async t=>{
  const ui=await armory(t),card=ui.get('inspect-fireArrow'),searchBox=ui.get('shopSearch');ui.frames(90);assert.equal(ui.get('inspect-fireArrow'),card);assert.equal(ui.get('shopSearch'),searchBox);
  const counts=[];for(let i=0;i<40;i++){ui.click(i%2?'inspect-fireArrow':'inspect-iceArrow');counts.push(ui.get('armoryCatalogHost').querySelectorAll('button,input,select,option,span,svg,path,div,section,p,article').length);assert.equal(ui.get('shopGrid').querySelectorAll('article').length,ARMORY_PAGE_SIZE);}
- assert.ok(Math.max(...counts)<500);assert.equal(new Set(counts.filter((_,i)=>i%2===0)).size,1);assert.equal(new Set(counts.filter((_,i)=>i%2===1)).size,1);
+ // Six job options and six bounded deck-capability controls add 20 nodes.
+ assert.ok(Math.max(...counts)<530);assert.equal(new Set(counts.filter((_,i)=>i%2===0)).size,1);assert.equal(new Set(counts.filter((_,i)=>i%2===1)).size,1);
 });
 test('large synthetic catalogs render one bounded page, escaped text, and report harness-only latency',async t=>{
  const ui=await loadGameUI(t),root=ui.document.createElement('div');

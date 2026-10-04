@@ -40,3 +40,9 @@
  #shopPanel .deck-composition summary small{margin-top:0;}
  #shopPanel .deck-composition-cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
 }
+
+/* Counts are equipped contract capabilities, not simulated field strength. */
+#shopPanel .deck-composition-jobs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:8px 0}
+#shopPanel .deck-composition-jobs>button{display:flex;justify-content:space-between;align-items:center;gap:7px;min-height:44px;padding:6px 7px;font:11px/1.3 system-ui,sans-serif;text-align:left;white-space:normal;border-color:#b3915748;background:#3d253342}
+#shopPanel .deck-composition-jobs b{color:#f0d095;font-size:14px}
+#shopPanel .deck-composition-job-note{margin:5px 0 12px;color:#baa88d;font:11px/1.4 system-ui,sans-serif}

@@ -1,3 +1,4 @@
+import {armyJobOptions,matchesArmyRole,cardTacticSearchText} from './card-tactics.mjs';
 import {cardRuleSearchText} from './card-rule-search.mjs';
 /** Catalog-only state. No game ticks, purchases, profile mutation, or DOM.
  * Records have stable IDs, kind (skill/companion), category, traits, price,
@@ -29,10 +30,10 @@ export class ArmoryCatalog {
    if(!/^[a-zA-Z0-9_-]{1,100}$/.test(record.id)||ids.has(record.id))throw new TypeError('Catalog IDs must be unique and DOM-safe.');
    if(!['skill','companion'].includes(record.kind)||!Number.isFinite(record.price)||record.price<0)throw new TypeError('Invalid catalog kind or price.');
    ids.add(record.id);const traits=[...new Set(record.traits??[])];
-   return Object.freeze({...record,traits:Object.freeze(traits),order:index,search:normalize([record.name,record.description,record.department,record.role,record.category,...traits].join(' ')),ruleSearch:normalize(cardRuleSearchText(record))});
+   return Object.freeze({...record,traits:Object.freeze(traits),order:index,search:normalize([record.name,record.description,record.department,record.role,record.category,...traits].join(' ')),ruleSearch:normalize(cardRuleSearchText(record)+' '+cardTacticSearchText(record))});
   });
   this.departments=new Set(this.records.map(item=>item.department).filter(Boolean));
-  this.roles=new Set(this.records.map(item=>item.role).filter(Boolean));
+  this.roles=new Set([...this.records.map(item=>item.role).filter(Boolean),...armyJobOptions(this.records).map(([id])=>id)]);
   this.byId=new Map(this.records.map(item=>[item.id,item]));
   const tie=(a,b)=>a.order-b.order,byName=(a,b)=>a.name.localeCompare(b.name)||tie(a,b);
   this.orders={catalog:this.records,price:[...this.records].sort((a,b)=>a.price-b.price||tie(a,b)),'price-desc':[...this.records].sort((a,b)=>b.price-a.price||tie(a,b)),name:[...this.records].sort(byName),reload:[...this.records].sort((a,b)=>(a.reloadSeconds??Infinity)-(b.reloadSeconds??Infinity)||tie(a,b))};
@@ -58,7 +59,7 @@ export class ArmoryCatalog {
   const {query,department,role,collection,wishlist,category,trait,status,sort}=this.view,tokens=normalize(query).trim().split(/\s+/).filter(Boolean),matches=[],ruleMatches=[];
   for(const item of this.orders[sort]){
    if(wishlist&&!snapshot.wishlist?.has(item.id))continue;
-   if(!collection&&!wishlist&&item.storefront===false||department!=='all'&&item.department!==department||role!=='all'&&item.role!==role)continue;
+   if(!collection&&!wishlist&&item.storefront===false||department!=='all'&&item.department!==department||!matchesArmyRole(item,role))continue;
    if(category!=='all'&&item.category!==category||trait!=='all'&&!item.traits.includes(trait)||!tokens.every(token=>(item.search+' '+item.ruleSearch).includes(token)))continue;
    const state=armoryCardState(item,snapshot);
    if(collection&&!state.owned||status==='equipped'&&(!state.owned||!state.equipped)||status==='reserve'&&(!state.owned||state.equipped))continue;

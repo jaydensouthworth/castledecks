@@ -60,6 +60,20 @@ The optional profiler is off initially, memory-only, and stops after a fixed 30-
 
 The disposable Testing preset stages 44 or 48 ordinary rank-2 troops at monotonic staging tick 201 without simulating setup steps. These are explicitly synthetic supplies, not paid purchases or naturally arriving waves. Auxiliary ownership and caps are real. It starts paused; ordinary combat runs after Resume. Zero reserve and guarded actions prevent replenishment. A 120-simulation-second bound or terminal field condition ends it without settlement. Reset/Return discard the fixture and restore the exact origin. Snapshot and restore temporary presentation too: labels, hidden state, banner ARIA/objective metadata and disabled controls must return immediately, even before a render callback. Synthetic profile/save/load entry is visibly disabled and explains that transfers require Return, supplies are temporary and zero reserve prevents replacements. Preserve exact normal/guided session control locks. Guard exports, imports, pending file completions, profile/local restore and stale handlers. Profiler reports must identify controlled-fixture mode. Factory counts and headless timings establish neither native rendering performance nor guaranteed FPS.
 
+## Tactical discovery and finite-levy clarity
+
+Unit contracts expose engine-grounded jobs, capabilities, tradeoffs and actual gold/reserve cost per squad. Role filters retain generic roles and add six grouped jobs. Current-deck counts describe equipped contracts, not active troops or strength scores; roles may overlap. Build inspection and two-card Compare reuse existing lazy atlas portraits. Unknown/custom records must not inherit capabilities from a copied name or portrait.
+
+The paused Army entry opens Muster directly only in real finite-levy encounters, and reports readiness, dispatch and slot state. Opening it never commits troops or charges supplies; the explicit Call action retains that responsibility. Full temporary slots, including corpses, continue to block replacement. Ordinary and synthetic Army navigation remains unchanged.
+
+Counted nearby pennants use bounded screen-space grouping with separate teams and genuine controller ownership. Dead, hidden, destroyed and garrisoned units do not acquire visible counts. Layout respects actual status/marker geometry, bounds and ordinary drawing order, with connectors beneath markers. Impossible tiny viewports explicitly omit a label instead of painting an overlap. This presentation adds no permanent live HUD row, input target or engine-state mutation.
+
+## Dormant account frontend
+
+Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.
+
+When separately enabled in a supported integration, preserve the dynamic temporary-session predicate, battle import generation and local-vault review intent. Downloads and uploads require explicit decisions; never automatically migrate or upload saves. Preserve reviewed revisions, validation and uncertain-write reconciliation. Tests include synthetic own-format fixtures, never user saves. Google sign-in is an explicit new-tab flow only when configured. Frontend tests do not establish backend security, provider operation or enabled native layout acceptance.
+
 ## Diagnostics
 
 Optional battle diagnostics are disabled initially and stay in bounded memory. They capture an explicit allowlist of gameplay facts, with no profile identity, save/replay payload, network transmission or automatic export. Keep enable/reset/export actions explicit and ensure diagnostics cannot consume gameplay RNG or mutate the engine.

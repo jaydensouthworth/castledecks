@@ -157,3 +157,13 @@
  #skillsPanel:not(:has(#cancelBinding:not(:disabled))) .loadout-help{display:none}
  #skillsPanel:not(:has(#cancelBinding:not(:disabled))) .loadout-status{position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:0;overflow:hidden;clip-path:inset(50%)}
 }
+
+/* Keep the same painted identity through collection and inspection. */
+#skillsPanel .loadout-card-purpose{font:12px/1.4 system-ui,sans-serif;color:var(--card-accent);min-height:2.8em;overflow-wrap:anywhere}
+#skillsPanel .loadout-selected-card>#selectedSkillIcon{width:116px;height:96px;padding:0;border-radius:3px;overflow:hidden;background:#241923}
+#skillsPanel .loadout-selected-card>div{min-width:0}
+#skillsPanel .loadout-card-facts>span{overflow-wrap:anywhere}
+@media(max-width:700px) and (orientation:portrait),(max-height:500px) and (orientation:landscape){
+ #skillsPanel .loadout-selected-card>#selectedSkillIcon{width:84px;height:78px}
+ #skillsPanel .loadout-card-purpose{font-size:11px;min-height:2.8em}
+}

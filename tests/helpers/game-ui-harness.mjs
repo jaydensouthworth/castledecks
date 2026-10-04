@@ -58,6 +58,8 @@ class Node extends Target {
       toggle: (name, force = !classes.has(name)) => { if (force) classes.add(name); else classes.delete(name); return force; },
     };
   }
+  append(...children) { for(const child of children)this.appendChild(child); }
+  replaceChildren(...children) { this.children=[];this._text='';this.append(...children); }
   get parentElement() { return this.parentNode; }
   appendChild(child) {
     if (child.parentNode) child.parentNode.children = child.parentNode.children.filter(node => node !== child);
@@ -140,7 +142,7 @@ function dispatch(target, type, init = {}) {
   return {event, completed: Promise.all(pending)};
 }
 
-export async function loadGameUI(t, {search = '', storage, locks=storage?new TestLocks():undefined} = {}) {
+export async function loadGameUI(t, {search = '', storage, locks=storage?new TestLocks():undefined, accounts=false, fetch, sessionStorage=storage} = {}) {
   const document = new Node('document', null);
   document.ownerDocument = document;
   document.captures = new Map();
@@ -148,7 +150,7 @@ export async function loadGameUI(t, {search = '', storage, locks=storage?new Tes
   document.createElement = tag => new Node(tag, document);
   parseHTML(await readFile(markupURL, 'utf8'), document);
   document.activeElement = document.querySelector('body');
-  const window = new Target();window.localStorage=storage;window.navigator={locks};
+  const window = new Target();window.CASTLEDECKS_ACCOUNTS=accounts;window.fetch=fetch;window.sessionStorage=sessionStorage;window.localStorage=storage;window.navigator={locks};
   window.location = {search};
   let timestamp = 0;
   let nextFrame = null;

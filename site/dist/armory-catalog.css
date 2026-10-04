@@ -641,3 +641,16 @@
 .armory-field-trial>div{flex:1;min-width:0}.armory-field-trial h4{font-size:18px;margin:3px 0 5px;color:#f4db9d}.armory-field-trial p{font-size:14px;line-height:1.45;margin:0;color:#e1d3bc}
 .armory-field-trial button{min-height:44px;flex:0 1 auto;background:#72562d;color:#fff0c9;border:1px solid #c7a268;padding:10px 15px;font-size:14px}
 @media(max-width:620px),(max-height:500px){.armory-field-trial{gap:10px;margin:10px 0;padding:10px 0;align-items:stretch}.armory-field-trial h4{font-size:16px}.armory-field-trial button{max-width:42%}}
+
+/* Verified contract identity stays readable alongside the original painting. */
+#shopPanel .shop-card .card-name .card-mobile-deploy{display:none}
+#shopPanel .card-tactical-caution{font:13px/1.55 system-ui,sans-serif;color:#ddc6a2;padding:10px 0;border-block:1px solid #b68c4944}
+#shopPanel .card-tactical-caution strong{display:block;color:#f3d99e;margin-bottom:3px}
+#shopPanel .comparison-portrait{display:block;width:100%;max-width:156px;height:96px;margin:0 0 9px;overflow:hidden;border:1px solid #b68c4966;border-radius:3px}
+#shopPanel .comparison-purpose{color:#e2c18b;line-height:1.4}
+@media(max-width:620px) and (orientation:portrait),(max-height:500px) and (orientation:landscape){
+ #shopPanel .shop-card[data-card-type="army"] .card-name{display:flex;flex-direction:column;gap:3px;padding-bottom:7px}
+ #shopPanel .shop-card[data-card-type="army"] .card-name small{display:block;font:11px/1.35 system-ui,sans-serif;white-space:normal;overflow-wrap:anywhere}
+ #shopPanel .shop-card[data-card-type="army"] .card-name .card-mobile-deploy{color:#ddccb0;font-size:10px}
+ #shopPanel .comparison-portrait{height:70px;max-width:120px}
+}

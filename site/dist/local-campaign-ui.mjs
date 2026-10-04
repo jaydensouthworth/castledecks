@@ -1,5 +1,5 @@
 import {CampaignProfiles} from './engine/profile-manager.mjs';
-import {createLocalCampaignStore,snapshotCampaign,campaignProvenance,validateLocalPayload} from './local-campaign-store.mjs';
+import {createLocalCampaignStore,snapshotCampaign,campaignProvenance,validateLocalPayload,parseLocalCheckpoint} from './local-campaign-store.mjs';
 const labels={earned:'Unassisted',assisted:'Assisted',mixed:'Mixed profiles'};
 const html=text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const when=value=>new Date(value).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
@@ -84,7 +84,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   checkpoint('battle-start');return true;
  }
  function confirm(text,action,{importChoice=false}={}){
-  pending=action;$('localConfirmText').textContent=text;$('localConfirm').classList.remove('hidden');$('localConfirmAccept').textContent=importChoice?'Import into new local slot':'Confirm';$('localConfirmAccept').disabled=importChoice&&!freeSlot();$('localImportSession').classList[importChoice?'remove':'add']('hidden');$('localConfirmAccept').focus?.();
+  intent++;pending=action;$('localConfirmText').textContent=text;$('localConfirm').classList.remove('hidden');$('localConfirmAccept').textContent=importChoice?'Import into new local slot':'Confirm';$('localConfirmAccept').disabled=importChoice&&!freeSlot();$('localImportSession').classList[importChoice?'remove':'add']('hidden');$('localConfirmAccept').focus?.();
  }
  function cancel(){intent++;pending=null;$('localConfirm').classList.add('hidden');$('localImportSession').classList.add('hidden');}
  function adopt(manager,{slot=null,expected=null,payload=null,last=null,error=''}={}){
@@ -107,6 +107,13 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   $('introNotice').textContent=sessionOnly?'Campaign imported for this session only. Begin to restart its saved battle. Export before closing.':`Campaign opened in local slot ${session.slot}. Begin when ready; check the local-save status before closing.`;
   $('saveStatus').textContent=$('introNotice').textContent;return true;
  }
+ function requestCheckpoint(text){
+  if(!campaign()||state().temporarySession)return {staged:false};
+  const parsed=parseLocalCheckpoint(text),payload=JSON.parse(JSON.stringify(parsed.payload));
+  openVault();const origin=state(),free=freeSlot();
+  confirm(`Open cloud checkpoint “${parsed.manager.active.name||'Unnamed campaign'}” (${labels[parsed.provenance].toLowerCase()}, ${parsed.manager.profiles.length} profiles)? It preserves the selected profile and saved decks. ${free?'Use a new empty local slot or session only.':'No writable empty local slot is available; use session only.'} Existing local saves stay unchanged. Export your current unsaved session first.`,{kind:'checkpoint',payload,profiles:origin.profiles,battle:origin.battle},{importChoice:true});
+  return {staged:true};
+ }
  function requestImport(text){
   if(!campaign())return {handled:false};
   const manager=CampaignProfiles.fromBundle(text,{defaultName:'Castledecks'});
@@ -120,7 +127,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   confirm(`Delete local slot ${slot} and both recovery checkpoints? This cannot be undone. Export its campaign first if you want a copy. Your running session and downloaded files are kept.`,{kind:'delete',slot,expected:saved.raw,session:reserved.get(slot)});
  }
  function saveCurrent(){
-  if(!campaign())return;const session=initialize();if(session.pending)return;
+  if(!campaign())return;cancel();const session=initialize();if(session.pending)return;
   try{const safe=snapshotCampaign(state(),'ready');if(safe)session.payload=safe;}catch{$('vaultStatus').textContent='A valid checkpoint could not be prepared. Export this session before leaving.';return;}
   if(!session.payload){$('vaultStatus').textContent='A safe checkpoint is not available yet. Finish this battle or export a campaign file.';return;}
   const free=freeSlot();if(!free){$('vaultStatus').textContent='No safely writable empty local slot is available.';return;}
@@ -129,6 +136,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
  }
  async function accept(sessionOnly=false){
   const action=pending;if(!action)return;
+  if(action.kind==='checkpoint'&&(!campaign()||state().temporarySession||state().profiles!==action.profiles||state().battle!==action.battle)){cancel();$('vaultStatus').textContent='This session changed. Review the checkpoint again.';return;}
   if(action.kind==='continue'){
    const now=store.read(action.slot);if(!now.ok||action.expected.some((raw,i)=>raw!==now.raw[i])){cancel();$('vaultStatus').textContent='This local slot changed. Review its latest checkpoint before continuing.';render();return;}
    const {manager}=validateLocalPayload(action.record.payload);adopt(manager,{slot:action.slot,expected:now.raw,payload:action.record.payload,last:action.previous?null:action.record});
@@ -136,6 +144,12 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
    if(action.previous)checkpoint('ready');notify(recovered?'Checkpoint recovered':'Local campaign continued');
   }else if(action.kind==='new')openNew(new CampaignProfiles({defaultName:'Castledecks'}),'ready');
   else if(action.kind==='import')openNew(action.manager,'import',sessionOnly);
+  else if(action.kind==='checkpoint'){
+   const free=freeSlot();if(!sessionOnly&&!free){$('vaultStatus').textContent='No empty slot is available. Choose session only or cancel.';return;}
+   const {manager}=validateLocalPayload(action.payload),session=adopt(manager,{slot:sessionOnly?null:free.slot,payload:action.payload});
+   if(!sessionOnly)enqueue(session,action.payload,'import');
+   $('introNotice').textContent=sessionOnly?'Cloud checkpoint opened for this session only. Export before closing.':`Cloud checkpoint opened in local slot ${session.slot}. Check saving has finished before closing.`;
+  }
   else if(action.kind==='delete'){
    const session=action.session;if(session?.slot===action.slot){session.epoch++;session.slot=null;session.decision='session';session.expected=null;session.last=null;session.error='';session.failed=false;}
    reserved.delete(action.slot);cancel();const generation=intent;const result=await store.remove(action.slot,{expected:action.expected,confirmed:true});
@@ -150,5 +164,5 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
  $('localManage').onclick=()=>{openVault();render();};$('localSaveCurrent').onclick=saveCurrent;
  $('localConfirmAccept').onclick=()=>accept();$('localImportSession').onclick=()=>accept(true);$('localConfirmCancel').onclick=cancel;
  window.addEventListener?.('storage',event=>{if(event.key?.startsWith('castledecks:campaign:checkpoint:v1:'))render();});
- return Object.freeze({checkpoint,beforeBegin,render,cancel,requestImport,store,message,whenIdle:()=>queue});
+ return Object.freeze({checkpoint,beforeBegin,render,cancel,requestImport,requestCheckpoint,reviewIntent:()=>intent,store,message,whenIdle:()=>queue});
 }

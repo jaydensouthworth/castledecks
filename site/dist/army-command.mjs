@@ -75,5 +75,5 @@ export function createArmyCommandUI({root,records,getState,icon,onChanged=()=>{}
  $('#armyContractsTab').onclick=()=>{tab='contracts';render();};$('#armyMusterTab').onclick=()=>{tab='muster';render();};$('#armyCloseInspector').onclick=closeInspect;
  $('#armyLoadout').onclick=$('#armyInspectLoadout').onclick=()=>{if(getState().readOnly)return;closeInspect();onLoadout();};$('#armyArmory').onclick=()=>{if(getState().readOnly)return;closeInspect();onArmory();};
  root.addEventListener('keydown',event=>{if(!selected||event.key!=='Tab')return;const items=modalFocusCandidates($('#armyInspector')),i=items.indexOf(doc.activeElement);if(event.shiftKey&&i<=0){items.at(-1)?.focus();event.preventDefault();}else if(!event.shiftKey&&(i<0||i===items.length-1)){items[0]?.focus();event.preventDefault();}event.stopPropagation();});
- return {render,back:closeInspect,reset(){closeInspect();identity=null;signature='';},get model(){return roster;}};
+ return {render,showMuster(){render();closeInspect();tab='muster';render();$('#armyMusterTab').focus?.({preventScroll:true});},back:closeInspect,reset(){closeInspect();identity=null;signature='';},get model(){return roster;}};
 }
