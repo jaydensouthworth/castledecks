@@ -298,9 +298,10 @@
    company controls, companion slots and font-driven caption growth. */
 @media(orientation:portrait){
  .live-hud .live-slot,.live-hud .live-bar-cycle{height:48px;min-height:48px}
- .live-slot .skill-icon{width:22px;height:22px}
- .live-hud .live-slot{gap:1px;padding:3px}
- .live-short-name{font-size:10px;line-height:10px}
+ .live-slot .skill-icon{width:20px;height:20px}
+ .live-hud .live-slot{gap:0;padding:1px}
+ .live-hud .live-slot[aria-pressed="true"]{padding:0}
+ .live-short-name{flex:none;font-size:10px;line-height:12px}
  .live-countdown{top:3px;height:24px;font-size:14px}
  .live-hud .live-companion-action{height:48px;min-height:48px}
  .live-movement,.live-context,

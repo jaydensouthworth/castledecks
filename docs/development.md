@@ -126,6 +126,8 @@ Viewport-lab interaction warnings must distinguish painted geometry from exposed
 
 Portrait thumb controls follow measured arsenal height through the presentation-only dock helper. Preserve 48px height and accepted minimum 44px widths, complete action labels and cooldowns, sparse/full dock behavior, company/companion utilities, and unchanged landscape placement. Ignore invalid or hidden measurements and avoid repeated identical style writes. The existing camera uses movement geometry; verify resulting framing and clearance natively rather than treating synthetic geometry as browser acceptance.
 
+Portrait two-line card labels must not flex-shrink. Preserve the 48px target budget: 20px icon, two 12px line boxes with 10px type, zero gap, and 4px combined vertical padding/border. Selected and unselected borders need matching inner budgets. Cooldown overlays retain their own 14px type and 24px height. Check actual long-label rectangles and zoom in the native browser; CSS arithmetic and source checks are not layout proof.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.
