@@ -134,6 +134,14 @@ An open Scout report spans the orders grid. On compact portrait and short landsc
 
 Short-landscape adaptive dock rules are bounded to 700–1000px width and at most 500px height, excluding Battery Intercept. Preserve immutable card-count/container fit thresholds, the page-button reserve, and stable safe-lane width for command-bearing arsenals. Cooldown, resource and selected-caption text must not move the controls. Source models do not certify native sparse geometry or solve the known full-kit aim crowding.
 
+Management geometry belongs to the shared management frame and its last-loaded stylesheet. Preserve workspace node identities, safe-area frame/header/rail consistency, covered-Hall accessibility and existing session return lifecycles. Cloud account discovery is read-only; transfer review and confirmation remain explicit. Keep the static account flag absent/default-off and backend deployment code separate. Harness checks do not certify native geometry or real-provider/cloud-slot operation.
+
+Capture the previous workspace navigation scroll before hiding it; after restoration and resize, reveal the active route inside its own rail. Keep the Hall inner wrapper from establishing a competing absolute-position anchor, explicitly retain the Hall heading, and stack Catalog titles above subtitles.
+
+Army content rows must size to their actual cards. In short-landscape Build, reserve both shared and secondary rails and allow real labels to wrap without hiding facts. Fixed Skirmish frames must have an explicit shrinking body scroller. Native acceptance must inspect empty, populated and maximum-owned affected content and full action rectangles, including actual long names; passing shared-frame geometry alone is insufficient.
+
+Hall deck headers must wrap legal 40-character names inside their own grid without pushing counts or actions out of bounds. Miniature cards own a horizontal scrolling row and natural-height, fully visible title bands. Recheck short and long names, populated rows, inspection focus return and the previously repaired Army, Build and Skirmish surfaces in the native browser; source assertions are not layout acceptance.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

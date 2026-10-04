@@ -1,0 +1,172 @@
+/* One carved frame for every management destination. Loaded last, with an ID
+   boundary so legacy workspace geometry cannot silently win the cascade. */
+#managementFrame{
+ position:absolute;z-index:20;
+ inset:max(var(--shell-inset),env(safe-area-inset-top),var(--preview-safe-top,0px)) max(var(--shell-inset),env(safe-area-inset-right),var(--preview-safe-right,0px)) max(var(--shell-inset),env(safe-area-inset-bottom),var(--preview-safe-bottom,0px)) max(var(--shell-inset),env(safe-area-inset-left),var(--preview-safe-left,0px));
+ min-width:0;min-height:0;border:1px solid var(--shell-edge);border-radius:3px;overflow:hidden;
+ background:radial-gradient(ellipse at 50% 0,#57334044,transparent 65%),linear-gradient(120deg,#281d25,#1c161f);
+ box-shadow:inset 0 0 0 3px #151118,inset 0 0 0 4px #ac86442b,0 14px 60px #0009;
+}
+#managementFrame.hidden{display:none}
+#managementFrame>:is(#intro,#shopPanel,#skillsPanel,#queuePanel,#campaignPanel,#expeditionPanel,#skirmishPanel,#settingsPanel,#profilesPanel,#savePanel){
+ position:absolute;inset:0;width:auto;height:auto;min-width:0;min-height:0;max-width:none;max-height:none;margin:0;transform:none;box-sizing:border-box;
+ border:0;border-radius:0;box-shadow:none;padding:0;overflow:hidden;
+}
+#managementFrame>.workspace-covered{display:none}
+#managementFrame>.game-management>.panel-head,
+#managementFrame>#intro .preparation-shell>.panel-head{
+ position:relative;top:auto;margin:0;height:var(--shell-head);min-height:var(--shell-head);max-height:var(--shell-head);flex:none;box-sizing:border-box;
+ display:flex;align-items:center;gap:16px;padding:7px 22px;background:linear-gradient(90deg,#56323d,#33212c 65%,#241a23);border-bottom:1px solid #b8965755;
+}
+#managementFrame>.game-management>.panel-head h2{font:400 28px/1 Georgia,serif;margin:0}
+#managementFrame>.game-management>.game-shell-nav,
+#managementFrame>#intro .preparation-shell>.game-shell-nav{
+ position:relative;inset:auto;width:auto;height:var(--shell-nav);min-height:var(--shell-nav);max-height:var(--shell-nav);flex:none;
+ display:flex;flex-direction:row;align-items:stretch;gap:3px;padding:0 15px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;
+ background:#17131bd9;border:0;border-bottom:1px solid #ad8a4945;
+}
+#managementFrame .game-shell-nav>button{flex:0 0 auto;width:auto;min-width:78px;min-height:44px;height:auto;padding:6px 15px;font:12px system-ui;letter-spacing:.04em;white-space:nowrap;border:0;border-radius:0;background:transparent;color:#bcab8f;box-shadow:none}
+#managementFrame .game-shell-nav>button[aria-current=page]{color:#ffe2aa;background:#8c5b453b;box-shadow:inset 0 -3px #d4ad6a}
+#managementFrame .game-shell-nav>button:hover{color:#fff0cb;background:#72533b44}
+#managementFrame .game-shell-nav>button .menu-icon{width:21px;height:21px}
+#managementFrame #intro{background:transparent;display:flex;place-items:normal}
+#managementFrame #intro.workspace-covered,#managementFrame #intro.hidden{display:none}
+#managementFrame #intro .preparation-shell{width:100%;height:100%;min-height:0;max-height:none;max-width:none;padding:0;overflow:hidden;background:transparent}
+#managementFrame #intro .game-wordmark{font:20px Georgia;gap:8px;flex:none}
+#managementFrame #intro .hall-heading h1{font:26px Georgia;margin:0}
+#managementFrame #intro .hall-heading p{font-size:12px;margin-top:3px}
+#managementFrame #intro .hall-session-banner{margin-left:auto;min-width:0}
+#managementFrame #intro .hall-session-banner h3{font:16px Georgia}
+#managementFrame #intro .hall-session-banner p{font-size:12px}
+/* Workspace navigation replaces the second, inconsistent station bar. Existing
+   command IDs remain available to the game and contextual shortcuts. */
+#managementFrame #intro .hall-stations{display:none}
+#managementFrame #intro .hall-utility{justify-content:flex-end;min-height:44px;padding:0 12px;border-top:1px solid #b8965733}
+#managementFrame #intro .hall-utility>button:not(#introTesting){display:none}
+#managementFrame #intro .hall-utility .hub-controls>summary{min-height:44px;box-sizing:border-box}
+#managementFrame #intro .hall-save-state{padding:7px 16px;background:#17121b;border-top:1px solid #b8965733}
+#managementFrame #intro .local-hub-choices{display:flex;flex-wrap:wrap;max-height:100px;gap:6px}
+#managementFrame #intro .local-hub-choices.hidden{display:none}
+#managementFrame #intro .local-hub-choices>button{min-height:44px;font-size:12px}
+#managementFrame .menu-body{min-width:0}
+#managementFrame #queuePanel .army-header-tools{min-width:0}
+#managementFrame #queuePanel .army-header-tools .menu-back{min-height:44px}
+#switchSessionConfirm,#restartConfirm{z-index:30}
+@media(max-width:850px){
+ #managementFrame .game-shell-nav>button{min-width:67px;padding:6px 10px}
+ #managementFrame .game-shell-nav>button .menu-icon{display:none}
+ #managementFrame #intro .game-wordmark{display:none}
+}
+@media(max-width:620px) and (orientation:portrait){
+ #managementFrame{border-radius:0}
+ #managementFrame>.game-management>.panel-head,#managementFrame>#intro .preparation-shell>.panel-head{padding:5px 12px;gap:8px}
+ #managementFrame #intro .hall-heading h1{font-size:24px}
+ #managementFrame #intro .hall-heading p,#managementFrame #intro #hubSessionState{display:none}
+ #managementFrame #intro .hall-session-banner h3{font-size:13px}
+ #managementFrame #intro .hall-session-banner p{font-size:12px}
+ #managementFrame>.game-management>.game-shell-nav,#managementFrame>#intro .preparation-shell>.game-shell-nav{padding:0}
+ #managementFrame .game-shell-nav>button{min-width:64px;padding:6px 10px}
+}
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame{border-radius:0}
+ #managementFrame>:is(#intro,#shopPanel,#skillsPanel,#queuePanel,#campaignPanel,#expeditionPanel,#skirmishPanel,#settingsPanel,#profilesPanel,#savePanel){padding-left:68px}
+ #managementFrame>.game-management>.panel-head,#managementFrame>#intro .preparation-shell>.panel-head{height:44px;min-height:44px;max-height:44px;margin-left:-68px;padding:2px 12px;gap:12px}
+ #managementFrame>.game-management>.panel-head h2,#managementFrame #intro .hall-heading h1{font-size:22px}
+ #managementFrame #intro .game-wordmark,#managementFrame #intro .hall-heading p,#managementFrame #intro #hubSessionState{display:none}
+ #managementFrame #intro .hall-session-banner{display:flex;align-items:center;gap:8px}
+ #managementFrame #intro .hall-session-banner h3{font-size:14px}
+ #managementFrame>.game-management>.game-shell-nav,#managementFrame>#intro .preparation-shell>.game-shell-nav{
+  position:absolute;left:0;top:44px;right:auto;bottom:0;width:68px;height:auto;min-height:0;max-height:none;display:flex;flex-direction:column;padding:0;overflow-y:auto;overflow-x:hidden;gap:0;border:0;border-right:1px solid #b9975744;
+ }
+ #managementFrame .game-shell-nav>button{flex:none;width:68px;min-width:0;min-height:44px;height:44px;padding:3px;font-size:12px;white-space:normal}
+ #managementFrame .game-shell-nav>button[aria-current=page]{box-shadow:inset 3px 0 #d4ad6a}
+ #managementFrame .game-shell-nav>button .menu-icon{display:none}
+ #managementFrame #intro .hall-save-state{padding:4px 10px}
+ #managementFrame #intro .hall-save-state p{font-size:12px}
+ #managementFrame #intro .hall-utility{position:absolute;right:0;top:44px;z-index:3;background:#241721;min-height:0}
+ #managementFrame #intro .hall-utility:has(#introTesting.hidden){display:none}
+ #managementFrame #intro .hall-utility .hub-controls{display:none}
+ #managementFrame #intro .hall-orders{padding:10px 14px 0}
+}
+/* Cards share a stable illustration/name/action rhythm; longer names may wrap
+   instead of being clipped. Every row stretches to its longest real content. */
+#managementFrame #shopPanel .shop-grid,#managementFrame #queuePanel .army-roster{align-items:stretch;grid-auto-rows:max-content}
+#managementFrame #shopPanel .shop-card{align-self:stretch;display:flex;flex-direction:column}
+#managementFrame #queuePanel .army-contract{align-self:stretch}
+#managementFrame #shopPanel .shop-card .card-name{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#managementFrame #shopPanel .shop-card .shop-card-actions{margin-top:auto;min-height:44px}
+#managementFrame #shopPanel .shop-card-actions>button{min-height:44px}
+
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #queuePanel .panel-head>div:first-child{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
+ #managementFrame #queuePanel .army-muster-strip{position:static;inset:auto;width:auto;height:auto;min-height:34px;padding:4px 12px;gap:10px;pointer-events:auto;background:#1d1820;border-bottom:1px solid #bc945555}
+ #managementFrame #queuePanel .army-muster-strip>div{flex-direction:row;align-items:baseline;justify-content:space-between;gap:5px}
+ #managementFrame #queuePanel .army-muster-strip span{font-size:12px}
+ #managementFrame #queuePanel .army-muster-strip strong{font-size:18px}
+ #managementFrame #queuePanel .army-command-rail:before{display:none}
+ /* Atlas subnavigation is relative to its content stage, after the global rail. */
+ #managementFrame #campaignAtlasHost{position:relative;padding-top:0}
+ #managementFrame #campaignPanel .atlas-overview{position:relative;inset:auto;flex:none;width:auto;height:44px;padding:0 0 0 4px;margin:0;justify-content:space-between}
+ #managementFrame #campaignPanel .atlas-regions{top:44px;left:10px;bottom:55px}
+ #managementFrame #intro .hall-utility{position:static;inset:auto;display:flex;min-height:44px}
+ #managementFrame #intro .hall-utility:has(#introTesting.hidden){display:flex}
+ #managementFrame #intro .hall-utility .hub-controls{display:block}
+ #managementFrame #shopPanel .shop-card .card-name{min-height:44px;justify-content:flex-start}
+}
+/* Native87 follow-through: Hall's old positioned startbox made the global rail
+   relative to the content column, hiding it behind the command table. The root
+   workspace now supplies the positioning context, just like every other tab. */
+#managementFrame #intro .hall-heading{display:block;min-width:0}
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #intro .preparation-shell{position:static;overflow:visible}
+ #managementFrame #intro .preparation-shell>.game-shell-nav{z-index:5}
+}
+
+/* Landscape text-space contract: global frame geometry stays shared, while
+   Build reserves its real secondary rail and content-sized cards keep labels. */
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame>#skillsPanel{padding-left:148px}
+ #managementFrame>#skillsPanel>.panel-head{margin-left:-148px}
+ #managementFrame>#skillsPanel>.deck-workspace-nav{left:68px;width:80px}
+ #managementFrame #skillsPanel .loadout-slot-grid{grid-template-columns:repeat(auto-fit,minmax(min(92px,100%),1fr));grid-auto-rows:max-content;align-items:stretch}
+ #managementFrame #skillsPanel .loadout-slot-grid>.loadout-slot{height:auto;min-height:128px;padding:20px 6px 8px;gap:5px}
+ #managementFrame #skillsPanel .loadout-slot-art{height:36px;min-height:36px;flex:none}
+ #managementFrame #skillsPanel .loadout-slot-label,#managementFrame #skillsPanel .loadout-slot-identity{width:100%;min-height:0;max-height:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:12px;line-height:1.35;flex:none}
+ /* Region names and progression labels wrap in a wider rail. The rail itself
+    scrolls; individual buttons never crop their own text into ellipses. */
+ #managementFrame #campaignPanel .atlas-regions{width:144px;grid-template-rows:repeat(4,max-content);align-content:start}
+ #managementFrame #campaignPanel .atlas-regions button{height:auto;min-height:64px;align-items:center}
+ #managementFrame #campaignPanel .atlas-regions span{flex:1;min-width:0}
+ #managementFrame #campaignPanel .atlas-regions strong{white-space:normal;overflow-wrap:anywhere}
+ #managementFrame #campaignPanel .atlas-regions small{white-space:normal;overflow:visible;text-overflow:clip;font-size:12px;line-height:1.35}
+ #managementFrame #campaignPanel .atlas-workspace{margin-left:156px}
+}
+/* Skirmish previously scrolled at its outer panel. The shared frame must stay
+   fixed, so its real body now owns scrolling all the way to Prepare/Cancel. */
+#managementFrame #skirmishWorkshopHost{flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+#managementFrame #skirmishReplaceConfirm{flex:none;min-height:0;max-height:calc(100% - 44px);overflow:auto;padding:12px;box-sizing:border-box}
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #skillsPanel .loadout-refine-sheet .ability-filters{display:flex;flex-wrap:wrap}
+ #managementFrame #skillsPanel .loadout-refine-sheet .ability-filters>button{flex:1 1 112px;min-width:0;min-height:44px;height:auto;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+}
+/* Bounded stopgap for the current Hall's narrow destination table. A separate
+   player-home redesign will replace this legacy table, not inherit its layout. */
+@media(max-width:900px) and (max-height:600px) and (orientation:landscape){
+ #managementFrame #intro .hall-atlas-board .hub-destinations{grid-template-columns:repeat(2,minmax(0,1fr));height:auto;min-height:260px;padding:18px 12px;gap:12px}
+ #managementFrame #intro .hall-atlas-board .hub-destinations>button.hall-realm{height:auto;min-height:120px;min-width:0}
+ #managementFrame #intro .hall-atlas-board .hub-destinations strong{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+ #managementFrame #intro .hall-atlas-board .hub-destinations small,#managementFrame #intro .hall-atlas-board .hub-destinations span{max-width:100%;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
+}
+/* Legal saved-deck names must not become the Hall's intrinsic minimum width.
+   Keep the action in a bounded column and give the full count its own line. */
+#managementFrame #intro .hall-deck-workbench>header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px}
+#managementFrame #intro .hall-deck-workbench>header>div{min-width:0}
+#managementFrame #intro .hall-deck-workbench h3{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#managementFrame #intro #hallDeckCount{grid-column:1/-1;grid-row:2;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#managementFrame #intro .hall-deck-workbench>header>button{grid-column:2;grid-row:1;min-height:44px;align-self:start;white-space:normal}
+/* The deck row owns horizontal scrolling. Individual cards keep their complete
+   names in natural-height bands; no text or action escapes into the Hall. */
+#managementFrame #intro .hall-card-spread{min-width:0;max-width:100%;min-height:0;display:flex;justify-content:flex-start;align-items:stretch;gap:8px;padding:12px 4px 8px;overflow-x:auto;overflow-y:hidden;scroll-padding:4px}
+#managementFrame #intro .hall-playing-card{flex:0 0 84px;width:84px;min-width:84px;height:auto;min-height:120px;margin-left:0;overflow:visible;transform:none;justify-content:flex-start}
+#managementFrame #intro .hall-playing-card .card-portrait{flex:none;max-height:none}
+#managementFrame #intro .hall-playing-card>span:not(.card-portrait){flex:none;min-width:0;max-width:100%;max-height:none;overflow:visible;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.35}

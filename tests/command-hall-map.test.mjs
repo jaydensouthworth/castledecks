@@ -14,7 +14,7 @@ test('thirty fixed route points cover actual region boundaries with non-overlapp
  assert.equal(campaignRoadPath().match(/[ML]/g).length,30);assert.equal(mapRegionScrollLeft(0,300),0);assert.equal(mapRegionScrollLeft(3,300),900);
 });
 test('command hall preserves real room actions and explicit launch without starting from a station',async t=>{
- const ui=await loadGameUI(t),battle=ui.battle;assert.match(ui.get('introTitle').textContent,/command hall/);assert.equal(ui.get('hallSelectedName').textContent,'The Crownroad');
+ const ui=await loadGameUI(t),battle=ui.battle;assert.equal(ui.get('introTitle').textContent,'Hall');assert.equal(ui.get('hallSelectedName').textContent,'The Crownroad');
  for(const [open,close] of [['introArmy','closeQueue'],['introLoadout','closeSkills'],['introArmory','closeShop'],['introSettings','closeSettings']]){ui.click(open);assert.equal(battle.tick,0);ui.click(close);assert.equal(ui.visible('intro'),true);assert.equal(ui.battle,battle);}
  assert.equal(battle.tick,0);ui.click('start');ui.frames(3);assert.ok(battle.tick>0);
 });
