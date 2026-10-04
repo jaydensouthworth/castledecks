@@ -1,4 +1,5 @@
 import {clipRect,measureOcclusion,touchConflicts} from './viewport-metrics.mjs';
+import {paintedVisible,interactionVisible} from './viewport-visibility.mjs';
 const $=id=>document.getElementById(id),frame=$('gameFrame'),device=$('device'),stage=$('previewStage'),box=$('scaledBox'),svg=$('inspection');
 let width=915,height=360,lastSignature='',scale=1;
 const svgNS='http://www.w3.org/2000/svg';
@@ -16,21 +17,16 @@ function setSize(nextWidth,nextHeight,rotation=false){
  if(rotation){try{frame.contentWindow.dispatchEvent(new Event('orientationchange'));}catch{}}
  requestAnimationFrame(inspect);
 }
-function visible(node,win){
- if(!node?.getClientRects().length)return false;
- for(let parent=node;parent;parent=parent.parentElement){const style=win.getComputedStyle(parent);if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)===0)return false;}
- return true;
-}
 function record(node){const r=node.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,label:node.getAttribute('aria-label')||node.id||node.textContent.trim().slice(0,40)||node.tagName};}
 function inspect(){
  let doc,win;try{doc=frame.contentDocument;win=frame.contentWindow;if(!doc?.querySelector('#battlefield'))throw new Error('loading');}catch{$('status').textContent='Waiting for the game…';return;}
  const viewport={width:win.innerWidth,height:win.innerHeight};
- const modal=[...doc.querySelectorAll('.panel,.veil,[data-hud-layer="modal"]')].filter(node=>visible(node,win)&&!node.inert&&!node.closest('[inert]')).sort((a,b)=>(Number(win.getComputedStyle(b).zIndex)||0)-(Number(win.getComputedStyle(a).zIndex)||0))[0];
- const surfaces=[...doc.querySelectorAll('[data-hud-surface]')].filter(node=>visible(node,win));
+ const modal=[...doc.querySelectorAll('.panel,.veil,[data-hud-layer="modal"]')].filter(node=>interactionVisible(node,win)).sort((a,b)=>(Number(win.getComputedStyle(b).zIndex)||0)-(Number(win.getComputedStyle(a).zIndex)||0))[0];
+ const surfaces=[...doc.querySelectorAll('[data-hud-surface]')].filter(node=>paintedVisible(node,win));
  // Keep older revisions inspectable while the new HUD is being integrated.
- const fallback=surfaces.length?surfaces:[...doc.querySelectorAll('.game-brand,.heraldic-plate,.selected-ability,.bar-step,.skill-button,.movement button,.tactical-controls button,.test-mode-badge,.assist-controls,.top-actions button,.flag-ribbon[data-alert="true"]')].filter(node=>visible(node,win));
+ const fallback=surfaces.length?surfaces:[...doc.querySelectorAll('.game-brand,.heraldic-plate,.selected-ability,.bar-step,.skill-button,.movement button,.tactical-controls button,.test-mode-badge,.assist-controls,.top-actions button,.flag-ribbon[data-alert="true"]')].filter(node=>paintedVisible(node,win));
  const rects=fallback.map(record),metrics=measureOcclusion(rects,viewport.width,viewport.height);
- const controlNodes=[...new Set([...(modal?modal.querySelectorAll('button,input,select,a'):doc.querySelectorAll('[data-hud-control],.command-deck button,.top-actions button'))].filter(node=>visible(node,win)).map(node=>node.matches('input[type=checkbox],input[type=radio]')?(node.closest('label')??node):node))];
+ const controlNodes=[...new Set([...(modal?modal.querySelectorAll('button,input,select,a,summary'):doc.querySelectorAll('[data-hud-control],.command-deck button,.top-actions button'))].filter(node=>interactionVisible(node,win)).map(node=>node.matches('input[type=checkbox],input[type=radio]')?(node.closest('label')??node):node))];
  const controls=[];let clippedControls=0;
  for(const node of controlNodes){const full=record(node);let shown=clipRect(full,{x:0,y:0,width:viewport.width,height:viewport.height});for(let parent=node.parentElement;parent&&shown;parent=parent.parentElement){const style=win.getComputedStyle(parent);if(/hidden|auto|scroll|clip/.test(style.overflow+style.overflowX+style.overflowY))shown=clipRect(shown,record(parent));}if(!shown)continue;const partial=shown.width<full.width-1||shown.height<full.height-1;if(modal&&partial){clippedControls++;continue;}controls.push({...shown,label:full.label});}
  const targets=touchConflicts(controls),heroMode=doc.querySelector('.battle-screen')?.dataset.heroMode??'garrisoned';

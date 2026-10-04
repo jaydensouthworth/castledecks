@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T11:04:11.408954+00:00",
-  "stage": "decision-first-deck-comparison",
-  "internal_tests_passing": 2313,
+  "updated": "2026-10-04T13:08:03.812558+00:00",
+  "stage": "viewport-interaction-visibility",
+  "internal_tests_passing": 2325,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 80 merged automated gate and measured decision-first comparison acceptance",
+    "Build 81 exact merged automated gate and native viewport diagnostic acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -51,7 +51,7 @@
     "Build79 actual live Frontline/Support orders, role-specific world markers and troop cohorts, current-state readout, native keyboard focus/Tab-R, immediate receipt clearing, paused Army edits, real aiming and clean assisted-session return across360/390portrait and740/915landscape."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 80,
+  "build": 81,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -70,6 +70,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted79 canonical2313 and portable/remote2321 passed with189-file CI-container proof and native live company commands at phone CSS proportions. internal_tests_passing belongs to internal_tests_build. Isolated accepted78-based compact comparison2298 passed with12new cases; exact combined80 and measured geometry pending.",
-  "internal_tests_build": 79
+  "test_evidence": "Accepted80 canonical 2325 and exact portable CI 2333 passed. Build81 corrects only viewport diagnostic interaction visibility plus release metadata; its exact combined gate and native acceptance are pending. internal_tests_passing belongs to internal_tests_build. Inert painted surfaces remain in occlusion totals; genuine tiny-target, overlap and aim-interception warnings are retained.",
+  "internal_tests_build": 80
 }

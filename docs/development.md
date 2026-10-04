@@ -122,6 +122,8 @@ When separately enabled in a supported integration, preserve the dynamic tempora
 
 Optional battle diagnostics are disabled initially and stay in bounded memory. They capture an explicit allowlist of gameplay facts, with no profile identity, save/replay payload, network transmission or automatic export. Keep enable/reset/export actions explicit and ensure diagnostics cannot consume gameplay RNG or mutate the engine.
 
+Viewport-lab interaction warnings must distinguish painted geometry from exposed interaction targets. Inert and closed-disclosure content is ineligible; each disclosure's first direct summary stays exposed, subject to all enclosing disclosure and visibility checks. Preserve painted inert HUD area in occlusion totals and retain thresholds, clipping, deduplication, aim samples and genuine live warnings. Synthetic geometry tests are a regression boundary, not native layout acceptance.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.
