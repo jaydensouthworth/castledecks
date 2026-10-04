@@ -1,0 +1,214 @@
+/* Hall's player-home interior. The shared management frame, title and workspace
+   rail remain owned by management-frame.css. One content scroller owns the page;
+   the departure action stays outside it. No text clipping or scaled labels. */
+#managementFrame #intro .hall-player-home{display:flex;flex-direction:column;gap:0;min-width:0;min-height:0;overflow:hidden;background:linear-gradient(100deg,#1e171be8,#30221ecc),repeating-linear-gradient(2deg,#604735 0 1px,#33261f 2px 24px)}
+#managementFrame #intro .hall-home-nav{display:flex;flex:none;align-items:stretch;gap:0;min-height:44px;overflow-x:auto;background:#231821;border-bottom:1px solid #ba96504d}
+#managementFrame #intro .hall-home-nav>button{flex:1 0 auto;min-height:44px;padding:10px 18px;font:14px Georgia,serif;white-space:normal;border:0;border-radius:0;background:transparent;color:#c6b494}
+#managementFrame #intro .hall-home-nav>button[aria-pressed=true]{background:linear-gradient(#71453255,#41222c);color:#ffe3aa;box-shadow:inset 0 -2px #d8b36a}
+#managementFrame #intro .hall-orders-scroll{flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;padding:18px;scroll-padding:18px;scrollbar-gutter:stable;background:none}
+#managementFrame #intro .hall-orders-scroll :is(p,small,button,input,strong,span,h2,h3){overflow-wrap:anywhere}
+#managementFrame #intro .hall-orders-scroll p{font:14px/1.5 system-ui;margin:8px 0;color:#d4c5ac}
+#managementFrame #intro .hall-orders-scroll .eyebrow{font:12px/1.4 system-ui;letter-spacing:.12em;color:#daba82}
+#managementFrame #intro .hall-orders-scroll button{min-height:44px;white-space:normal;line-height:1.35;font-size:14px}
+#managementFrame #intro #hallHome{display:flex;flex-direction:column}
+#managementFrame #intro .hall-save-state:has(#localHubChoices:not(.hidden)){order:-1;margin:0 0 16px;border-color:#d6b274;background:linear-gradient(110deg,#4d3429,#291c23)}
+#managementFrame #intro .hall-home-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
+#managementFrame #intro .hall-home-mission{display:block;min-width:0;overflow:visible;padding:0;border:1px solid #b68b4959;background:#21171b;box-shadow:0 7px 18px #0004}
+#managementFrame #intro .hall-field-painting{min-height:220px;display:flex;flex-direction:column;justify-content:flex-start;padding:24px 22px 18px;background-position:center;background-size:cover;border-bottom:1px solid #b8985944;text-shadow:0 2px 4px #0008}
+#managementFrame #intro .hall-field-painting #hallCurrentBanner{font:14px/1.45 Georgia;margin:0 0 24px;color:#fff1d0}
+#managementFrame #intro .hall-field-painting #hallOrderRegion{font-size:12px;color:#f4dbac;margin:0 0 8px}
+#managementFrame #intro .hall-field-painting #hallOrderTitle{font:30px/1.15 Georgia,serif;color:#fff0cf;margin:0 0 6px}
+#managementFrame #intro .hall-mission-details #hallOrderObjective{font:14px/1.5 system-ui;color:#f1e2c5;margin:0}
+#managementFrame #intro .hall-mission-details{padding:12px 18px 16px}
+#managementFrame #intro .hall-threats{display:flex;flex-wrap:wrap;gap:6px}
+#managementFrame #intro .hall-threats>span{font:12px/1.45 system-ui;background:#41372b;border:1px solid #b18b493d;padding:5px 8px;color:#e1d2b4}
+#managementFrame #intro .hall-scout{margin:10px 0;padding:0;min-width:0}
+#managementFrame #intro .hall-scout summary{font-size:14px;min-height:44px;line-height:1.5;padding:8px 0;box-sizing:border-box}
+#managementFrame #intro .hall-scout[open]>summary{top:-18px;z-index:2;padding:8px;background:#291c23}
+#managementFrame #intro .hall-scout p{font-size:14px}
+#managementFrame #intro .hall-scout .hall-scout-basis{font-size:12px}
+#managementFrame #intro .hall-tactical-advice{border:0;padding:0}
+#managementFrame #intro .hall-war-table{margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
+#managementFrame #intro .hall-map-control{width:100%;min-height:44px;display:flex;flex-direction:column;align-items:flex-start;padding:10px 12px;background:linear-gradient(110deg,#443326,#2e2427);border:1px solid #b38b4f6b}
+#managementFrame #intro .hall-map-control strong{font:17px/1.3 Georgia}
+#managementFrame #intro .hall-map-control small{font:12px/1.4 system-ui;display:block;margin-top:4px}
+#managementFrame #intro .hall-workbench{display:flex;flex-direction:column;gap:16px;min-height:0;min-width:0;padding:0;border:0}
+#managementFrame #intro .hall-deck-workbench{min-width:0;padding:16px;background:linear-gradient(140deg,#52372b66,#20171de8);border:1px solid #b68b4959;box-shadow:0 6px 18px #0003}
+#managementFrame #intro .hall-deck-workbench>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px;align-items:center}
+#managementFrame #intro .hall-deck-workbench>header>span{grid-column:1/-1;grid-row:2;font:12px/1.5 system-ui;color:#cdbc9f}
+#managementFrame #intro .hall-deck-workbench h3{font:22px/1.2 Georgia;margin:3px 0;color:#f6dfb6}
+#managementFrame #intro .hall-deck-workbench>header>button{grid-column:2;grid-row:1;padding:8px 11px;min-height:44px;font-size:14px}
+#managementFrame #intro .hall-card-spread{display:flex;align-items:stretch;justify-content:flex-start;gap:8px;min-height:0;overflow-x:auto;overflow-y:hidden;padding:12px 2px 7px;scroll-padding:4px;scrollbar-width:thin;scrollbar-color:#b3945a #21191e}
+#managementFrame #intro .hall-playing-card{flex:0 0 96px;width:96px;min-width:96px;min-height:152px;height:auto;margin:0;padding:5px;transform:none;border-radius:5px;overflow:visible;background:linear-gradient(145deg,#8b7147,#211714 22%,#4b2831);justify-content:flex-start}
+#managementFrame #intro .hall-playing-card:is(:hover,:focus-visible,.inspected){transform:none;border-color:#ffe1a0;box-shadow:inset 0 0 0 2px #dbb46255,0 3px 8px #0008}
+#managementFrame #intro .hall-playing-card .card-portrait{height:85px;min-height:85px;max-height:none;overflow:hidden}
+#managementFrame #intro .hall-playing-card>span:not(.card-portrait){font:14px/1.25 Georgia;display:block;max-height:none;overflow:visible;margin:7px 0 2px;text-align:center;color:#fff0cd}
+#managementFrame #intro .hall-playing-card>b{font:12px/1.3 system-ui;top:6px;left:6px;padding:2px 4px}
+#managementFrame #intro .hall-more-cards{flex:0 0 64px;min-width:64px;margin:0;font:24px Georgia;padding:6px;justify-content:center;align-items:center}
+#managementFrame #intro .hall-more-cards span{font:12px/1.4 system-ui}
+#managementFrame #intro .hall-card-inspect{position:static;display:flex;flex-wrap:wrap;margin-top:8px;padding:12px;gap:8px;box-shadow:none}
+#managementFrame #intro .hall-card-inspect>div{flex:1 0 100%;min-width:0}
+#managementFrame #intro .hall-card-inspect p{font-size:14px}
+#managementFrame #intro .hall-card-inspect button{min-height:44px;white-space:normal}
+#managementFrame #intro .hall-company-muster{display:flex;flex-direction:column;align-items:flex-start;gap:7px;border:1px solid #b68b4959;background:linear-gradient(120deg,#55303a66,#20171de8);padding:16px;min-height:0;box-shadow:0 6px 18px #0003}
+#managementFrame #intro .hall-company-muster :is(.eyebrow,#hallCompanion,.hall-muster-link){display:block}
+#managementFrame #intro .hall-company-muster strong{font:17px/1.4 Georgia;color:#f3ddba}
+#managementFrame #intro .hall-company-muster small,#managementFrame #intro .hall-muster-link{font:14px/1.45 system-ui}
+#managementFrame #intro #hallArmyTokens{display:flex;flex-wrap:wrap;gap:8px;min-height:36px}
+#managementFrame #intro #hallArmyTokens .skill-svg{width:35px;height:40px}
+#managementFrame #intro #hallArmyTokens .hall-no-contracts{font:14px/1.4 Georgia}
+#managementFrame #intro .hall-route-ribbon{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:16px 0;min-height:0}
+#managementFrame #intro .hall-route-ribbon>button{min-height:64px;font:14px/1.4 Georgia;padding:10px;background:#271e22;border:1px solid #b79b5944;grid-template-columns:12px minmax(0,1fr);gap:3px 7px}
+#managementFrame #intro .hall-route-ribbon>button span{font-size:14px}
+#managementFrame #intro .hall-route-ribbon>button b{font:12px system-ui}
+#managementFrame #intro .hall-route-ribbon>button.locked{opacity:1;color:#c3b59b}
+#managementFrame #intro .hall-practice-seal{grid-column:1/-1;font:14px/1.5 system-ui}
+#managementFrame #intro .hall-leg{font-size:14px;flex-wrap:wrap}
+#managementFrame #intro .hall-save-state{padding:14px 16px;margin-top:16px;border:1px solid #ad8c5266;background:#1c171d}
+#managementFrame #intro .hall-save-heading{display:flex;gap:10px;justify-content:space-between;align-items:center}
+#managementFrame #intro .hall-save-heading button{padding:8px 14px;background:#3d2832}
+#managementFrame #intro .hall-save-state #localHubStatus{font:14px/1.5 system-ui;color:#d6c8af;margin:8px 0 0}
+#managementFrame #intro .local-hub-choices{max-height:none;overflow:visible;gap:8px;margin:12px 0 0}
+#managementFrame #intro .local-hub-choices>button{font-size:14px;min-height:44px}
+#managementFrame #intro .training-entry{margin:16px 0;padding:14px;border-color:#b0955155}
+#managementFrame #intro .training-entry p{font-size:14px}
+#managementFrame #intro .training-entry button{min-height:44px;font-size:14px;padding:8px 12px}
+#managementFrame #intro .hall-utility{position:static;inset:auto;display:flex;min-height:44px;padding:0;margin-top:12px;justify-content:flex-start;align-items:start;flex-wrap:wrap;background:none}
+#managementFrame #intro .hall-utility .hub-controls{display:block;flex:1 0 150px}
+#managementFrame #intro .hall-utility .hub-controls>summary{font:14px/1.5 system-ui;min-height:44px;justify-content:flex-start}
+#managementFrame #intro .hall-utility .hub-controls .control-demo{position:static;width:auto;padding:12px;box-shadow:none;margin:0;box-sizing:border-box}
+#managementFrame #intro .hall-utility .hub-controls .control-demo p{font-size:14px}
+#managementFrame #intro .demo-session-controls{max-height:none;overflow:visible;flex-wrap:wrap;padding:8px 0}
+#managementFrame #intro .demo-session-controls p{display:block;font-size:14px}
+#managementFrame #intro #skirmishSessionNote{font-size:14px;margin:12px 0}
+#managementFrame #intro .hall-launch{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,32%);align-items:center;gap:4px 18px;flex:none;min-height:0;max-height:46%;overflow:auto;position:relative;padding:12px 18px;margin:0;border-top:1px solid #b9985c7a;background:linear-gradient(110deg,#34212c,#24191f);box-shadow:0 -7px 22px #0004}
+#managementFrame #intro .hall-launch #hallReadiness{font:14px/1.4 system-ui;margin:0;color:#dacaad}
+#managementFrame #intro #start{min-height:48px;height:auto;font:18px/1.25 Georgia,serif;padding:10px 16px;white-space:normal;grid-column:2;grid-row:1/3;width:100%;color:#fff1ce;background:linear-gradient(#995535,#663324);border-color:#cfab67;box-shadow:inset 0 1px #ffd79a44,0 3px 9px #0005}
+#managementFrame #intro #hubLaunchNote{grid-column:1;font:12px/1.45 system-ui;margin:0;color:#cabcaa}
+#managementFrame #intro #introNotice{grid-column:1/-1;margin:0;font:14px/1.4 system-ui}
+#managementFrame #intro #introNotice:empty{display:none}
+#managementFrame #intro .hall-browser-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px}
+#managementFrame #intro .hall-browser-heading h2{font:28px/1.2 Georgia;margin:4px 0;color:#f1d9b0}
+#managementFrame #intro #hallBoardCaption{max-width:45%;font-size:14px;line-height:1.45;margin:0;color:#cdbb9b}
+#managementFrame #intro .hall-atlas-board{min-height:0;margin:0;background:none;clip-path:none;box-shadow:none;border:0;overflow:visible}
+#managementFrame #intro .hub-destinations{display:block;min-height:0;height:auto;padding:0}
+#managementFrame #intro .hall-destination-shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+#managementFrame #intro .hall-destination-shelf>button.hall-realm{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:6px;min-height:160px;padding:24px 18px 16px;text-align:left;border:1px solid #b69b6266;border-radius:2px;transform:none;background:linear-gradient(0deg,#181416f5,#18141655),url('./images/regions/hearthwood.webp') center/cover;box-shadow:inset 0 0 0 3px #20191755,0 5px 15px #0004}
+#managementFrame #intro .hall-destination-shelf>button[data-hub-destination=expedition]{background-image:linear-gradient(0deg,#181416f5,#18141655),url('./images/regions/frostpine.webp')}
+#managementFrame #intro .hall-destination-shelf>button[data-hub-destination=skirmish]{background-image:linear-gradient(0deg,#181416f5,#18141655),url('./images/regions/cinderlands.webp')}
+#managementFrame #intro .hall-destination-shelf>button[data-hub-destination=training]{background-image:linear-gradient(0deg,#181416f5,#18141655),url('./images/regions/bannerfen.webp')}
+#managementFrame #intro .hall-destination-shelf>button[aria-pressed=true]{border-color:#efc67b;box-shadow:inset 0 0 0 2px #bc955164,0 5px 15px #0005}
+#managementFrame #intro .hub-destinations strong{font:24px/1.2 Georgia;color:#ffedc9;text-shadow:0 2px 5px #000}
+#managementFrame #intro .hub-destinations small{font:12px/1.4 system-ui;color:#dbc8a4;order:0;display:block}
+#managementFrame #intro .hub-destinations span{font:14px/1.4 system-ui;color:#f0d39b}
+#managementFrame #intro .hall-rehearsals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-column:1/-1;gap:12px;margin:0}
+#managementFrame #intro .hall-rehearsals>button{min-height:90px;gap:5px;padding:12px;background:#33212b}
+#managementFrame #intro .hall-rehearsals strong{font-size:20px}
+#managementFrame #intro .hall-destination-brief{margin-top:18px;padding-top:16px;border-top:1px solid #b8965755}
+#managementFrame #intro .hall-destination-brief>h2{font:26px/1.2 Georgia;margin:5px 0;color:#f4dbb0}
+#managementFrame #intro .hall-browser-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+#managementFrame #intro .hall-browser-actions button{padding:8px 12px}
+#managementFrame #intro .hall-directory-head{padding:12px 0 16px;border-bottom:1px solid #b8965744}
+#managementFrame #intro .hall-directory-head label{display:block;font:14px/1.4 system-ui;margin:12px 0 7px;color:#e3ceaa}
+#managementFrame #intro .hall-directory-search{display:flex;gap:8px;min-width:0}
+#managementFrame #intro .hall-directory-search input{flex:1;min-width:0;min-height:44px;font:16px system-ui;padding:10px 12px;box-sizing:border-box;border:1px solid #b59a6866;border-radius:2px;background:#18151a;color:#f3e0bf}
+#managementFrame #intro .hall-directory-search button{flex:none;padding:8px 12px}
+#managementFrame #intro .hall-directory-layout{display:grid;grid-template-columns:minmax(150px,.65fr) minmax(0,1.5fr);gap:18px;margin-top:16px}
+#managementFrame #intro .hall-directory-regions{min-width:0;display:flex;flex-direction:column;gap:8px}
+#managementFrame #intro .hall-directory-regions h3{font:20px Georgia;margin:0 0 4px}
+#managementFrame #intro .hall-directory-regions>button{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:84px;padding:16px 12px;text-align:left;border:1px solid #b0955755;background:linear-gradient(90deg,#20191bec,#20191b85),var(--hall-region-art) center/cover;border-radius:2px}
+#managementFrame #intro .hall-directory-regions>button[aria-pressed=true]{border-color:#e8bd76;box-shadow:inset 3px 0 #d8b16c}
+#managementFrame #intro .hall-directory-regions>button strong{font:19px/1.25 Georgia}
+#managementFrame #intro .hall-directory-regions>button span{font:12px/1.45 system-ui;color:#dfcba5}
+#managementFrame #intro .hall-directory-fields{min-width:0}
+#managementFrame #intro .hall-directory-breadcrumb{font:14px/1.5 Georgia;color:#e7c990}
+#managementFrame #intro .hall-directory-breadcrumb span{margin:0 7px}
+#managementFrame #intro #hallBrowserResults{font-size:12px;color:#c5b69f}
+#managementFrame #intro .hall-field-list{display:flex;flex-direction:column;gap:6px}
+#managementFrame #intro .hall-field-list>button{display:flex;align-items:center;gap:12px;padding:11px 12px;min-height:66px;min-width:0;border:1px solid #967c514d;background:linear-gradient(100deg,#37262c,#261d24);text-align:left;box-shadow:none}
+#managementFrame #intro .hall-field-list>button[aria-pressed=true]{border-color:#efc37b;background:linear-gradient(100deg,#614034,#33232b)}
+#managementFrame #intro .hall-field-number{display:grid;place-items:center;flex:0 0 32px;min-height:32px;font:21px Georgia;color:#e1bd79;border-right:1px solid #a68b5055;padding-right:8px}
+#managementFrame #intro .hall-field-identity{flex:1;min-width:0}
+#managementFrame #intro .hall-field-identity strong{display:block;font:18px/1.3 Georgia;color:#f0d8ae}
+#managementFrame #intro .hall-field-identity small{display:block;font:12px/1.45 system-ui;color:#c5b698;margin-top:4px}
+#managementFrame #intro .hall-field-marker{font:20px Georgia;color:#ddbd7f;flex:none}
+#managementFrame #intro .hall-directory-pager{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;min-width:0}
+#managementFrame #intro .hall-directory-pager button{min-height:44px;padding:8px;font-size:12px;flex:1}
+#managementFrame #intro .hall-directory-pager>span{font:12px/1.4 system-ui;color:#cabb9e}
+#managementFrame #intro .hall-field-brief{margin-top:18px;padding:18px;border:1px solid #b7985466;background:linear-gradient(135deg,#58382966,#281d24)}
+#managementFrame #intro .hall-field-brief h3{font:26px/1.2 Georgia;margin:8px 0;color:#f3d6a4}
+#managementFrame #intro .hall-field-brief button{padding:9px 16px;margin:6px 0;min-height:44px}
+#managementFrame #intro .hall-directory-note{font-size:12px;color:#caba9d}
+/* The same content remains reachable on short landscape and portrait. Text
+   keeps its reading size; the bounded viewport scrolls, cards scroll sideways. */
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #intro .hall-orders-scroll{padding:12px;scroll-padding:12px}
+ #managementFrame #intro .hall-home-grid{gap:12px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+ #managementFrame #intro .hall-field-painting{min-height:0;padding:12px;justify-content:flex-start}
+ #managementFrame #intro .hall-field-painting #hallCurrentBanner{margin:4px 0 0}
+ #managementFrame #intro .hall-field-painting #hallOrderRegion{margin:0}
+ #managementFrame #intro .hall-field-painting #hallOrderTitle{font-size:26px}
+ #managementFrame #intro .hall-mission-details,#managementFrame #intro .hall-deck-workbench,#managementFrame #intro .hall-company-muster{padding:12px}
+ #managementFrame #intro .hall-deck-workbench>header{grid-template-columns:1fr}
+ #managementFrame #intro .hall-deck-workbench>header>button{grid-column:1;grid-row:3;justify-self:start}
+ #managementFrame #intro .hall-launch{padding:8px 12px;gap:4px 12px}
+ #managementFrame #intro .hall-home-nav>button{padding:8px 12px}
+ #managementFrame #intro .hall-destination-shelf>button.hall-realm{min-height:130px}
+}
+@media(max-width:620px) and (orientation:portrait){
+ #managementFrame #intro .hall-orders-scroll{padding:12px;scroll-padding:12px}
+ #managementFrame #intro .hall-home-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+ #managementFrame #intro .hall-field-painting{min-height:190px;padding:18px}
+ #managementFrame #intro .hall-route-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #managementFrame #intro .hall-launch{grid-template-columns:minmax(0,1fr);gap:7px;padding:10px 12px;max-height:40%}
+ #managementFrame #intro #start{grid-column:1;grid-row:1;font-size:18px}
+ #managementFrame #intro #hallReadiness{grid-row:2;font-size:14px}
+ #managementFrame #intro #hubLaunchNote{grid-row:3;font-size:12px}
+ #managementFrame #intro .hall-home-nav>button{padding:8px 12px;min-width:0;font-size:14px}
+ #managementFrame #intro .hall-browser-heading{align-items:flex-start;flex-direction:column}
+ #managementFrame #intro #hallBoardCaption{max-width:none}
+ #managementFrame #intro .hall-destination-shelf{grid-template-columns:minmax(0,1fr)}
+ #managementFrame #intro .hall-destination-shelf>button.hall-realm{min-height:145px}
+ #managementFrame #intro .hall-rehearsals{grid-template-columns:minmax(0,1fr)}
+ #managementFrame #intro .hall-directory-layout{grid-template-columns:minmax(0,1fr)}
+ #managementFrame #intro .hall-directory-regions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #managementFrame #intro .hall-directory-regions h3,#managementFrame #intro .hall-directory-regions>.hall-directory-pager{grid-column:1/-1}
+ #managementFrame #intro .hall-directory-regions>button{min-height:88px;padding:12px}
+ #managementFrame #intro .hall-deck-workbench>header{grid-template-columns:1fr}
+ #managementFrame #intro .hall-deck-workbench>header>button{grid-column:1;grid-row:3;justify-self:start}
+}
+#managementFrame #intro :is(#hallHome,#hallBrowse,#hallDestinationBrief,#hallCampaignBrowser,.hall-destination-shelf,.hall-rehearsals,.hall-card-inspect,.hall-map-control).hidden{display:none}
+@media(prefers-reduced-motion:reduce){#managementFrame #intro *{scroll-behavior:auto;transition:none}}
+
+/* Compose the desktop home around a mission and its company, rather than a
+   stretched destination board with a thin utility sidebar. */
+@media(min-width:1001px) and (min-height:601px){
+ #managementFrame #intro .hall-home-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:28px}
+ #managementFrame #intro .hall-orders-scroll>section{width:100%;max-width:1480px;margin-inline:auto}
+ #managementFrame #intro .hall-field-painting{min-height:260px;padding:28px}
+ #managementFrame #intro .hall-mission-details{padding:20px 24px}
+ #managementFrame #intro .hall-destination-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+ #managementFrame #intro .hall-destination-shelf>button.hall-realm{min-height:210px;align-content:end;padding:24px}
+}
+#managementFrame #intro .hall-scout-workspace{display:grid;grid-template-columns:minmax(132px,.7fr) minmax(0,1.5fr);gap:20px;margin:14px 0}
+#managementFrame #intro .hall-scout-company,#managementFrame #intro .hall-scout-reading{min-width:0}
+#managementFrame #intro .hall-scout-roster{display:flex;flex-direction:column;gap:0;border-block:1px solid #b59a5755}
+#managementFrame #intro .hall-scout-roster button{display:flex;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:10px 8px;border:0;border-bottom:1px solid #b59a5733;border-radius:0;background:transparent;font-size:14px;text-align:left}
+#managementFrame #intro .hall-scout-roster button[aria-pressed=true]{background:#67503944;box-shadow:inset 3px 0 #e2bb73;color:#ffe5b1}
+#managementFrame #intro .hall-scout-roster button b{flex:none;color:#e2bb73;font-weight:400}
+#managementFrame #intro #hallScoutName{font:25px/1.2 Georgia;color:#f6dfb4;margin:0 0 18px}
+#managementFrame #intro .hall-scout-reading .eyebrow{margin-top:18px}
+#managementFrame #intro .hall-scout-reading p{max-width:60ch}
+#managementFrame #intro #hallScoutReview{width:auto;padding:10px 16px;margin:8px 0;background:linear-gradient(#73452f,#4c2b29);border:1px solid #be9556}
+@media(max-width:1000px){
+ #managementFrame #intro .hall-scout-workspace{grid-template-columns:minmax(0,1fr);gap:18px}
+ #managementFrame #intro .hall-scout-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #managementFrame #intro .hall-scout-roster button{gap:8px}
+}
+/* Expanding intelligence promotes it to the whole reading area, at every size.
+   Closing returns to the same company/deck home and retained scroll position. */
+#managementFrame #intro .hall-home-grid:has(#hallScout[open]){grid-template-columns:minmax(0,1fr)}
+#managementFrame #intro .hall-home-grid:has(#hallScout[open]) .hall-workbench{display:none}
+@media(min-width:651px){
+ #managementFrame #intro .hall-scout-workspace{grid-template-columns:minmax(160px,220px) minmax(0,1fr);max-width:1080px}
+}

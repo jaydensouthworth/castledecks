@@ -21,7 +21,7 @@ import {createBattleReportRecorder} from './battle-report.mjs';
 import {createBattleRenderProfiler,sampleBattleRenderLoad} from './battle-render-profiler.mjs';
 import {createBattleReportUI} from './battle-report-ui.mjs';
 import {modalFocusCandidates} from './modal-focus.mjs';
-import {syncCommandHall} from './command-hall.mjs';
+import {syncCommandHall,resetCommandHallView} from './command-hall.mjs';
 import {createArmyCommandUI} from './army-command.mjs';
 import {createControlBindings,controlEventKey,isControlTextTarget,isControlComposition,hasControlModifier} from './control-bindings.mjs';
 import {createControlSettings} from './control-settings.mjs';
@@ -134,11 +134,11 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='90';
+const GAME_BUILD='92';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null,cloudAccounts=null;
-let hallScoutReturn=null;
+let hallScoutReturn=null,hallDirectoryReturn=null;
 let profile=profiles.active,battle,clock,combatPoses,specialMotion,started=false,angle=20,power=100,now=performance.now(),notices=[],barSignature='',liveSkills,selectedWrapper=null,editorBar=0,loadoutOrigin='preparation',toastUntil=0,openPanelId=null,panelResume=false,activationPulse=0,heldSpace=false,loadoutReturnPanel=null,pendingDelete=null,bindingLayout=null,pauseMessage="Take your time. Your battlefield is frozen.",panelFocus=null;
 const movementOwners=createMovementOwners(()=>battle?.input??{});
 const battleReports=new WeakMap();
@@ -187,7 +187,7 @@ function clearArmyOrderReceipt(){
 }
 function status(text){$('#battleStatus').textContent=text;if(/out of range|not enough|need \d|need more|reloads in|queue is full|unavailable|not ready|begin inside|view changed|wait for|no population|cannot|failed/i.test(text)&&started&&!openPanelId){$('#hudToast').textContent=text;$('#hudToast').classList.remove('hidden');toastUntil=performance.now()+2200;visualDirty=true;}}
 function completedCampaignLabel(){if(expeditionMode)return profiles.profiles.length>1?'Archive and choose charter':'Archive and start new charter';return profiles.profiles.length>1?'Retire and choose campaign':'Start new campaign';}
-const campaignAtlas=createCampaignAtlas({document,host:$('#campaignAtlasHost'),getState:()=>({profile,battle,started,summary:battle?.summary,destination:activeDestination}),onPrepare:level=>{if(!canPrepareEncounter({profile,level,started,summary:battle.summary,destination:activeDestination}))return;panelResume=false;panel('#campaignPanel',false);setup(level);showHub();$('#introNotice').textContent=`${encounterBrief(level).name} prepared. ${battle.campaignReplay?'Replay: your earned frontier is preserved.':'Review your loadout, then start when ready.'}`;},onReturn:()=>panel('#campaignPanel',false)});
+const campaignAtlas=createCampaignAtlas({document,host:$('#campaignAtlasHost'),getState:()=>({profile,battle,started,summary:battle?.summary,destination:activeDestination}),onPrepare:level=>{if(!canPrepareEncounter({profile,level,started,summary:battle.summary,destination:activeDestination}))return;hallDirectoryReturn=null;panelResume=false;panel('#campaignPanel',false);setup(level);showHub();$('#introNotice').textContent=`${encounterBrief(level).name} prepared. ${battle.campaignReplay?'Replay: your earned frontier is preserved.':'Review your loadout, then start when ready.'}`;},onReturn:()=>panel('#campaignPanel',false)});
 const skirmishWorkshop=createSkirmishWorkshop({host:$('#skirmishWorkshopHost'),getDescriptor:()=>skirmishDescriptor,onPrepare:descriptor=>{if(!skirmishMode||openPanelId!=='#skirmishPanel'||pendingSkirmish)return;if(started&&!battle.summary){pendingSkirmish=descriptor;$('#skirmishWorkshopHost').inert=true;$('#skirmishReplaceConfirm').classList.remove('hidden');$('#skirmishKeepAttempt').focus?.();return;}prepareSkirmish(descriptor);},onClose:closeSkirmishWorkshop});
 function closeSkirmishWorkshop(){skirmishWorkshop.invalidate();pendingSkirmish=null;$('#skirmishWorkshopHost').inert=false;$('#skirmishReplaceConfirm').classList.add('hidden');panelResume=false;panel('#skirmishPanel',false);}
 function showSkirmishWorkshop(){if(!skirmishMode||battle.outcome&&!battle.summary)return;showHub();pendingSkirmish=null;$('#skirmishWorkshopHost').inert=false;$('#skirmishReplaceConfirm').classList.add('hidden');skirmishWorkshop.open();panel('#skirmishPanel',true);if(skirmishInputError){$('#skirmishStatus').textContent=skirmishInputError+' The default field is shown; choose a valid code before preparing.';skirmishInputError='';}}
@@ -212,8 +212,8 @@ function syncSkirmishIdentity(){
  if(selectedDestination===activeDestination){$('#start').textContent=battle.summary?'Prepare same seed':started?'Resume skirmish':'Start skirmish';$('#hubLaunchNote').textContent=castlePractice?'Highwatch comparison: both castles are supplied. Change your castle in Build before Start. Break their keep, clear the company and recover your home flag.':'A fresh supplied kit for each attempt. Open the workshop to inspect, copy or change this seed.';}
  if(battle.summary){const causeway=causewayFeedbackState(battle),levy=levyFeedbackState(battle),objective=objectiveFeedbackState(battle);$('#endingTitle').textContent=castlePractice?castlePractice.status:causeway?causeway.status:levy?levy.status:objective?objective.status:`Practice ${battle.summary.outcome}`;$('#endingText').textContent=`${scenario.name} · ${castlePractice?castlePractice.result:causeway?causeway.result:levy?levy.result:objective?`${objective.resolved}/2 marked engines resolved.${objective.phase==='victory'?' Home flag safe.':objective.reason?' '+objective.reason:''}`:`${battle.stats.shotsFired} basic shots · ${battle.stats.bodyShots+battle.stats.headShots} basic hits.`} This attempt’s gold and XP stay here. Retry the same seed with fresh supplies, or make a new field.`;$('#replay').textContent='Prepare same seed';}
 }
-const expeditionRoute=createExpeditionRoute({host:$('#expeditionRouteHost'),getRun:()=>profiles.activeRun,getState:()=>({started,summary:battle.summary,pendingOutcome:!!battle.outcome&&!battle.summary}),onChoose:id=>{if(!expeditionMode||!profiles.activeRun.choose(id))return;panelResume=false;panel('#expeditionPanel',false);setup();showHub();$('#introNotice').textContent=`${profiles.activeRun.current.name} chosen. Arrange your loadout, then Start when ready.`;},onReturn:()=>panel('#expeditionPanel',false),onRestart:()=>{if(!expeditionMode)return;panelResume=false;panel('#expeditionPanel',false);profile=profiles.restartCurrent();setup();showHub();$('#introNotice').textContent='Charter restarted with its declared starting supplies. Other banners and sessions are preserved.';}});
-function showExpeditionRoute(){if(!expeditionMode||battle.outcome&&!battle.summary)return;showHub();expeditionRoute.open();panel('#expeditionPanel',true);}
+const expeditionRoute=createExpeditionRoute({host:$('#expeditionRouteHost'),getRun:()=>profiles.activeRun,getState:()=>({started,summary:battle.summary,pendingOutcome:!!battle.outcome&&!battle.summary}),onChoose:id=>{if(!expeditionMode||!profiles.activeRun.choose(id))return;hallDirectoryReturn=null;panelResume=false;panel('#expeditionPanel',false);setup();showHub();$('#introNotice').textContent=`${profiles.activeRun.current.name} chosen. Arrange your loadout, then Start when ready.`;},onReturn:()=>panel('#expeditionPanel',false),onRestart:()=>{if(!expeditionMode)return;hallDirectoryReturn=null;panelResume=false;panel('#expeditionPanel',false);profile=profiles.restartCurrent();setup();showHub();$('#introNotice').textContent='Charter restarted with its declared starting supplies. Other banners and sessions are preserved.';}});
+function showExpeditionRoute({preserveHallView=false}={}){if(!expeditionMode||battle.outcome&&!battle.summary)return;showHub({preserveHallView});expeditionRoute.open();panel('#expeditionPanel',true);}
 function syncExpeditionIdentity(){
  for(const id of ['#introRoute','#pauseRoute','#endingRoute','#hubExpeditionProgress','#expeditionObjective'])$(id).classList[expeditionMode?'remove':'add']('hidden');
  renderExpeditionReceipt($('#expeditionRewards'),expeditionMode?profiles.activeRun:null);
@@ -225,7 +225,7 @@ function syncExpeditionIdentity(){
  if(selectedDestination===activeDestination){$('#start').textContent=expeditionLaunchLabel(run,{started,summary:battle.summary});$('#hubLaunchNote').textContent=run.choosing?'Choose one road. The next field waits for your explicit Start.':run.complete?'Keep a charter file or code, then archive this banner when ready.':started&&!battle.summary?'Resume this exact field. Route changes wait until victory.':'Your charter has its own starter kit, gold and save. Review the route for objective and enemy counters.';}
  if(battle.summary){const copy=expeditionResultCopy(run,battle);$('#endingTitle').textContent=copy.title;$('#endingText').textContent=copy.description;$('#replay').textContent=copy.action;}
 }
-function showCampaignAtlas(){if(activeDestination!=='campaign'||battle.outcome&&!battle.summary)return;showHub();campaignAtlas.open(battle.summary?.outcome==='victory'?Math.min(30,profile.highestLevel):battle.level);panel('#campaignPanel',true);campaignAtlas.recenter();}
+function showCampaignAtlas({preserveHallView=false}={}){if(activeDestination!=='campaign'||battle.outcome&&!battle.summary)return;showHub({preserveHallView});campaignAtlas.open(battle.summary?.outcome==='victory'?Math.min(30,profile.highestLevel):battle.level);panel('#campaignPanel',true);campaignAtlas.recenter();}
 function syncCampaignIdentity(){const isCampaign=activeDestination==='campaign';for(const id of ['#introAtlas','#pauseAtlas','#endingAtlas'])$(id).classList[isCampaign?'remove':'add']('hidden');$('#hubCampaignProgress').classList[isCampaign?'remove':'add']('hidden');if(isCampaign){const progress=campaignProgress(profile),brief=encounterBrief(battle.level);$('#hubCampaignProgress').textContent=`${brief.region.name} · ${progress.cleared}/30 ${progress.assisted?'reached':'cleared'}${battle.campaignReplay?' · Replaying a cleared field':''}`;$('#battleTitle').textContent=`${profile.cheated?'Assisted · ':''}Battle ${battle.level} · ${brief.name}${battle.campaignReplay?' · Replay':''}`;}renderCampaignRewards($('#campaignRewards'),isCampaign?campaignSettlement(battle,battle.campaignStartSnapshot):null);}
 
 function renderHub(){cloudAccounts?.sync();
@@ -245,7 +245,7 @@ function renderHub(){cloudAccounts?.sync();
  $('#start').textContent=selectedDestination!==activeDestination?`Open ${selected.name.toLowerCase()}`:battle.summary?.campaignComplete?completedCampaignLabel():battle.summary?`${battle.summary.outcome==='victory'?'Start':'Retry'} battle ${battle.summary.outcome==='victory'?battle.level+1:battle.level}`:started?`Resume battle ${battle.level}`:`Start battle ${battle.level}`;
  $('#hubLaunchNote').textContent=selectedDestination!==activeDestination?'Switch to this lobby in the same tab. Your current session is kept in memory.':started&&!battle.summary?'Resume this exact battlefield when you are ready.':battle.summary?'Review your loadout before the next battle.':'Combat begins only when you choose Start.';
  renderTrainingEntry({force:true});syncCampaignIdentity();syncExpeditionIdentity();syncSkirmishIdentity();if(activeDestination==='campaign'&&battle.campaignReplay&&battle.summary?.outcome==='victory')$('#start').textContent=campaignSettlement(battle,battle.campaignStartSnapshot).nextLabel;
- syncCommandHall({document,current,selected,activeDestination,selectedDestination,started,summary:battle.summary,profile,battle,run:expeditionMode?profiles.activeRun:null,decks:profileDecks.get(profile),sessionIds:[...destinationSessions.keys()],sessions:[...destinationSessions].map(([id,s])=>({id,level:s.battle.level,started:s.started,outcome:s.battle.summary?.outcome,cleared:s.profiles.activeRun?.state.cleared})),onReviewScout:reviewHallScoutCard,onInspectCampaign:level=>{if(activeDestination!=='campaign')return;showCampaignAtlas();campaignAtlas.open(level);campaignAtlas.recenter();}});
+ syncCommandHall({document,current,selected,activeDestination,selectedDestination,started,summary:battle.summary,profile,battle,run:expeditionMode?profiles.activeRun:null,decks:profileDecks.get(profile),sessionIds:[...destinationSessions.keys()],sessions:[...destinationSessions].map(([id,s])=>({id,level:s.battle.level,started:s.started,outcome:s.battle.summary?.outcome,profile:s.profile,run:s.profiles.activeRun??null,cleared:s.profiles.activeRun?.state.cleared})),onReviewScout:reviewHallScoutCard,onInspectCampaign:inspectHallCampaign,onInspectCharter:inspectHallCharter});
  $('#introArmory').disabled=!!battle.summary?.campaignComplete||skirmishMode&&!!battle.summary;$('#hubOpenSeparate').classList[selectedDestination===activeDestination?'add':'remove']('hidden');
 }
 function openDestination(id,notice=$('#introNotice')){
@@ -256,7 +256,32 @@ function openDestination(id,notice=$('#introNotice')){
  else notice.innerHTML=`This session is still here. <a href="${html(url)}" target="_blank" rel="noopener">Open ${html(item.name.toLowerCase())} in a new tab</a>.`;
 }
 function startMidgameDemo(showcase=false){if(stressFieldOrigin){requestDestination(showcase===true?'allies':'midgame');return;}if(cardPracticeOrigin)exitUnitTrial();const id=showcase===true?'allies':'midgame';showHub();selectedDestination=id;renderHub();requestDestination(id);}
-function showHub(){
+// A read-only directory inspection returns to its own view, not a new Hall visit.
+// The marker is valid only for this exact company and selected field.
+function inspectHallCampaign(level){
+ if(activeDestination!=='campaign'||battle.outcome&&!battle.summary)return;
+ const preserveHallView=hubOpen&&!openPanelId&&selectedDestination==='campaign'&&$('#intro').getAttribute('data-hall-view')==='campaigns';
+ const origin=preserveHallView?{battle,profile,destination:'campaign',stageId:String(level),scrollTop:$('#intro').querySelector('.hall-orders-scroll').scrollTop||0}:null;
+ showCampaignAtlas({preserveHallView});
+ if(openPanelId!=='#campaignPanel')return;
+ hallDirectoryReturn=origin;campaignAtlas.open(level);campaignAtlas.recenter();
+}
+function inspectHallCharter(stageId){
+ if(activeDestination!=='expedition'||!expeditionMode||battle.outcome&&!battle.summary)return;
+ const preserveHallView=hubOpen&&!openPanelId&&selectedDestination==='expedition'&&$('#intro').getAttribute('data-hall-view')==='campaigns';
+ const origin=preserveHallView?{battle,profile,destination:'expedition',stageId:String(stageId),scrollTop:$('#intro').querySelector('.hall-orders-scroll').scrollTop||0}:null;
+ showExpeditionRoute({preserveHallView});
+ if(openPanelId==='#expeditionPanel')hallDirectoryReturn=origin;
+}
+function restoreHallDirectoryReturn(){
+ const origin=hallDirectoryReturn;hallDirectoryReturn=null;
+ if(!origin||origin.battle!==battle||origin.profile!==profile||activeDestination!==origin.destination||selectedDestination!==origin.destination||$('#intro').getAttribute('data-hall-view')!=='campaigns')return false;
+ const selected=$('#hallCampaignBrowser').querySelector(`[data-hall-stage="${origin.stageId}"][aria-pressed="true"]`),target=$('#hallInspectField');
+ if(!selected||!target||target.disabled)return false;
+ $('#intro').querySelector('.hall-orders-scroll').scrollTop=origin.scrollTop;target.focus?.({preventScroll:true});return true;
+}
+function showHub({preserveHallView=false}={}){
+ if(!preserveHallView)hallDirectoryReturn=null;
  if(stressFieldOrigin){exitStressField();return;}
  if(cardPracticeOrigin){exitUnitTrial();return;}
  if(battle.outcome&&!battle.summary){status('Counting the battle result. The lobby opens when rewards are settled.');return;}
@@ -264,7 +289,7 @@ function showHub(){
  if(openPanelId){panelResume=false;panel(openPanelId,false);}
  loadoutReturnPanel=null;precisionReturnPanel=null;armoryReturnFromLoadout=false;armyReturnFromLoadout=false;
  if(started&&!battle.summary)pause(true);
- hubOpen=true;selectedDestination=activeDestination;
+ hubOpen=true;selectedDestination=activeDestination;if(!preserveHallView)resetCommandHallView(document);
  $('#restartConfirm').classList.add('hidden');$('#ending').classList.add('hidden');$('#intro').classList.remove('hidden');
  renderHub();syncPause();$('#start').focus?.();visualDirty=true;
 }
@@ -291,6 +316,7 @@ function cancelSessionSwitch(){pendingDestination=null;trainingLaunchRequested=f
 function switchDestination(id){
  if(id===activeDestination)return;
  invalidateRenderProfile();
+ hallDirectoryReturn=null;
  if(stressFieldOrigin)exitStressField();
  const guidedOrigin=trainingLaunchRequested?trainingReturnDestination:null;
  clearInput();cancelPendingImport();loadoutDrag.cancel();if(bindingLayout&&!bindingLayout.closed)bindingLayout.close();liveSkills?.dispose();
@@ -318,7 +344,7 @@ function restartMidgameDemo(){
  status('Midgame demo reset · prepare Battle 13 · assisted');
 }
 function returnFromDemo(){if(!demoMode)return;if(destinationSessions.has('campaign')){showHub();selectedDestination='campaign';renderHub();requestDestination('campaign');return;}if(window.parent&&window.parent!==window){window.parent.postMessage({type:'bowmaster-preview-exit-demo'},window.location.origin);return;}$('#demoReturnNote').textContent='Your campaign is in its original tab. If this tab stays open, close it to return.';try{window.close?.();}catch{}}
-function cancelPendingImport(){localCampaign?.cancel();loadGeneration++;const reading=text=>text==='Reading campaign file…'||text==='Reading charter file…';if(reading($('#introNotice').textContent))$('#introNotice').textContent='';for(const id of ['#saveStatus','#endingSaveStatus'])if(reading($(id).textContent))$(id).textContent=expeditionMode?'Load cancelled. Your current charter has been kept.':'Load cancelled. Your current campaign has been kept.';}
+function cancelPendingImport(){cloudAccounts?.cancelReview();localCampaign?.cancel();loadGeneration++;const reading=text=>text==='Reading campaign file…'||text==='Reading charter file…';if(reading($('#introNotice').textContent))$('#introNotice').textContent='';for(const id of ['#saveStatus','#endingSaveStatus'])if(reading($(id).textContent))$(id).textContent=expeditionMode?'Load cancelled. Your current charter has been kept.':'Load cancelled. Your current campaign has been kept.';}
 
 function clearInput(){battle?.cancelPlayerShots();aimCamera=null;movementOwners.clear();liveSkills?.clear();aimPressPoint=null;aimGuideVisible=false;movementTap=null;const pointerId=aimPointerId;aimPointerId=null;if(pointerId!==null&&canvas.hasPointerCapture?.(pointerId))canvas.releasePointerCapture(pointerId);battle.input={left:false,right:false,up:false,down:false,mouseDown:false,digits:[],space:false};battle.queuedAim=null;battle.queuedSelection=null;battle.hotbar.wheel=0;activationPulse=0;heldSpace=false;heldActivationKeys.clear();battle.shooter.cancel();}
 function syncPanelShield(){managementFrame.sync(openPanelId);for(const [id,panelId] of [['#pauseSkills','#skillsPanel'],['#openAim','#aimPanel']])$(id).setAttribute('aria-expanded',String(openPanelId===panelId));const active=!!openPanelId;$('#panelShield').classList[active?'remove':'add']('hidden');for(const selector of ['.topbar','.battle-screen','.command-deck','#intro','#pauseOverlay','#ending','#restartConfirm','#switchSessionConfirm'])$(selector).inert=active||!!pendingDestination&&selector!=='#switchSessionConfirm';}
@@ -355,7 +381,7 @@ function setup(level=Math.min(30,Math.max(1,profile.highestLevel))){
  invalidateRenderProfile();
  const stressSetup=stressFieldPreset?createStressField({preset:stressFieldPreset,shootingMode:profile.shootingMode}):null;
  if(stressSetup){profiles=stressSetup.profiles;profile=profiles.active;}
- started=false;hubOpen=true;selectedDestination=activeDestination;
+ hallDirectoryReturn=null;started=false;hubOpen=true;selectedDestination=activeDestination;resetCommandHallView(document);
  armoryReturnFromLoadout=false;armyReturnFromLoadout=false;
  if(battle)clearInput();
  const trainingOptions=trainingRun?createTrainingBattleOptions(trainingRun):null;if(trainingOptions){profiles=new CampaignProfiles({profiles:[trainingOptions.profile]});profile=profiles.active;level=1;}
@@ -417,7 +443,12 @@ $('#pauseAlliesDemo').onclick=()=>startMidgameDemo(true);$('#pauseDemo').onclick
 for(const button of document.querySelectorAll('[data-demo-action]'))button.onclick=button.getAttribute('data-demo-action')==='return'?returnFromDemo:restartMidgameDemo;
 for(const id of ['#introBattleReport','#pauseBattleReport','#testBattleReport'])$(id).onclick=showBattleReport;
 $('#buildLabel').textContent=`Build ${GAME_BUILD}`;$('#testingBuild').textContent=`Loaded build ${GAME_BUILD}`;
-function begin(){if(started||openPanelId||battle.summary?.campaignComplete||expeditionMode&&(profiles.activeRun.choosing||profiles.activeRun.complete))return;if(!localCampaign.beforeBegin())return;hubOpen=false;cancelPendingImport();canvas.focus?.();started=true;battle.paused=false;clearInput();$('#pauseOverlay').classList.add('hidden');$('#intro').classList.add('hidden');$('#ending').classList.add('hidden');$('#battlePause').disabled=false;syncPause();drawHotbar();status(profile.shootingMode==='classic'?'Pull back from the castle ring to fire. Watch for enemies carrying your flag.':'Aim on the battlefield. Protect your flag carriers.');now=performance.now();}
+function focusPendingLocalChoice(){
+ if(openPanelId!=='#savePanel'||activeDestination!=='campaign'||$('#localHubChoices').classList.contains('hidden'))return;
+ const target=$('#localSlots').querySelector('[data-local-continue]:not(:disabled)')??[$('#localNewVault'),$('#localSessionOnlyVault')].find(button=>!button.disabled&&!button.classList.contains('hidden'));
+ target?.focus?.({preventScroll:true});target?.scrollIntoView?.({block:'nearest'});
+}
+function begin(){if(started||openPanelId||battle.summary?.campaignComplete||expeditionMode&&(profiles.activeRun.choosing||profiles.activeRun.complete))return;if(!localCampaign.beforeBegin()){focusPendingLocalChoice();return;}hubOpen=false;cancelPendingImport();canvas.focus?.();started=true;battle.paused=false;clearInput();$('#pauseOverlay').classList.add('hidden');$('#intro').classList.add('hidden');$('#ending').classList.add('hidden');$('#battlePause').disabled=false;syncPause();drawHotbar();status(profile.shootingMode==='classic'?'Pull back from the castle ring to fire. Watch for enemies carrying your flag.':'Aim on the battlefield. Protect your flag carriers.');now=performance.now();}
 function restart(){if(stressFieldOrigin){resetStressField();return;}if(skirmishMode){prepareSkirmish();begin();return;}if(trainingRun){restartGuidedDrill();return;}const level=battle.level;if(expeditionMode)profiles.activeRun.retry();setup(level);begin();}
 for(const id of ['#introAtlas','#pauseAtlas','#endingAtlas'])$(id).onclick=showCampaignAtlas;$('#closeAtlas').onclick=()=>panel('#campaignPanel',false);
 for(const id of ['#introRoute','#pauseRoute','#endingRoute'])$(id).onclick=showExpeditionRoute;$('#closeRoute').onclick=()=>panel('#expeditionPanel',false);
@@ -669,7 +700,7 @@ let precisionReturnPanel=null;
 function closePrecision(){const back=precisionReturnPanel;precisionReturnPanel=null;if(back){panel(back,true);$('#openAim').focus?.();}else panel('#aimPanel',false);}
 $('#openAim').onclick=()=>{precisionReturnPanel=openPanelId==='#settingsPanel'?'#settingsPanel':null;panel('#aimPanel',true);};$('#closeAim').onclick=closePrecision;
 function showSettings(){$('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;syncAimSettings();panel('#settingsPanel',true);}
-function panel(id,show){managementFrame.captureNavigation();if(openPanelId==='#skillsPanel'&&(id!=='#skillsPanel'||!show))castleLoadout.leave();if(openPanelId==='#savePanel'&&(id!=='#savePanel'||!show))cloudAccounts?.leave();if(openPanelId==='#campaignPanel'&&(id!=='#campaignPanel'||!show))campaignAtlas.leave();if(openPanelId==='#controlsPanel'&&(id!=='#controlsPanel'||!show))controlsUI.discard();if(openPanelId==='#shopPanel'&&(id!=='#shopPanel'||!show))armoryCatalog?.leave();if(show){if(id!=='#skillsPanel')deckPresets.close();cancelPendingImport();if(openPanelId==='#skillsPanel'&&id!=='#skillsPanel'&&bindingLayout&&!bindingLayout.closed){loadoutDrag.cancel();bindingLayout.close();}if(!openPanelId){panelFocus=document.activeElement;panelResume=started&&!battle.paused&&!battle.outcome;}for(const other of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel','#campaignPanel','#expeditionPanel','#controlsPanel','#skirmishPanel','#battleReportPanel'])if(other!==id)$(other)?.classList.add('hidden');$(id).classList.remove('hidden');openPanelId=id;pause(true);syncPause();focusPanel(id);}else{if(id==='#skillsPanel'&&bindingLayout&&!bindingLayout.closed)bindingLayout.close();if(id==='#savePanel')cancelPendingImport();$(id).classList.add('hidden');if(openPanelId===id){openPanelId=null;if(panelResume)pause(false);panelResume=false;syncPause();if(hubOpen){renderHub();if(hallScoutReturn?.battle===battle&&hallScoutReturn?.profile===profile){$('#hallScout').setAttribute('open','');$('#hallScoutReview').focus?.({preventScroll:true});}else $('#start').focus?.();hallScoutReturn=null;}else if(battle.paused)$('#resumeGame').focus?.();else if(panelFocus?.getClientRects?.().length&&!panelFocus.disabled)panelFocus.focus?.();else if(!$('#ending').classList.contains('hidden'))$('#replay').focus?.();else if(!$('#intro').classList.contains('hidden'))$('#start').focus?.();else canvas.focus?.();}}localCampaign?.checkpoint('loadout');}
+function panel(id,show){if(show&&!['#campaignPanel','#expeditionPanel'].includes(id))hallDirectoryReturn=null;managementFrame.captureNavigation();if(openPanelId==='#skillsPanel'&&(id!=='#skillsPanel'||!show))castleLoadout.leave();if(openPanelId==='#savePanel'&&(id!=='#savePanel'||!show))cloudAccounts?.leave();if(openPanelId==='#campaignPanel'&&(id!=='#campaignPanel'||!show))campaignAtlas.leave();if(openPanelId==='#controlsPanel'&&(id!=='#controlsPanel'||!show))controlsUI.discard();if(openPanelId==='#shopPanel'&&(id!=='#shopPanel'||!show))armoryCatalog?.leave();if(show){if(id!=='#skillsPanel')deckPresets.close();cancelPendingImport();if(openPanelId==='#skillsPanel'&&id!=='#skillsPanel'&&bindingLayout&&!bindingLayout.closed){loadoutDrag.cancel();bindingLayout.close();}if(!openPanelId){panelFocus=document.activeElement;panelResume=started&&!battle.paused&&!battle.outcome;}for(const other of ['#settingsPanel','#profilesPanel','#shopPanel','#testingPanel','#queuePanel','#savePanel','#skillsPanel','#aimPanel','#campaignPanel','#expeditionPanel','#controlsPanel','#skirmishPanel','#battleReportPanel'])if(other!==id)$(other)?.classList.add('hidden');$(id).classList.remove('hidden');openPanelId=id;pause(true);syncPause();focusPanel(id);}else{if(id==='#skillsPanel'&&bindingLayout&&!bindingLayout.closed)bindingLayout.close();if(id==='#savePanel')cancelPendingImport();$(id).classList.add('hidden');if(openPanelId===id){openPanelId=null;if(panelResume)pause(false);panelResume=false;syncPause();if(hubOpen){renderHub();if(['#campaignPanel','#expeditionPanel'].includes(id)&&restoreHallDirectoryReturn()){}else if(hallScoutReturn?.battle===battle&&hallScoutReturn?.profile===profile){$('#hallScout').setAttribute('open','');$('#hallScoutReview').focus?.({preventScroll:true});}else $('#start').focus?.();hallScoutReturn=null;}else if(battle.paused)$('#resumeGame').focus?.();else if(panelFocus?.getClientRects?.().length&&!panelFocus.disabled)panelFocus.focus?.();else if(!$('#ending').classList.contains('hidden'))$('#replay').focus?.();else if(!$('#intro').classList.contains('hidden'))$('#start').focus?.();else canvas.focus?.();}}localCampaign?.checkpoint('loadout');}
 function shop(){if(stressFieldOrigin){status('Synthetic supplies are fixed. Return to the playground for the Armory.');return;}if(cardPracticeOrigin){exitUnitTrial();return;}if(skirmishMode&&battle.summary){status('Prepare this seed again to spend fresh practice supplies.');return;}
  if(battle.summary?.campaignComplete){status('Choose a new campaign to use the deck');return;}
  loadoutReturnPanel=openPanelId==='#skillsPanel'?'#shopPanel':null;loadoutDrag.cancel();
@@ -804,7 +835,7 @@ for(const id of ['#openQueue','#pauseQueue'])$(id).onclick=()=>{loadoutReturnPan
 
 // One management shell. Changing workspaces never advances or resumes combat.
 function navigateManagement(route){
- closeLoadoutRefine();
+ hallDirectoryReturn=null;closeLoadoutRefine();
  if(trainingRun&&['profiles','vault'].includes(route)){status('Leave guided practice to load or save a campaign.');return;}
  const target={deck:'#shopPanel',loadout:'#skillsPanel',army:'#queuePanel',settings:'#settingsPanel',profiles:'#profilesPanel',vault:'#savePanel'}[route];
  if(route==='hall'){showHub();return;}
@@ -1043,12 +1074,12 @@ for(const id of ['#introWorkshop','#pauseWorkshop','#endingWorkshop'])$(id).oncl
 if(skirmishMode){document.title='Castledecks · Seeded Skirmish';showSkirmishWorkshop();}
 
 // Synchronous, one-shot entry only. No delayed callback can interrupt play.
-if(localSaveEntryRequested&&activeDestination==='campaign'&&!testingMode&&!demoMode&&!temporarySessionActive()&&!started&&!openPanelId){showCampaignVault();$('#localSlots').querySelector('[data-local-continue]:not(:disabled)')?.focus?.();}
+if(localSaveEntryRequested&&activeDestination==='campaign'&&!testingMode&&!demoMode&&!temporarySessionActive()&&!started&&!openPanelId){showCampaignVault();focusPendingLocalChoice();}
 
 // Deployment opts in explicitly; static/guest builds make no account requests.
 cloudAccounts=createGameCloudAccounts({document,window,enabled:window.CASTLEDECKS_ACCOUNTS===true,
  getState:()=>({profiles,battle,started,destination:activeDestination,temporarySession:temporarySessionActive(),loadGeneration,localReviewIntent:localCampaign.reviewIntent()}),
- getDecks:()=>profileDecks.get(profile),getProfileDecks:()=>profileDecks.snapshot(profiles),reviewCrownroad:text=>localCampaign.requestCheckpoint(text),
- replaceWayfarer:text=>applyCampaignText(text),reviewDecks:text=>{showSkills();deckPresets.open();$('#deckImportCode').value=text;$('#deckImportPrepare').onclick();return {staged:!$('#deckConfirm').classList.contains('hidden')};},
- openVault:()=>showCampaignVault()});
+ getDecks:()=>profileDecks.get(profile),getProfileDecks:()=>profileDecks.snapshot(profiles),reviewCrownroad:(text,_parsed,choice)=>localCampaign.restoreCheckpoint(text,choice),crownroadRestorePlan:()=>localCampaign.checkpointRestorePlan(),
+ replaceWayfarer:text=>applyCampaignText(text),reviewDecks:(text,_parsed,choice)=>deckPresets.restoreCloud(text,choice),decksRestorePlan:text=>deckPresets.cloudRestorePlan(text),
+ beginRestore:()=>cancelPendingImport(),openVault:()=>showCampaignVault()});
 if(openPanelId==='#savePanel')cloudAccounts.open();

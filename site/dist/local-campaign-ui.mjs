@@ -107,6 +107,27 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   $('introNotice').textContent=sessionOnly?'Campaign imported for this session only. Begin to restart its saved battle. Export before closing.':`Campaign opened in local slot ${session.slot}. Begin when ready; check the local-save status before closing.`;
   $('saveStatus').textContent=$('introNotice').textContent;return true;
  }
+ // Cloud loads expose their final destination choices in Saves. The selected
+ // empty slot is captured in the choice, then checked again at commit time.
+ function checkpointRestorePlan(){
+  if(!campaign()||state().temporarySession)throw new Error('Return to your campaign before loading a checkpoint.');
+  const free=freeSlot();
+  return {choices:[{id:free?`local:${free.slot}`:'local',label:free?`Load into device slot ${free.slot}`:'No empty device slot',disabled:!free},{id:'session',label:'Load for this session only'}],effect:`This replaces your current campaign session and restarts the saved battle. Export any unsaved progress first. ${free?'A device-slot load creates a new local save.':'No safely writable empty device slot is available.'} Session-only progress needs an export before closing. Existing device saves and the cloud copy stay unchanged.`};
+ }
+ function openCheckpoint(payload,{sessionOnly=false,slot=null}={}){
+  const free=freeSlot();
+  if(!sessionOnly&&(!free||slot!==null&&free.slot!==slot))throw new Error('The empty device slot changed. Review the cloud checkpoint again or choose session only.');
+  const {manager}=validateLocalPayload(payload),session=adopt(manager,{slot:sessionOnly?null:free.slot,payload});
+  if(!sessionOnly)enqueue(session,payload,'import');
+  $('introNotice').textContent=sessionOnly?'Cloud checkpoint opened for this session only. Export before closing.':`Cloud checkpoint opened in local slot ${session.slot}. Check saving has finished before closing.`;
+  return {restored:true};
+ }
+ function restoreCheckpoint(text,choice){
+  if(!campaign()||state().temporarySession)throw new Error('This session changed. Review the checkpoint again.');
+  if(choice!=='session'&&!/^local:[1-3]$/.test(choice??''))throw new Error('Choose an empty device slot or session only.');
+  const {payload}=parseLocalCheckpoint(text);
+  return openCheckpoint(JSON.parse(JSON.stringify(payload)),{sessionOnly:choice==='session',slot:choice==='session'?null:Number(choice.slice(6))});
+ }
  function requestCheckpoint(text){
   if(!campaign()||state().temporarySession)return {staged:false};
   const parsed=parseLocalCheckpoint(text),payload=JSON.parse(JSON.stringify(parsed.payload));
@@ -146,9 +167,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   else if(action.kind==='import')openNew(action.manager,'import',sessionOnly);
   else if(action.kind==='checkpoint'){
    const free=freeSlot();if(!sessionOnly&&!free){$('vaultStatus').textContent='No empty slot is available. Choose session only or cancel.';return;}
-   const {manager}=validateLocalPayload(action.payload),session=adopt(manager,{slot:sessionOnly?null:free.slot,payload:action.payload});
-   if(!sessionOnly)enqueue(session,action.payload,'import');
-   $('introNotice').textContent=sessionOnly?'Cloud checkpoint opened for this session only. Export before closing.':`Cloud checkpoint opened in local slot ${session.slot}. Check saving has finished before closing.`;
+   openCheckpoint(action.payload,{sessionOnly});
   }
   else if(action.kind==='delete'){
    const session=action.session;if(session?.slot===action.slot){session.epoch++;session.slot=null;session.decision='session';session.expected=null;session.last=null;session.error='';session.failed=false;}
@@ -164,5 +183,5 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
  $('localManage').onclick=()=>{openVault();render();};$('localSaveCurrent').onclick=saveCurrent;
  $('localConfirmAccept').onclick=()=>accept();$('localImportSession').onclick=()=>accept(true);$('localConfirmCancel').onclick=cancel;
  window.addEventListener?.('storage',event=>{if(event.key?.startsWith('castledecks:campaign:checkpoint:v1:'))render();});
- return Object.freeze({checkpoint,beforeBegin,render,cancel,requestImport,requestCheckpoint,reviewIntent:()=>intent,store,message,whenIdle:()=>queue});
+ return Object.freeze({checkpoint,beforeBegin,render,cancel,requestImport,requestCheckpoint,checkpointRestorePlan,restoreCheckpoint,reviewIntent:()=>intent,store,message,whenIdle:()=>queue});
 }

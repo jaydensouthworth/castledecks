@@ -108,3 +108,10 @@
 @media(max-height:295px) and (orientation:landscape){#expeditionPanel #expeditionRouteHost{overflow:auto}.charter-board-view{min-height:220px}.charter-inspector{min-height:205px}}
 
 #expeditionPanel.game-management>.panel-head .menu-back{min-height:44px}
+
+/* Desktop route is a composed six-field board, not a percentage graph that
+   expands indefinitely with the browser. Keep mobile's distinct projection. */
+@media(min-width:1001px) and (min-height:601px){
+ #managementFrame #expeditionPanel .charter-board-view{overflow:auto;background:radial-gradient(ellipse at center,#354137,#172025)}
+ #managementFrame #expeditionPanel .charter-map{flex:0 0 auto;width:min(100%,1200px);height:auto;min-height:0;aspect-ratio:30/11;align-self:center;margin:auto 0;border:1px solid #b49a5966;box-sizing:border-box}
+}

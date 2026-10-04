@@ -46,3 +46,11 @@
 #shopPanel .deck-composition-jobs>button{display:flex;justify-content:space-between;align-items:center;gap:7px;min-height:44px;padding:6px 7px;font:11px/1.3 system-ui,sans-serif;text-align:left;white-space:normal;border-color:#b3915748;background:#3d253342}
 #shopPanel .deck-composition-jobs b{color:#f0d095;font-size:14px}
 #shopPanel .deck-composition-job-note{margin:5px 0 12px;color:#baa88d;font:11px/1.4 system-ui,sans-serif}
+
+/* Department names own a wrapping text column; counts never steal that width. */
+#shopPanel #shopDepartmentRail{min-width:0}
+#shopPanel #shopDepartmentRail>button{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0;width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+#shopPanel #shopDepartmentRail>button>span{min-width:2ch;justify-self:end;white-space:nowrap;text-align:right}
+@media(min-width:1100px) and (min-height:621px){
+ #shopPanel #shopBrowseView:has(.deck-composition){grid-template-columns:190px minmax(0,1fr) 210px}
+}

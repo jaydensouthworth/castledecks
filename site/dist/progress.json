@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T20:49:00Z",
-  "stage": "hall-long-label-readability-repair",
-  "internal_tests_passing": 2382,
+  "updated": "2026-10-04T22:24:00Z",
+  "stage": "wayfarer-directory-return-correction",
+  "internal_tests_passing": 2513,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,14 +9,16 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build90 full affected-content native acceptance before custom-site update",
+    "Build92 native Wayfarer return correction and affected-content replay before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
     "Original-runtime comparison",
     "Independent real-provider and cloud-save acceptance beyond the player-reported first sign-in and saved slot",
     "Production recovery and operational acceptance beyond the deployment preparation checks",
-    "Structural Hall player-home and scalable campaign browsing follow-through; no future stages or PvP implied"
+    "Physical-device and future authored-content expansion remain separate; no invented stages or PvP",
+    "Visible Hall banner customization with draft preview, Apply and Cancel",
+    "Card-led Discover/shopfront refinement using real catalog prices and ownership"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
@@ -54,7 +56,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 90,
+  "build": 92,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -73,6 +75,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build89 passed2423 canonical and2431 portable/CI and native checks repaired all three severe88 content regressions. Independent native audit still blocked promotion on a legal40-character Hall deck name and clipped miniature card titles. Build90 narrowly bounds and wraps that header and gives miniature cards natural-height title bands in their own scrolling row. Engine, cloud-account and save protocols remain unchanged. Final90 gate is recorded separately; full affected native checks must pass before custom forwarding. internal_tests_passing belongs to internal_tests_build.",
-  "internal_tests_build": 86
+  "test_evidence": "Build91 passed2513 canonical and2521 portable/exact CI checks. Its integrated Hall, desktop map proportions, scout composition, Catalog rail and synthetic inline cloud-review checks passed their bounded native cases, but Wayfarer directory Back/Escape lost the visible search context, so91 was not accepted or forwarded to the custom host. Build92 narrowly preserves Wayfarer directory view, query, selection, scroll and focus through map dismissal while explicit Hall/navigation/preparation still reset appropriately. Build91 intentionally changed cloud UI/model/bridge and local/deck import callbacks to keep final load choices inline; the old progress sentence claiming all cloud-account code was unchanged was stale and is corrected here. Engine, production cloud-client protocol, upload journal and backend configuration remain unchanged. Native synthetic fixtures establish layout/interaction only, not real-provider or host persistence acceptance. Final92 gates and native results are recorded separately.",
+  "internal_tests_build": 91
 }

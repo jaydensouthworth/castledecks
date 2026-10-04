@@ -102,3 +102,9 @@
  #campaignPanel .atlas-inspect-note{display:block;margin:0 0 12px;font-size:12px;line-height:1.45;color:var(--menu-gold)}
  #campaignPanel .atlas-inspect-actions button{flex:none;min-height:44px;font-size:12px}
 }
+
+/* Keep authored cartography proportional inside the shared outer workspace.
+   Free space centers the map; smaller viewports pan instead of stretching it. */
+#managementFrame #campaignPanel .atlas-map-window{display:flex;background:radial-gradient(ellipse at center,#364035,#18211f)}
+#managementFrame #campaignPanel .atlas-map-world{flex:0 0 1200px;width:1200px;height:360px;min-height:360px;margin:auto}
+#managementFrame #campaignPanel .atlas-terrain svg{display:block;width:100%;height:auto;aspect-ratio:600/145}

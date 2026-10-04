@@ -1,3 +1,4 @@
+import {syncHallPlayerHome} from './hall-player-home.mjs';
 import {syncHallScout} from './hall-scout.mjs';
 import {hallPreparation,hallRealm,HALL_REALMS} from './command-hall-model.mjs';
 import {SKILLS} from './engine/progression.mjs';
@@ -6,7 +7,7 @@ import {cardPortrait,bindCardPortraits} from './card-portraits.mjs';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const stateByDocument=new WeakMap();
 /** All commands delegate to battle.mjs. This module owns only inspection state. */
-export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,onReviewScout,sessionIds=[],sessions=[]}) {
+export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,onInspectCharter,onReviewScout,sessionIds=[],sessions=[]}) {
  const hall=document.querySelector('#intro');if(!hall||!selected)return;
  const $=s=>document.querySelector(s);let state=stateByDocument.get(document);if(!state){state={card:null};stateByDocument.set(document,state);}
  hall.setAttribute('data-selected-destination',hallRealm(selectedDestination));hall.setAttribute('data-active-destination',activeDestination);hall.setAttribute('data-session-phase',summary?'settled':started?'paused':'ready');
@@ -20,7 +21,7 @@ export function syncCommandHall({document,selected,activeDestination,selectedDes
  const current=$('#hallCurrentBanner');if(current)current.textContent=`Preparing ${profile?.name??'your banner'} · ${HALL_REALMS[hallRealm(activeDestination)]?.label??'Practice'}`;
  const view=hallPreparation({profile,battle,destination:activeDestination,run,decks});if(!view)return;
  $('#hallBoardCaption').textContent=isCurrent?'Choose a destination, or inspect the active route.':'Browsing only · your active company is unchanged';
- $('#hallOrderTitle').textContent=view.title;$('#hallOrderRegion').textContent=`${view.region} · ${summary?'Result settled':started?'Battle paused':'Ready to prepare'}`;$('#hallOrderObjective').textContent=view.objective;$('#hallOrderAdvice').textContent=view.advice;
+ $('#hallOrderTitle').textContent=view.title;$('#hallOrderRegion').textContent=`${view.region} · ${activeDestination==='campaign'?`Battle ${battle.level} of 30`:activeDestination==='expedition'?`Leg ${run?.current.leg??1} of 4`:`Battle ${battle.level}`} · ${summary?'Result settled':started?'Battle paused':'Ready to prepare'}`;$('#hallOrderObjective').textContent=view.objective;$('#hallOrderAdvice').textContent=view.advice;
  $('#hallThreats').innerHTML=view.threats.slice(0,4).map(t=>`<span>${escape(t.name)}${t.count!==null?` <b>${t.count}</b>`:''}</span>`).join('')||'<span>Inspect the field for enemy intelligence</span>';
  syncHallScout({document,profile,battle,threats:view.threats,onReview:onReviewScout,readOnly:activeDestination==='skirmish'&&!!summary||!!summary?.campaignComplete});
  $('#hallProgress').innerHTML=view.progress?view.progress.regions.map(r=>`<button type="button" data-hall-region="${r.first}" class="${r.state}" aria-label="Inspect ${escape(r.name)}, ${r.cleared} of ${r.total} fields ${view.progress.assisted?'reached':'cleared'}"><i aria-hidden="true"></i><span>${escape(r.name)}</span><b>${r.cleared}/${r.total}</b></button>`).join(''):run?Array.from({length:4},(_,i)=>`<span class="hall-leg ${i<run.state.cleared?'complete':''}"><i>${i+1}</i>${i<run.state.cleared?'Won':i===run.state.cleared?'Current':'Ahead'}</span>`).join(''):'<span class="hall-practice-seal">Practice session · campaign rewards stay separate</span>';
@@ -38,9 +39,12 @@ export function syncCommandHall({document,selected,activeDestination,selectedDes
  $('#hallArmyStatus').textContent=`${view.contracts.length} contracts · ${view.automatic} Auto · ${view.reserve} reserve`;
  $('#hallArmyField').textContent=started?`${view.fieldCount}/${view.fieldCap} field slots · ${view.waiting} waiting`:`${view.fieldCap} field slots · recruitment begins in battle`;
  $('#hallCompanion').textContent=view.companion?`Companion: ${view.companion}`:'Companion: none selected';
- $('#hallReadiness').textContent=!view.hasAttack?'No bow ability equipped. Open Loadout before departing.':started&&!summary?'Your field is paused. Review orders, then resume.':`${view.arrows.length} bow ${view.arrows.length===1?'ability':'abilities'} ready · ${view.contracts.length} army contracts`;
+ $('#hallReadiness').textContent=!isCurrent?`${profile.name}’s active company stays in this tab while you browse.`:!view.hasAttack?'No bow ability equipped. Open Loadout before departing.':started&&!summary?'Your field is paused. Review orders, then resume.':`${view.arrows.length} bow ${view.arrows.length===1?'ability':'abilities'} ready · ${view.contracts.length} army contracts`;
  $('#hallPrepTest').onclick=()=>{const button=destinations.querySelector('[data-hub-destination="training"]');button?.click();$('#start').focus();};
  hall.onkeydown=event=>{if(event.key==='Escape'&&state.card){$('#hallCloseCard').click();event.stopPropagation?.();event.preventDefault?.();}};
+ $('#hallReturnCurrent').classList.toggle('hidden',isCurrent);
+ syncHallPlayerHome({document,state,activeDestination,selectedDestination,profile,battle,run,sessions,view,onInspectCampaign,onInspectCharter});
  if(state.destination&&state.destination!==selectedDestination)$('#start').focus?.();state.destination=selectedDestination;
- $('#hallReturnCurrent').classList.toggle('hidden',isCurrent);$('#hallReturnCurrent').onclick=()=>destinations.querySelector(`[data-hub-destination="${activeDestination}"]`)?.click();
 }
+
+export function resetCommandHallView(document){const state=stateByDocument.get(document);if(state)state.returnHome=true;}
