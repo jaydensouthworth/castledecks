@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T02:54:37.665361+00:00",
-  "stage": "tactical-card-jobs-and-clearer-muster",
-  "internal_tests_passing": 1981,
+  "updated": "2026-10-04T03:35:27.129471+00:00",
+  "stage": "tactical-card-jobs-and-visible-deployment-costs",
+  "internal_tests_passing": 1987,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of tactical card discovery, levy pennants and dormant account mount",
+    "Native acceptance of compact Build deployment-cost visibility correction",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -43,7 +43,7 @@
     "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 69,
+  "build": 70,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",

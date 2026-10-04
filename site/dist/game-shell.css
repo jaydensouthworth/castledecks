@@ -140,6 +140,13 @@
  #skillsPanel.game-management .loadout-card-select strong{grid-column:2;grid-row:2;font-size:17px;line-height:18px;min-height:18px;text-align:left}
  #skillsPanel.game-management .loadout-card-binding{grid-column:2;grid-row:3;min-height:12px;font-size:10px;line-height:12px;padding:0}
  #skillsPanel.game-management .loadout-card-facts{display:none}
+ /* A compact unit card keeps only its actual deployment price. The general
+    facts stay collapsed; no extra data rows are added to bow cards. */
+ #skillsPanel.game-management .loadout-card-purpose{grid-column:1/-1;grid-row:4;min-height:0;text-align:left}
+ #skillsPanel.game-management .loadout-card-facts.loadout-unit-deployment{display:block;grid-column:1/-1;grid-row:5;min-width:0;font:11px/1.35 system-ui,sans-serif;text-align:left}
+ #skillsPanel.game-management .loadout-unit-deployment>span:first-child{display:none}
+ #skillsPanel.game-management .loadout-unit-deployment>span:last-child{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 5px;padding:2px 0;border:0;background:none}
+ #skillsPanel.game-management .loadout-unit-deployment>span:last-child small{display:inline;margin:0;font:inherit;letter-spacing:0;text-transform:none}
  #skillsPanel.game-management .loadout-card-tools>button,#skillsPanel.game-management .loadout-card-tools .ability-drag-handle{height:44px;min-height:44px}
 }
 
