@@ -128,6 +128,8 @@ Portrait thumb controls follow measured arsenal height through the presentation-
 
 Portrait two-line card labels must not flex-shrink. Preserve the 48px target budget: 20px icon, two 12px line boxes with 10px type, zero gap, and 4px combined vertical padding/border. Selected and unselected borders need matching inner budgets. Cooldown overlays retain their own 14px type and 24px height. Check actual long-label rectangles and zoom in the native browser; CSS arithmetic and source checks are not layout proof.
 
+Scout preparation is a read-only bridge from the actual starting roster to shared atlas advice and exact card inspection. Preserve battle-identity-scoped selection across contract trials, invalidate it for new fields, and retain browsed destination and return focus. Equipped, reserve and unowned status must use real ownership and bindings. Inspection must never buy, equip, arm placement or start a field. Keep the disclosure closed by default inside the orders scroll and verify native wrapping, reachability and inspector/cart/trial return at phone proportions.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

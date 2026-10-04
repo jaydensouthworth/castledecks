@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T14:35:47.147171+00:00",
-  "stage": "portrait-label-containment",
-  "internal_tests_passing": 2350,
+  "updated": "2026-10-04T15:19:02.036914+00:00",
+  "stage": "scout-preparation",
+  "internal_tests_passing": 2358,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 83 exact merged automated gate and native compact-label acceptance",
+    "Build84 exact merged automated gate and native scout preparation acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -49,10 +49,11 @@
     "Build77 actual supplied midgame with no hero inputs reached natural home-flag defeat matching hero380/keep10270/gold790/reserve30/queue16; Pause/report/resume and fresh playground return verified. Exact acquisition/tick remains automated evidence.",
     "Build78 contextual Build comparison at360/412portrait,740/915landscape,1280desktop: reserve replacement, equipped swap, explicit arming then commit, Escape/focus, numeric disclosure, native drag and original arrangement restoration.",
     "Build79 actual live Frontline/Support orders, role-specific world markers and troop cohorts, current-state readout, native keyboard focus/Tab-R, immediate receipt clearing, paused Army edits, real aiming and clean assisted-session return across360/390portrait and740/915landscape.",
-    "Build81 actual-host Inspector and disclosure diagnostic correction: exposed controls count, inert and closed content excluded; genuine live HUD warnings remain."
+    "Build81 actual-host Inspector and disclosure diagnostic correction: exposed controls count, inert and closed content excluded; genuine live HUD warnings remain.",
+    "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 83,
+  "build": 84,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -71,6 +72,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted81 canonical2350 and exact portable CI2358 passed with native diagnostic acceptance. Published82 canonical2357 and exact portable CI2365 passed; native portrait area/zone/aim improvement verified but a two-line label needed containment correction before final acceptance. Build83 corrects portrait card inner spacing only plus metadata; exact merged83 and native long-label acceptance remain pending. internal_tests_passing belongs to internal_tests_build. Engine modules and diagnostic thresholds unchanged; landscape placement unchanged.",
-  "internal_tests_build": 81
+  "test_evidence": "Accepted83 canonical2358 and exact portable CI2366 passed; native portrait label containment accepted. Isolated scout-preparation candidate2365 passed, with7 focused regressions, before canonical metadata integration. Build84 adds read-only full-roster scout inspection and explicit exact-card review with preserved navigation. Exact canonical84 and native acceptance remain pending. internal_tests_passing belongs to internal_tests_build. All40 engine modules unchanged.",
+  "internal_tests_build": 83
 }

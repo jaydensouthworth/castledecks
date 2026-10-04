@@ -63,3 +63,14 @@
  .command-hall .hall-utility>button,.command-hall .hub-controls>summary{min-height:36px}
  .command-hall .local-hub-choices{max-height:90px;margin:3px 0}
 }
+
+/* Progressive field intelligence remains in the orders scroll, never the HUD. */
+.command-hall .hall-scout{margin:10px 0;border-top:1px solid #bda26a55;border-bottom:1px solid #bda26a55;padding:7px 0}
+.command-hall .hall-scout summary{min-height:44px;display:list-item;align-content:center;cursor:pointer;font-size:14px;color:#eed4a0}
+.command-hall .hall-scout p{font-size:14px;line-height:1.5;margin:9px 0}
+.command-hall .hall-scout .hall-scout-basis{font-size:12px;color:#c1b8a6}
+.command-hall .hall-scout h4{font-size:17px;margin:12px 0 6px;color:#f4dfb6}
+.command-hall .hall-scout-roster{display:flex;flex-wrap:wrap;gap:6px}
+.command-hall .hall-scout-roster button{min-height:44px;font-size:14px;padding:8px 10px;white-space:normal;text-align:left}
+.command-hall .hall-scout-roster button[aria-pressed="true"]{border-color:#eac682;background:#564326}
+.command-hall #hallScoutReview{min-height:44px;font-size:14px;white-space:normal;width:100%}

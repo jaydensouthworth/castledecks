@@ -1,3 +1,4 @@
+import {syncHallScout} from './hall-scout.mjs';
 import {hallPreparation,hallRealm,HALL_REALMS} from './command-hall-model.mjs';
 import {SKILLS} from './engine/progression.mjs';
 import {skillIcon} from './skill-icons.mjs';
@@ -5,7 +6,7 @@ import {cardPortrait,bindCardPortraits} from './card-portraits.mjs';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const stateByDocument=new WeakMap();
 /** All commands delegate to battle.mjs. This module owns only inspection state. */
-export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,sessionIds=[],sessions=[]}) {
+export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,onReviewScout,sessionIds=[],sessions=[]}) {
  const hall=document.querySelector('#intro');if(!hall||!selected)return;
  const $=s=>document.querySelector(s);let state=stateByDocument.get(document);if(!state){state={card:null};stateByDocument.set(document,state);}
  hall.setAttribute('data-selected-destination',hallRealm(selectedDestination));hall.setAttribute('data-active-destination',activeDestination);hall.setAttribute('data-session-phase',summary?'settled':started?'paused':'ready');
@@ -21,6 +22,7 @@ export function syncCommandHall({document,selected,activeDestination,selectedDes
  $('#hallBoardCaption').textContent=isCurrent?'Choose a destination, or inspect the active route.':'Browsing only · your active company is unchanged';
  $('#hallOrderTitle').textContent=view.title;$('#hallOrderRegion').textContent=`${view.region} · ${summary?'Result settled':started?'Battle paused':'Ready to prepare'}`;$('#hallOrderObjective').textContent=view.objective;$('#hallOrderAdvice').textContent=view.advice;
  $('#hallThreats').innerHTML=view.threats.slice(0,4).map(t=>`<span>${escape(t.name)}${t.count!==null?` <b>${t.count}</b>`:''}</span>`).join('')||'<span>Inspect the field for enemy intelligence</span>';
+ syncHallScout({document,profile,battle,threats:view.threats,onReview:onReviewScout,readOnly:activeDestination==='skirmish'&&!!summary||!!summary?.campaignComplete});
  $('#hallProgress').innerHTML=view.progress?view.progress.regions.map(r=>`<button type="button" data-hall-region="${r.first}" class="${r.state}" aria-label="Inspect ${escape(r.name)}, ${r.cleared} of ${r.total} fields ${view.progress.assisted?'reached':'cleared'}"><i aria-hidden="true"></i><span>${escape(r.name)}</span><b>${r.cleared}/${r.total}</b></button>`).join(''):run?Array.from({length:4},(_,i)=>`<span class="hall-leg ${i<run.state.cleared?'complete':''}"><i>${i+1}</i>${i<run.state.cleared?'Won':i===run.state.cleared?'Current':'Ahead'}</span>`).join(''):'<span class="hall-practice-seal">Practice session · campaign rewards stay separate</span>';
  for(const button of $('#hallProgress').querySelectorAll('[data-hall-region]'))button.onclick=()=>onInspectCampaign?.(Number(button.getAttribute('data-hall-region')));
  $('#hallDeckName').textContent=view.deckName;$('#hallDeckCount').textContent=`${view.equipped.length}/30 equipped · ${view.savedDecks} saved ${view.savedDecks===1?'deck':'decks'} · ${summary?'Next: ':''}${view.castle}`;
