@@ -15,3 +15,8 @@
 @media(max-height:600px) and (orientation:landscape){#skirmishPanel{--skirmish-panel-gap:10px}}
 @media(orientation:portrait){#skirmishPanel{--skirmish-panel-gap:12px}}
 
+
+/* Pair workshop controls with a readable field preview on wide desktops. */
+@media(min-width:1001px) and (min-height:601px){
+ #managementFrame #skirmishPanel .skirmish-workspace{width:100%;max-width:1280px;margin-inline:auto;box-sizing:border-box;grid-template-columns:300px minmax(0,1fr);gap:32px;align-items:start;padding:28px}
+}

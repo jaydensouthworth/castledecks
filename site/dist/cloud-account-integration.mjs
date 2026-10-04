@@ -10,14 +10,14 @@ import {exportDeckCode,parseDeckCode} from './deck-presets-model.mjs';
 
 /** Optional, same-origin host mount. The build defaults to off. Health discovery
  * occurs only when the opted-in player opens Saves; failures preserve guest play. */
-export function createGameCloudAccounts({document,window,enabled=false,getState,getDecks,getProfileDecks,reviewCrownroad,replaceWayfarer,reviewDecks,openVault}){
+export function createGameCloudAccounts({document,window,enabled=false,getState,getDecks,getProfileDecks,reviewCrownroad,replaceWayfarer,reviewDecks,crownroadRestorePlan,decksRestorePlan,beginRestore,openVault}){
  const root=document.querySelector('#cloudAccounts'),entry=document.querySelector('#openCloudAccounts');
  root.hidden=true;entry.hidden=true;
- if(enabled!==true)return Object.freeze({open(){},leave(){},sync(){}});
+ if(enabled!==true)return Object.freeze({open(){},leave(){},sync(){},cancelReview(){}});
  entry.hidden=false;entry.textContent='Account & cloud saves';entry.onclick=()=>openVault();
  let model=null,panel=null,attempt=0,pending=false,open=false,notice=false,lastKinds='',cacheKey='',cacheDocument='';
  const codecs=createGameSaveCodecs({parseLocalCheckpoint,restoreExpeditions,parseDeckCode});
- const bridge=createCloudGameBridge({getState,validateDocument:codecs.validate,reviewCrownroad,replaceWayfarer,reviewDecks,captureDocument(kind){
+ const bridge=createCloudGameBridge({getState,validateDocument:codecs.validate,reviewCrownroad,replaceWayfarer,reviewDecks,beginRestore,restorePlan:(kind,text)=>kind==='crownroad'?crownroadRestorePlan?.():kind==='decks'?decksRestorePlan?.(text):null,captureDocument(kind){
   if(kind==='wayfarer')return getState().profiles.exportBundle();
   if(kind==='decks')return exportDeckCode(getDecks());
   const payload=snapshotCampaign({...getState(),deckPresets:getProfileDecks()},'ready');if(!payload)throw new Error('Finish this field before using cloud checkpoints');
@@ -44,5 +44,5 @@ export function createGameCloudAccounts({document,window,enabled=false,getState,
   }catch{/* Static hosting and offline operation remain usable. */if(stamp===attempt&&open)showNotice('Cloud saves are unavailable right now. Your device saves and local play still work.');}finally{clearTimeout(timer);if(stamp===attempt)pending=false;}
  }
  sync();
- return Object.freeze({open:start,leave(){open=false;attempt++;pending=false;panel?.leave();sync();},sync});
+ return Object.freeze({open:start,cancelReview(){model?.cancelReview();},leave(){open=false;attempt++;pending=false;panel?.leave();sync();},sync});
 }

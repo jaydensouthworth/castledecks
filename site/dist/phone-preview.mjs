@@ -1,14 +1,14 @@
 import {clipRect,measureOcclusion,touchConflicts} from './viewport-metrics.mjs';
 import {paintedVisible,interactionVisible} from './viewport-visibility.mjs';
 const $=id=>document.getElementById(id),frame=$('gameFrame'),device=$('device'),stage=$('previewStage'),box=$('scaledBox'),svg=$('inspection');
-let width=915,height=360,lastSignature='',scale=1;
+let width=915,height=360,lastSignature='',scale=1,previewKind='game';
 const svgNS='http://www.w3.org/2000/svg';
 function drawRect(rect,color,fill='none',dash=''){
  const node=document.createElementNS(svgNS,'rect');for(const [key,value] of Object.entries({...rect,stroke:color,fill,'stroke-width':1.5,'stroke-dasharray':dash}))node.setAttribute(key,String(value));svg.append(node);
 }
 function fit(){
  const maxWidth=Math.max(240,stage.clientWidth-24),maxHeight=Math.max(300,Math.min(1000,innerHeight*.74));scale=Math.min(1,maxWidth/width,maxHeight/height);
- device.style.width=width+'px';device.style.height=height+'px';device.style.transform='scale('+scale+')';box.style.width=width*scale+'px';box.style.height=height*scale+'px';svg.setAttribute('viewBox','0 0 '+width+' '+height);$('scaleMeasure').textContent=Math.round(scale*100)+'%';
+ device.style.width=width+'px';device.style.height=height+'px';device.style.transform='scale('+scale+')';box.style.width=width*scale+'px';box.style.height=height*scale+'px';svg.setAttribute('viewBox','0 0 '+width+' '+height);$('scaleMeasure').textContent=Math.round(scale*100)+'%';if(previewKind==='synthetic')showSyntheticMetrics();
 }
 function setSize(nextWidth,nextHeight,rotation=false){
  const valid=value=>Number.isFinite(value)&&value>=240&&value<=2000;
@@ -18,7 +18,14 @@ function setSize(nextWidth,nextHeight,rotation=false){
  requestAnimationFrame(inspect);
 }
 function record(node){const r=node.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,label:node.getAttribute('aria-label')||node.id||node.textContent.trim().slice(0,40)||node.tagName};}
+function showSyntheticMetrics(){
+ for(const id of ['hudMeasure','zoneMeasure','touchMeasure'])$(id).textContent='Not measured';
+ $('status').textContent='Synthetic cloud review · '+width+' × '+height+' CSS pixels · no network or persistent saves';
+ $('details').textContent='Synthetic fixture only. Inspect the real review layout and controls; combat HUD metrics, collision outlines, and cutout simulation are unavailable here. Reset and Try midgame return to the game.';
+ document.querySelector('.measurement').dataset.state='synthetic';svg.replaceChildren();lastSignature='';
+}
 function inspect(){
+ if(previewKind==='synthetic'){showSyntheticMetrics();return;}
  let doc,win;try{doc=frame.contentDocument;win=frame.contentWindow;if(!doc?.querySelector('#battlefield'))throw new Error('loading');}catch{$('status').textContent='Waiting for the game…';return;}
  const viewport={width:win.innerWidth,height:win.innerHeight};
  const modal=[...doc.querySelectorAll('.panel,.veil,[data-hud-layer="modal"]')].filter(node=>interactionVisible(node,win)).sort((a,b)=>(Number(win.getComputedStyle(b).zIndex)||0)-(Number(win.getComputedStyle(a).zIndex)||0))[0];
@@ -51,15 +58,16 @@ function inspect(){
  const signature=JSON.stringify({rects,zone:metrics.zone,modal:!!modal,cutout,zones:$('showZones').checked,outlines:$('showSurfaces').checked});
  if(signature!==lastSignature){lastSignature=signature;svg.replaceChildren();if(!modal&&$('showZones').checked)drawRect(metrics.zone,'#8fe1bc','#43c89309','6 5');if(!modal&&$('showSurfaces').checked)for(const r of metrics.rects)drawRect(r,'#ffd088','#e2a94213');if(cutout){drawRect({x:0,y:0,width:cutout,height:viewport.height},'#ef9693','#7c223b99');drawRect({x:viewport.width-cutout,y:0,width:cutout,height:viewport.height},'#ef9693','#7c223b99');}}
 }
-function cutouts(){try{const root=frame.contentDocument.documentElement,side=$('simulateWideCutout').checked?44:$('simulateCutout').checked?24:0;for(const edge of ['left','right'])root.style.setProperty('--preview-safe-'+edge,side+'px');root.style.setProperty('--preview-safe-bottom',$('simulateBottomInset').checked?'24px':'0px');lastSignature='';inspect();}catch{}}
+function cutouts(){if(previewKind==='synthetic'){showSyntheticMetrics();return;}try{const root=frame.contentDocument.documentElement,side=$('simulateWideCutout').checked?44:$('simulateCutout').checked?24:0;for(const edge of ['left','right'])root.style.setProperty('--preview-safe-'+edge,side+'px');root.style.setProperty('--preview-safe-bottom',$('simulateBottomInset').checked?'24px':'0px');lastSignature='';inspect();}catch{}}
 $('preset').addEventListener('change',()=>{if($('preset').value==='custom')return;const [w,h]=$('preset').value.split(',').map(Number);setSize(w,h);});
 $('applySize').addEventListener('click',()=>{$('preset').value='custom';setSize(Number($('viewWidth').value),Number($('viewHeight').value));});
 $('rotate').addEventListener('click',()=>{$('preset').value='custom';setSize(height,width,true);});
-$('reloadPreview').addEventListener('click',()=>{frame.src='./battle?mode=test';lastSignature='';});
-$('midgamePreview').addEventListener('click',()=>{frame.src='./battle?mode=demo';lastSignature='';});
-window.addEventListener('message',event=>{if(event.source===frame.contentWindow&&event.origin===location.origin&&event.data?.type==='bowmaster-preview-exit-demo'){frame.src='./battle?mode=test';lastSignature='';}});
+$('reloadPreview').addEventListener('click',()=>{previewKind='game';frame.title='Castledecks game viewport preview';frame.src='./battle?mode=test';lastSignature='';});
+$('midgamePreview').addEventListener('click',()=>{previewKind='game';frame.title='Castledecks game viewport preview';frame.src='./battle?mode=demo';lastSignature='';});
+$('cloudReviewPreview')?.addEventListener('click',()=>{previewKind='synthetic';frame.title='Synthetic cloud review viewport preview';frame.src='./cloud-review-lab.html';showSyntheticMetrics();});
+window.addEventListener('message',event=>{if(previewKind!=='synthetic'&&event.source===frame.contentWindow&&event.origin===location.origin&&event.data?.type==='bowmaster-preview-exit-demo'){frame.src='./battle?mode=test';lastSignature='';}});
 for(const id of ['showZones','showSurfaces'])$(id).addEventListener('change',inspect);
-function collision(){frame.contentWindow?.postMessage({type:'bowmaster-preview-collision',enabled:$('showCollision').checked},location.origin);}
+function collision(){if(previewKind==='synthetic')return;frame.contentWindow?.postMessage({type:'bowmaster-preview-collision',enabled:$('showCollision').checked},location.origin);}
 $('showCollision').addEventListener('change',collision);
 for(const id of ['simulateCutout','simulateWideCutout','simulateBottomInset'])$(id).addEventListener('change',cutouts);$('refreshMetrics').addEventListener('click',inspect);frame.addEventListener('load',()=>{cutouts();collision();inspect();});
 window.addEventListener('resize',fit);setSize(width,height);setInterval(inspect,500);

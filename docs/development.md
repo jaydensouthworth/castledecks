@@ -142,6 +142,12 @@ Army content rows must size to their actual cards. In short-landscape Build, res
 
 Hall deck headers must wrap legal 40-character names inside their own grid without pushing counts or actions out of bounds. Miniature cards own a horizontal scrolling row and natural-height, fully visible title bands. Recheck short and long names, populated rows, inspection focus return and the previously repaired Army, Build and Skirmish surfaces in the native browser; source assertions are not layout acceptance.
 
+The integrated Hall must use the active player's actual mission, equipped deck, army and campaign state. Campaign browsing stays read-only until an explicit preparation action. Preserve directory query, page, selection, scroll and focus through Map inspection; retain deliberate resets on profile/session/preparation changes. Synthetic scale tests must not imply authored stages. Pending save-choice gates must focus a usable choice before departure.
+
+Preserve Crownroad's authored 1200 by 360 proportions, responsive panning and centering. Desktop Scout, Charter and Skirmish interiors should compose their real content inside the shared frame. Catalog department names must wrap without losing the count column. Native acceptance must inspect populated content and full actions at desktop, portrait and landscape sizes.
+
+Cloud-load review stays inline in Saves with captured-source and current identity/revision checks. New navigation/import intent and cancellation invalidate old final handlers; repeated clicks dispatch one guarded final operation. Preserve empty-slot safety, session-only choices, charter/deck semantics, pending writes and uncertain-write reconciliation. The developer Cloud Review Lab is visibly synthetic, network-blocked and storage-free with inert authentication/upload controls. Test it for layout and lifecycle only; it cannot certify real provider or cloud-save behavior.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

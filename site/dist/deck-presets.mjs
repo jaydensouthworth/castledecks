@@ -64,10 +64,29 @@ export function createDeckPresetsUI({controlLabel=defaultControlLabel,root,getSt
  $('deckApply').onclick=()=>safe(()=>{const deck=selectedDeck();if(!deck)return;const result=onApply(deck);if(result.ok){render();status(`“${deck.name}” applied to all three bars, companion and castle slots. Ranks, cooldowns, gold and ownership are unchanged.`);}else{render();status(result.blockers?.join(' ')||'Pause the battle and review this deck before applying.');}});
  $('deckShowExport').onclick=()=>safe(()=>{$('deckExportCode').value=exportDeckCode(getDecks());$('deckExportArea').classList.remove('hidden');$('deckExportCode').focus?.();$('deckExportCode').select?.();status('Copy and keep this deck code. It contains arrangements only, not campaign progress.');});
  $('deckSelectExport').onclick=()=>{$('deckExportCode').focus?.();$('deckExportCode').select?.();};
+ // The cloud review stays in Saves and uses the same validated merge rules.
+ // No deck is applied, bought or equipped by this explicit add operation.
+ function cloudImport(text){
+  if(getState().blocked)throw new Error('Return from the synthetic field before using saved decks.');
+  const incoming=parseDeckCode(text),current=getDecks(),merged=mergeDeckLibraries(current,incoming);
+  if(!incoming.length)throw new Error('This cloud copy contains no saved decks. Nothing changed.');
+  const added=merged.slice(current.length),missing=[...new Set(added.flatMap(deck=>previewDeck(deck,getState().profile,context()).missing))];
+  return {merged,added,missing};
+ }
+ function cloudRestorePlan(text){
+  const {added,missing}=cloudImport(text);
+  return {choices:[{id:'add',label:`Add ${added.length} saved deck${added.length===1?'':'s'}`}],effect:`Add to ${getState().profile.name||'the current profile'}: ${added.map(deck=>deck.name).join(', ')}. Existing decks stay; matching names receive a number. ${missing.length?`Missing cards: ${missing.map(name).join(', ')}. These decks cannot be applied until every card is owned.`:'All referenced cards are owned.'} No cards are unlocked or equipped. The cloud copy stays unchanged.`};
+ }
+ function restoreCloud(text,choice){
+  if(choice!=='add')throw new Error('Choose Add saved decks before importing.');
+  const {merged}=cloudImport(text);
+  change(merged,'Cloud decks added. Choose a deck in the workshop to compare and apply it.');
+  return {restored:true};
+ }
  $('deckImportPrepare').onclick=()=>safe(()=>{cancelPending();const incoming=parseDeckCode($('deckImportCode').value),current=getDecks(),merged=mergeDeckLibraries(current,incoming);if(!incoming.length){status('This code contains no decks. Nothing changed.');return;}const added=merged.slice(current.length),missing=[...new Set(added.flatMap(deck=>previewDeck(deck,getState().profile,context()).missing))];pending={kind:'import',profile:getState().profile,snapshot:JSON.stringify(current),source:$('deckImportCode').value,merged};$('deckConfirmText').textContent=`Add ${added.length} deck${added.length===1?'':'s'}: ${added.map(deck=>deck.name).join(', ')}? Existing decks are kept and matching names receive a number. ${missing.length?`Missing cards: ${missing.map(name).join(', ')}. These decks cannot be applied until every card is owned.`:'All referenced cards are owned.'} Importing changes no equipped keys.`;$('deckConfirmAccept').textContent='Add imported decks';$('deckConfirm').classList.remove('hidden');$('deckConfirmCancel').focus?.();});
  $('deckImportCode').oninput=()=>{if(pending?.kind==='import')cancelPending();};
  $('deckConfirmCancel').onclick=()=>{cancelPending(true);status('Cancelled. Saved decks and equipped cards are unchanged.');};
  $('deckConfirmAccept').onclick=()=>safe(()=>{const action=pending;if(!action)return;if(action.profile!==getState().profile||action.snapshot!==JSON.stringify(getDecks())||action.kind==='import'&&action.source!==$('deckImportCode').value){cancelPending();status('This profile’s saved decks changed. Review the action again.');return;}if(action.kind==='delete'){const decks=getDecks();decks.splice(action.index,1);selected=-1;change(decks,`“${action.name}” deleted. Equipped cards are unchanged.`);$('deckNewName').focus?.();}else{const index=getDecks().length;selected=index;change(action.merged,'Imported decks added. Choose a deck to compare and apply it.');$('deckImportCode').value='';$('deckRename').value=selectedDeck()?.name??'';$('deckList').querySelector(`[data-deck-index="${selected}"]`)?.focus?.();}});
  root.addEventListener('keydown',event=>{if(!opened||event.key!=='Tab')return;const items=modalFocusCandidates($('deckPresets'));if(!items.length)return;const i=items.indexOf(root.ownerDocument.activeElement);if(event.shiftKey&&i<=0){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(i<0||i===items.length-1)){items[0].focus();event.preventDefault();}event.stopPropagation();});
- return {render,open,back(){if(!opened)return false;if(pending){cancelPending(true);status('Cancelled. Nothing changed.');return true;}return close(true);},close};
+ return {render,open,cloudRestorePlan,restoreCloud,back(){if(!opened)return false;if(pending){cancelPending(true);status('Cancelled. Nothing changed.');return true;}return close(true);},close};
 }
