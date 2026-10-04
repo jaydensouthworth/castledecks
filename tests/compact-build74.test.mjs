@@ -5,7 +5,8 @@ import {loadGameUI} from './helpers/game-ui-harness.mjs';
 const css=readFileSync(new URL('../site/dist/game-shell.css',import.meta.url),'utf8');
 const markup=readFileSync(new URL('../site/dist/battle.html',import.meta.url),'utf8');
 const marker='/* Compact Build owns one collection scroller';
-const compact=css.slice(css.indexOf(marker));
+const nextPortrait=css.indexOf('/* Portrait Build uses',css.indexOf(marker));
+const compact=css.slice(css.indexOf(marker),nextPortrait<0?undefined:nextPortrait);
 // Source/behavior checks only. These do not claim browser-computed pixel sizes.
 test('single-scroll correction is bounded to short landscape and follows legacy shell rules',()=>{
  assert.ok(css.indexOf(marker)>css.indexOf('Retire legacy absolute resource/header placement'));
@@ -21,7 +22,7 @@ test('collection owns scrolling while complete card rows and pagination remain i
  assert.doesNotMatch(compact,/\.loadout-owned-list\{[^}]*(?:\{|;)height:\d/);
 });
 test('header resource facts remain visible, read-only and outside the collection height budget',()=>{
- assert.match(compact,/>\.loadout-resources\{position:absolute;left:110px;right:112px;top:0;display:flex;align-items:center;min-height:44px;height:44px;/);
+ assert.match(compact,/>\.loadout-resources\{position:absolute;left:110px;right:180px;top:0;display:flex;align-items:center;min-height:44px;height:44px;/);
  assert.match(compact,/\.loadout-resources\{[^}]*pointer-events:none/);
  assert.match(markup,/id="skillsResources"/);
  assert.match(compact,/\.loadout-refine-sheet\{top:49px;max-height:calc\(100% - 53px\)\}/);

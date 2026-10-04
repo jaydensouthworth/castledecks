@@ -96,6 +96,12 @@ Keep one inventory scroll owner in short landscape, with search, complete card r
 
 Verify real browser dimensions and native mouse/keyboard assignment in addition to source-cascade tests. Entire cards should be scroll-reachable with their 44-pixel controls intact, without granting ownership, spending gold or changing bindings during mere navigation. Preserve portrait/desktop rules and existing castle focus/scroll behavior.
 
+## Portrait Build rows and header clearance
+
+Compact illustrated portrait rows are scoped to Build at widths up to 620 pixels. Preserve real art, identity, rank, tactical role, binding and supplied facts; do not hide data to achieve density. Keep actual unit deployment costs and squad count, bow facts and native 44-pixel actions. Inventory owns scrolling in this scope while placement/castle scrolling stays independent. Responsive column sizing must remain safe when the pane is narrower than the nominal 260-pixel minimum.
+
+Search, paging, inspection, drag edge scrolling, keyboard placement and rotation retain their existing state callbacks and node identities. Header resource reservation must accommodate the longest current return action and allow factual wrapping without intercepting pointer input. Verify real pixels, current long labels and native interactions; source selectors alone are not clearance evidence. Catalog and desktop remain separate from this bounded presentation change.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

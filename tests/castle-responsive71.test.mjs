@@ -41,7 +41,7 @@ for(const [width,height]of [[360,640],[412,780],[620,900]])test(`portrait ${widt
  for(const castle of [false,true])for(const help of [false,true])for(const armed of [false,true]){
   const state={width,height,castle,help,armed},placement=cascade('loadout-placement',state),inventory=cascade('loadout-inventory',state),cards=cascade('loadout-owned-list',state);
   assert.equal(placement['overflow-x'],'auto',JSON.stringify(state));assert.equal(placement['overflow-y'],'auto',JSON.stringify(state));assert.equal(placement['min-height'],'0');
-  assert.equal(inventory['overflow-x'],'hidden');assert.equal(inventory['overflow-y'],'hidden');assert.equal(cards['overflow-y'],'auto');assert.equal(cards['min-height'],'0');
+  assert.equal(inventory['overflow-x'],'auto');assert.equal(inventory['overflow-y'],'auto');assert.equal(inventory['overscroll-behavior'],'contain');assert.equal(cards['overflow-y'],'visible');assert.equal(cards['min-height'],'0');
   if(castle||help)assert.equal(placement['overscroll-behavior'],'contain');
  }
 });
