@@ -1,0 +1,67 @@
+{
+  "scope": "Acquisition-only archer liveness correction; preserve committed windups and ordinary economy. Historical baseline retained for reviewed deterministic trajectory change.",
+  "policy": {
+    "id": "midgame-13-v3",
+    "level": 13,
+    "seed": 131,
+    "rank": 8,
+    "prerollTicks": 1350,
+    "continuation": "no input; ordinary paid automatic recruitment until outcome"
+  },
+  "source": {
+    "baselineCommit": "9f7e11609b9e864b81f47fbc3e5d3907797697d9",
+    "baselineRangedSHA256": "1b59186c7d3ebd3e98aba9d91ce12dde6ddec6bba5e646bdfaceceefc0af1ad5",
+    "candidateRangedSHA256": "1eb99e2801a377a51d12f3b42b693c1bfab3a6033cd6c387c5a90bb007811062"
+  },
+  "causal": {
+    "firstAcquisitionDifferenceTick": 4750,
+    "deadCarrierDeathTick": 4744,
+    "liveReplacementHP": 171,
+    "liveReplacementDeathTick": 4969,
+    "committedShotTick": 5011,
+    "committedShotDamage": 37,
+    "firstRngConsumptionDifferenceTick": 5073
+  },
+  "baseline75": {
+    "tick": 9132,
+    "outcome": "defeat",
+    "homeHP": 10291,
+    "enemyHP": 8962,
+    "heroHP": 380,
+    "heroDead": false,
+    "gold": 640,
+    "goldSpent": 860,
+    "reserve": 20,
+    "populationGiven": 90,
+    "queue": 15,
+    "victories": 0,
+    "defeats": 1,
+    "enemiesRemaining": 103,
+    "enemiesSpawned": 45,
+    "homeFlagStatus": 4,
+    "corpseAcquisitions": 16,
+    "rngDraws": 7906,
+    "traceHash": "cf475ef19e33162b5932cac61310f3cea9857c064ffdd74936b181559f44cdc0"
+  },
+  "candidate76": {
+    "tick": 9145,
+    "outcome": "defeat",
+    "homeHP": 10270,
+    "enemyHP": 9561,
+    "heroHP": 380,
+    "heroDead": false,
+    "gold": 790,
+    "goldSpent": 710,
+    "reserve": 30,
+    "populationGiven": 90,
+    "queue": 16,
+    "victories": 0,
+    "defeats": 1,
+    "enemiesRemaining": 98,
+    "enemiesSpawned": 50,
+    "homeFlagStatus": 4,
+    "corpseAcquisitions": 0,
+    "rngDraws": 7518,
+    "traceHash": "0ab54c0512aa35fc3bac6dc0cdb8ee4ca43bc4d132bcb0f47028ad5757d16084"
+  }
+}

@@ -113,7 +113,7 @@ test('paused, protected, wrong-level and already-funded/used setups fail before 
 });
 test('idle continuation can naturally lose, proving the demo is not invulnerable',()=>{
  const {battle:b}=prepared();while(!b.outcome&&b.tick<15000)b.step();
- assert.equal(b.tick,9132);assert.equal(b.outcome,'defeat');assert.equal(b.goodCastle.hp,10291);assert.equal(b.hero.dead,false);assert.equal(b.ownFlag.status,4);
+ assert.equal(b.tick,9145);assert.equal(b.outcome,'defeat');assert.equal(b.goodCastle.hp,10270);assert.equal(b.hero.dead,false);assert.equal(b.ownFlag.status,4);
  assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,1);
 });
 

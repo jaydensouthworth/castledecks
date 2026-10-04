@@ -11,6 +11,8 @@ const R=RANGED_ACTION;
 const DEAD_IMMUNITIES=['fire','ice','poison','fear','daze','regen','impact','heal','purge','convert'];
 const liveList=value=>typeof value==='function'?value():value;
 const alive=obj=>typeof obj?.hasHP==='function'?obj.hasHP():obj?.hp>0;
+// New archer acquisitions only; committed windups keep their original target.
+const archerEnemyEligible=obj=>alive(obj)&&!obj.dead&&!obj.destroyed;
 const garrisoned=obj=>typeof obj?.garrisoned==='function'?obj.garrisoned():obj?.garrisonBuilding!=null;
 const holdingFlag=obj=>typeof obj?.holdingFlag==='function'?obj.holdingFlag():!!(obj?.holdingFriendFlag||obj?.holdingEnemyFlag);
 const priest=obj=>typeof obj?.isPriest==='function'?obj.isPriest():obj?.type==='priest';
@@ -189,7 +191,7 @@ export class FlagArcher extends SpecialistTroop {
   closestFlagCarrier() {
     let selected=null,best=9999,count=0;
     for(const target of liveList(this.enemies)) {
-      if(holdingFlag(target)) {
+      if(archerEnemyEligible(target)&&holdingFlag(target)) {
         const distance=Math.abs(target.x-this.x);
         if(distance<best){selected=target;best=distance;}
         if(++count>=2)break;
@@ -248,7 +250,7 @@ export class FlagArcher extends SpecialistTroop {
     const hold=this.world.armyOrders?.supportAction(this);
     if(hold&&hold!==A.BLOCK)return this.transition(hold);
     if(this.x<50||this.x>(this.world.width??2000)-50)return this.transition(A.ADVANCE);
-    const enemy=this.closestFlagCarrier()??this.nearest(this.enemies,alive),structure=this.closestEnemyStructure();
+    const enemy=this.closestFlagCarrier()??this.nearest(this.enemies,archerEnemyEligible),structure=this.closestEnemyStructure();
     const target=enemy==null?structure:structure==null?enemy:
       Math.abs(enemy.x-this.x)<Math.abs(structure.x-this.x)?enemy:structure;
     let building;

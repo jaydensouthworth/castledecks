@@ -24,10 +24,13 @@ test('73 combined catalog has seven explicit doctrines, SK2 only Highwatch and u
  }
 });
 
-test('73 only three existing engine modules changed, with all other castle72 engine bytes still pinned',()=>{
+test('76 preserves the castle72/Causeway engine boundary except the reviewed archer acquisition guard',()=>{
  const fixture=JSON.parse(readFileSync(new URL('./fixtures/castle72-engine-boundary.json',import.meta.url))),root=new URL('../site/dist/engine/',import.meta.url);
  assert.equal(fixture.baseline,'979a33fae2af52f348465175632364dd4f0de30f');
- for(const [name,hash]of Object.entries(fixture.unchanged))assert.equal(createHash('sha256').update(readFileSync(new URL(name,root))).digest('hex'),hash,name);
+ // Historical fixture remains intact. Only new archer enemy eligibility changed;
+ // committed windups/projectiles and all other module bytes remain pinned.
+ const reviewedAcquisition76={'ranged-troop.mjs':'1eb99e2801a377a51d12f3b42b693c1bfab3a6033cd6c387c5a90bb007811062'};
+ for(const [name,hash]of Object.entries(fixture.unchanged))assert.equal(createHash('sha256').update(readFileSync(new URL(name,root))).digest('hex'),reviewedAcquisition76[name]??hash,name);
  assert.deepEqual(readdirSync(root).sort(),[...Object.keys(fixture.unchanged),...fixture.reviewed_changes,...fixture.reviewed_additions].sort());
 });
 

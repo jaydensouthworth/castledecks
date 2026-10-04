@@ -104,6 +104,8 @@ Search, paging, inspection, drag edge scrolling, keyboard placement and rotation
 
 Portrait Build tracks must share the actual available flex height rather than forcing positive minimums beyond the footer. The final scoped rule uses zero-minimum fractional tracks (.65fr/1fr), with placement and inventory keeping independent scroll ownership. Verify the complete Previous/Next rectangles at maximum collection scroll in the native browser, including safe-bottom insets; a button present in the DOM or partly clickable is not a full-target pass.
 
+Archer liveness checks apply when acquiring a new target on either team. Do not generalize the caller prefilter for newer recruit skills to regular archers: they receive unfiltered opponents too. New acquisition excludes dead/destroyed targets, but existing windups and launched shots intentionally keep their committed target. Review deterministic trajectory and resource changes with causal receipts; do not describe unchanged prices or cooldowns as proof of balance neutrality.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.
