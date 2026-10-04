@@ -26,7 +26,7 @@ export function createTrainingCoach({document,controlLabel,getController,canAct,
   for(const id of ['trainingAssist','trainingNext','trainingSkip','trainingRestart'])$(id).disabled=!live;
   $('trainingAssist').textContent='Aim help: fire at target';
   $('trainingLoadout').textContent=run.reviewedLoadout?'Review loadout again':'Review my loadout';
-  $('trainingExit').textContent=lesson?'Leave drills':run.reviewedLoadout?'Finish practice':'Back to hall';
+  $('trainingExit').textContent=lesson?'Leave drills':run.reviewedLoadout?'Finish practice':'Back to lobby';
   // Only a newly presented drill returns to its title. Pause, live feedback,
   // coach disclosure and same-drill menu returns keep the player's scroll.
   if(changed)$('trainingCoach').scrollTop=0;
