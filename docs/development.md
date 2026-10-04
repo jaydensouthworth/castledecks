@@ -110,6 +110,8 @@ The optional owned-card Inspector comparison reads current visible slots and wra
 
 The live company picker issues complete named commands on native SELECT change. Preserve native arrow/Enter/Escape semantics and keep focus in the picker until the player exits; global battle shortcuts remain blocked while it owns focus. Current-state labels must read the real order snapshot, not retain last-command text. Revalidate shown and interaction battle identities before dispatch. The separate all-ground shortcut always targets both companies. An issued-order toast owns only its matching displayed text, so external orders/outcomes clear stale receipts without hiding unrelated warnings. Keep engine rules and the existing 44-pixel input slot unchanged.
 
+Keep optional Build comparisons decision-first: consequence and equipped-job changes precede both actual current ranks and squad costs. Auto and reserve consequences remain outside collapsed detail. Preserve real compact art, metric scopes and all full tactics in native disclosures. Ordinary inspection remains expanded, and No comparison restores it. Do not rebuild unchanged comparison markup on harmless renders: preserve open details and focused summary identity. Stale reviews cannot arm destinations. Keep Select separate from actual placement, retain the previous arm/search/scroll on cancellation, and verify decision and action reachability in the native browser rather than inferring layout from DOM tests.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

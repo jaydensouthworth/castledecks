@@ -12,7 +12,7 @@ const labels={frontline:'Frontline',ranged:'Ranged',support:'Support',siege:'Sie
 export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel,records,getState,icon,bindingLabel,onSelect,onMove,onBar}){
  const releasePortraits=bindCardPortraits(root);
  const $=selector=>root.querySelector(selector),doc=root.ownerDocument,model=new LoadoutCollection(records);
- let lastLayout=null,inspectedId=null,inspectReturn=null,gridSignature='',profileIdentity=null,selectedDestination=null,comparisonPlan=null,comparisonStale=false,inspectionVersion=0;
+ let lastLayout=null,inspectedId=null,inspectReturn=null,gridSignature='',profileIdentity=null,selectedDestination=null,comparisonPlan=null,comparisonStale=false,inspectionVersion=0,comparisonMarkupValue=null;
  const name=id=>model.byId.get(id)?.name??id;
  const options=(items,active)=>items.map(([id,label])=>`<option value="${esc(id)}" ${id===active?'selected':''}>${esc(label)}</option>`).join('');
  function view(patch,focusId){
@@ -36,6 +36,8 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
   $('#selectedSkillIcon').innerHTML=cardPortrait(item.id,icon(item.id));$('#selectedSkillName').textContent=item.name;$('#selectedSkillDescription').textContent=item.description;
   $('#selectedSkillDetails').textContent=`${identity.tactics?identity.headline:identity.label} · Rank ${wrapper.skill.rank} · ${bindingLabel(wrapper.binding)}`;
   $('#loadoutInspectorFacts').innerHTML=insights.metrics.map(metric=>`<div><dt>${esc(metric.label)}</dt><dd>${esc(formatMetric(metric))}</dd><small>${esc(metric.scope)}</small></div>`).join('');
+  $('#loadoutInspectorSourceSummary').textContent=`Full ${item.name} stats and notes`;
+  $('#loadoutInspectorSourceDescription').textContent=item.description;
   $('#loadoutInspectorNotes').innerHTML=[...(identity.tactics?[identity.tactics.strength,'Know the tradeoff: '+identity.tactics.caution]:[]),...insights.notes,...insights.tactics].map(text=>`<p>${esc(text)}</p>`).join('');
   renderComparison();const actionVersion=inspectionVersion;
   $('#loadoutInspectorSelect').onclick=()=>{
@@ -58,7 +60,16 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
   picker.disabled=!targets.length&&!comparisonStale;
   $('#loadoutCompareNotice').textContent=comparisonStale?'Your loadout changed. Choose a card again, or choose No comparison to continue without a preview.':targets.length?'Preview only. Selecting a comparison does not move cards, buy or sell anything.':'No other equipped cards to compare. You can still select this card for placement.';
   const preview=comparisonPlan?placementComparison(model.records,state,inspectedId,comparisonPlan.destination):null;
-  $('#loadoutCompareResult').innerHTML=preview?comparisonMarkup(preview):'';
+  const inspector=$('#loadoutInspector'),sourceDetails=$('#loadoutInspectorSource'),comparing=!!preview,wasComparing=inspector.getAttribute('data-comparing')==='true';
+  inspector.setAttribute('data-comparing',String(comparing));
+  $('#loadoutInspectorSourceSummary').hidden=!comparing;$('#loadoutInspectorSourceDescription').hidden=!comparing;
+  // Ordinary inspection stays fully expanded. Entering a comparison reveals
+  // the decision first; later harmless renders preserve disclosure and focus.
+  if(!comparing)sourceDetails.setAttribute('open','');else if(!wasComparing)sourceDetails.removeAttribute('open');
+  $('#loadoutCompareNotice').classList.toggle('hidden',comparing);
+  const markup=preview?comparisonMarkup(preview):'';
+  if(markup!==comparisonMarkupValue){$('#loadoutCompareResult').innerHTML=markup;comparisonMarkupValue=markup;}
+  $('#loadoutInspectorSelect').parentElement.querySelector('p').textContent=comparing?'Select focuses this key. Tap the key or press Enter to place.':'Inspecting keeps your placement selection and collection filters.';
   $('#loadoutInspectorSelect').disabled=comparisonStale;
   $('#loadoutInspectorSelect').textContent=preview?`Select ${name(inspectedId)} for ${bindingLabel(preview.destination)}`:`Select ${name(inspectedId)} for placement`;
  }
@@ -70,11 +81,21 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
    ...preview.lost.map(job=>`Removes your last equipped provider of ${job.label}.`),
    ...preview.retained.map(job=>`${job.label} still covered by ${job.after.map(name).join(', ')}.`)
   ].join(' ')||'No verified army-job coverage changes.';
+  const jobSummary=preview.kind==='swap'||preview.kind==='unchanged'?'No equipped army jobs change.':[
+   ...preview.gained.map(job=>`Gained: ${job.label}.`),
+   ...preview.lost.map(job=>`Lost last provider: ${job.label}.`),
+   ...preview.retained.map(job=>`Retained: ${job.label} (${job.after.length} ${job.after.length===1?'provider':'providers'}).`)
+  ].join(' ')||'No verified army-job coverage changes.';
   const cards=[source,target].filter(Boolean).map(card=>`<article><strong>${esc(card.name)}</strong><span>Current rank ${card.rank} · ${esc(bindingLabel(card.binding))}</span><p>${esc(card.tactics?.subtitle??card.insights.tactics[0]??'No verified ability details')}</p>${card.tactics?`<p>${esc(card.tactics.caution)}</p>`:''}</article>`).join('');
   const metric=entry=>entry?`${formatMetric(entry)}`:'No verified value';
   const rows=preview.metrics.map(row=>`<div class="loadout-compare-metric"><dt>${esc(row.label)}</dt><dd><span>${esc(source.name)}</span><b>${esc(metric(row.source))}</b>${row.source?`<small>${esc(row.source.scope)}</small>`:''}</dd><dd><span>${esc(target.name)}</span><b>${esc(metric(row.target))}</b>${row.target?`<small>${esc(row.target.scope)}</small>`:''}</dd>${row.comparable&&row.delta!==0?`<dd class="loadout-compare-difference">Difference at this key: ${row.delta>0?'+':''}${esc(Number(row.delta).toLocaleString(undefined,{maximumFractionDigits:2}))} ${esc(row.source.unit)} with ${esc(source.name)}.</dd>`:''}</div>`).join('');
-  const orders=[source,target].filter(card=>card?.deployment).map(card=>{const d=card.deployment,remaining=preview.after.includes(card.id);return !remaining?`${card.name} in reserve will not reload or Auto-recruit. Troops already deployed stay on the field.`:d.automatic?`${card.name} Auto is on. After Start or Resume, it can repeatedly spend ${d.gold} gold and ${d.reserve} reserve per ${d.units}-unit squad when ready and resources allow.`:`${card.name} Auto is off. Manual deployment costs ${d.gold} gold and ${d.reserve} reserve per ${d.units}-unit squad.`;});
-  return `<p class="loadout-compare-summary">${esc(summary)}</p><p>Selecting this card focuses the reviewed key. Tap that key or press Enter to place it.</p><div class="loadout-compare-cards">${cards}</div><p class="loadout-compare-jobs">${esc(jobs)}</p>${preview.unverified.length?'<p>Some equipped army cards have no verified job data; they are excluded from these job counts.</p>':''}<p>Rearranging spends no gold or reserve. These are equipped-card capabilities, not troops on the field.</p>${orders.map(text=>`<p class="loadout-compare-orders">${esc(text)}</p>`).join('')}<details class="loadout-compare-numbers"><summary>Compare current-rank facts</summary><p>Numbers compare the same measure, unit and scope only. Attack types and effect timings differ; this is not a total damage or strength rating.</p>${rows?`<dl class="loadout-compare-metrics">${rows}</dl>`:'<p>No verified comparison metrics are available for these cards.</p>'}</details>`;
+  const orders=[source,target].filter(Boolean).map(card=>{
+   const d=card.deployment,remaining=preview.after.includes(card.id);
+   const cost=d?`${d.gold} gold · ${d.reserve} reserve / ${d.units}-unit squad`:card.insights.metrics.length?'No squad deployment cost.':'No verified squad cost.';
+   const order=!d?'':!remaining?'In reserve: no reload or Auto-recruit. Deployed troops stay.':d.automatic?'Auto on: after Start or Resume, repeats when ready and resources allow.':'Auto off · manual squads only.';
+   return `<article><div><strong>${esc(card.name)}</strong><span>Rank ${card.rank}</span></div><p class="loadout-compare-cost">${esc(cost)}</p>${order?`<p>${esc(order)}</p>`:''}</article>`;
+  }).join('');
+  return `<p class="loadout-compare-summary">${esc(summary)}</p><p class="loadout-compare-jobs">${esc(jobSummary)}</p>${preview.unverified.length?'<p>Some equipped army cards have no verified job data; they are excluded from these job counts.</p>':''}<div class="loadout-compare-orders">${orders}</div><p class="loadout-compare-scope">Preview only. Rearranging spends no gold or reserve. Jobs describe equipped cards, not deployed troops.</p><details class="loadout-compare-numbers"><summary>Compare current-rank facts</summary><p>Numbers compare the same measure, unit and scope only. Attack types and effect timings differ; this is not a total damage or strength rating.</p><p>${esc(jobs)}</p><div class="loadout-compare-cards">${cards}</div>${rows?`<dl class="loadout-compare-metrics">${rows}</dl>`:'<p>No verified comparison metrics are available for these cards.</p>'}</details>`;
  }
  $('#loadoutCompareTarget').onchange=()=>{
   const value=$('#loadoutCompareTarget').value,state=getState();

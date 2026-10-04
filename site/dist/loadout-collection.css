@@ -195,3 +195,39 @@
 }
 
 #skillsPanel .loadout-compare-numbers>summary{cursor:pointer;align-content:center;min-height:44px;color:#eed2a2;font-size:13px}
+
+
+/* Decision-first comparison; ordinary single-card inspection keeps its layout. */
+#skillsPanel .loadout-inspector-source{margin:0;border:0;padding:0;background:none}
+#skillsPanel .loadout-inspector[data-comparing=false] .loadout-inspector-source{display:contents}
+#skillsPanel .loadout-inspector-source>summary{cursor:pointer;align-content:center;min-height:44px;font:14px/1.4 system-ui,sans-serif;color:#eed2a2}
+#skillsPanel .loadout-inspector[data-comparing=true]{padding:12px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-head{margin-bottom:8px;gap:8px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-head .eyebrow{display:none}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-head button{margin-left:auto;min-height:44px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-selected-card{padding:8px;gap:10px;align-items:center}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-selected-card>#selectedSkillIcon{width:48px;height:48px;padding:0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-selected-card h3{font-size:26px;line-height:1.15}
+#skillsPanel .loadout-inspector[data-comparing=true] #selectedSkillDescription{display:none}
+#skillsPanel .loadout-inspector[data-comparing=true] #selectedSkillDetails{font-size:12px;line-height:1.4;margin:3px 0 0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare{margin:10px 0 0;padding:0 10px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare label{font-size:12px;line-height:1.4;margin:0 0 6px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare p{font-size:14px;line-height:1.4;margin:8px 0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare select{font-size:14px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders>article{border:1px solid #b68c4944;padding:8px;min-width:0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders>article>div{display:flex;align-items:baseline;justify-content:space-between;gap:6px;font:14px/1.4 system-ui,sans-serif}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders strong{color:#f1d6a6;overflow-wrap:anywhere}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders span{font-size:12px;white-space:nowrap;color:#cfbc9e}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders p{margin:5px 0 0;font-size:14px;line-height:1.4}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders .loadout-compare-cost{font-size:14px;color:#f1d6a6}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare .loadout-compare-scope{font-size:12px;color:#cfbc9e}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-numbers>summary{font-size:14px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-source{margin-top:4px;padding:0 10px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-source>p{font:14px/1.5 system-ui,sans-serif;margin:8px 0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-footer{margin-top:6px;padding-top:10px;gap:8px}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-footer p{font:12px/1.4 system-ui,sans-serif;margin:0}
+#skillsPanel .loadout-inspector[data-comparing=true] .loadout-inspector-footer button{min-height:44px;font-size:14px}
+@media(max-width:480px){
+ #skillsPanel .loadout-inspector[data-comparing=true] .loadout-compare-orders{grid-template-columns:minmax(0,1fr)}
+}
