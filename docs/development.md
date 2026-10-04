@@ -42,6 +42,12 @@ Every regular Army contract card may launch a disposable assisted trial, includi
 
 Returning must restore the original profile, battle, clock, motion state, paused origin, management selection, card/query/scroll, cart and wishlist. Preserve any cached Training session. Trial guards cover both direct save routes and asynchronous file-import completion; ordinary assisted Playground remains saveable. Contract-specific practice targets and stage feedback must describe real simulation rather than shortcut damage or outcomes. Authored trial actors wait for the first actual selected-contract spawn; ordinary queue timing, recruitment costs, reserve, cooldown, player arrows and effects continue. Restore the actors' original step functions permanently on that spawn and never rearm after a recruit dies; Reset creates a fresh fixture. This is explicit preparation assistance. Trial-only incoming/Pause labels must reflect the stopped reinforcement stream and selected contract. Native acceptance remains separate.
 
+## Returning-player Crownroad Hall
+
+The homepage previews only validated same-origin local Crownroad checkpoints. Its reader never writes, removes, acquires save locks, restores a game, starts combat or sends network requests. Keep active profile/provenance, saved frontier/region artwork, timestamps and preparation/opening/result semantics truthful. Names are bounded textContent/bdi and artwork comes from fixed authored mappings. Newer, corrupt, recovered or unavailable storage must be explicit, and stale text/art must clear after storage or lifecycle refresh.
+
+The explicit battle?open=local-saves entry opens the existing chooser before initial creation. It must not create a blank slot merely by setting up or displaying the chooser; ordinary battle entry retains its normal autosave behavior. Continue, New, import and Session only retain their existing explicit decisions. Entry is synchronous, unstarted and unavailable during temporary sessions or an open panel.
+
 ## Diagnostics
 
 Optional battle diagnostics are disabled initially and stay in bounded memory. They capture an explicit allowlist of gameplay facts, with no profile identity, save/replay payload, network transmission or automatic export. Keep enable/reset/export actions explicit and ensure diagnostics cannot consume gameplay RNG or mutate the engine.

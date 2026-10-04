@@ -78,3 +78,9 @@ test('trial map and pause report disclose no reinforcements without reading susp
  ui.click('battlePause');ui.frames();assert.doesNotMatch(ui.get('enemyHud').textContent,/reserves/);
  ui.click('pauseLobby');ui.frames();assert.notEqual(ui.get('battleTitle').textContent,'Fire Dragon · field trial');
 });
+
+test('trial hides irrelevant live flag reminder while ordinary battle flags remain visible',async t=>{
+ const ui=await loadGameUI(t);ui.click('start');ui.battle.ownFlag.status=0;ui.battle.ownFlag.x=1500;ui.frames();assert.equal(ui.visible('flagHud'),true);assert.match(ui.get('flagHud').textContent,/Recover your flag/);
+ ui.click('battlePause');ui.click('openShop');inspect(ui,'fireDragon');ui.click('shopTryCard');ui.battle.ownFlag.status=0;ui.battle.ownFlag.x=1500;ui.frames();assert.equal(ui.visible('flagHud'),false);assert.equal(ui.get('flagHud').textContent,'');assert.equal(ui.battle.ownFlag.status,0,'presentation does not repair the real flag');
+ ui.click('unitTrialReturn');ui.click('closeShop');ui.click('resumeGame');ui.frames();assert.equal(ui.visible('flagHud'),true);assert.match(ui.get('flagHud').textContent,/Recover your flag/);
+});

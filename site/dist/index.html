@@ -16,9 +16,13 @@
 <nav aria-label="Main navigation"><a href="#ways-to-play">Ways to play</a><a href="./about">About</a><a class="nav-play" href="./battle">Play <span aria-hidden="true">↗</span></a></nav>
 </header>
 <main id="main">
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero" id="frontpageHero" aria-labelledby="hero-title">
 <img class="hero-art" src="./images/command-hall.webp" width="1672" height="941" alt="" fetchpriority="high">
-<div class="hero-content"><p class="eyebrow">Archery. Armies. A kingdom to cross.</p><h1 id="hero-title">Take aim.<br>Raise your <em>banner.</em></h1><p class="hero-copy">Hold the line with a well-placed arrow. Build a deck of abilities, rally your company, and lead them down the Crownroad.</p><div class="hero-actions"><a class="button button-gold" href="./battle">Play Castledecks <span aria-hidden="true">→</span></a><a class="text-link" href="#ways-to-play">Choose your adventure <span aria-hidden="true">↓</span></a></div><p class="hero-note">Play in your browser · Single-player · In development</p></div>
+<div class="hero-content"><p class="eyebrow" id="heroEyebrow">Archery. Armies. A kingdom to cross.</p><h1 id="hero-title"><span id="firstVisitTitle">Take aim.<br>Raise your <em>banner.</em></span><span id="returningTitle" hidden>Your banner<br><em>awaits.</em></span></h1><p class="hero-copy" id="heroIntroduction">Hold the line with a well-placed arrow. Build a deck of abilities, rally your company, and lead them down the Crownroad.</p>
+<div class="hero-actions"><a class="button button-gold" id="frontpagePlay" href="./battle"><span id="frontpagePlayLabel">Play Castledecks</span></a><a class="text-link" href="#ways-to-play">Choose your adventure <span aria-hidden="true">↓</span></a></div><section class="returning-campaign" id="returningCampaign" aria-label="Saved Crownroad preview" hidden>
+<img id="returningArt" class="returning-art" width="1774" height="887" alt="" decoding="async">
+<div class="returning-copy"><p class="returning-name"><bdi id="returningName"></bdi></p><p class="returning-identity" id="returningIdentity"></p><p class="returning-frontier">Saved Crownroad frontier</p><h2 id="returningField"></h2><p class="returning-region" id="returningRegion"></p><p id="returningCheckpoint"></p><time id="returningTime"></time></div>
+</section><p class="hero-note">Play in your browser · Single-player · In development</p><div class="frontpage-local-note" id="frontpageLocalNote" hidden><p id="returningChoices"></p><p>Checkpoints belong to this browser, device and website address. Opening the chooser does not start a battle.</p></div><p class="frontpage-save-notice" id="frontpageSaveNotice" role="status" hidden></p></div>
 <div class="hero-caption"><span aria-hidden="true">✦</span> Your next battle begins at the war table.</div>
 </section>
 <section class="intro-strip" aria-label="Your company"><p><span>YOUR AIM</span> Draw the bow. Find your arc.</p><i aria-hidden="true">✦</i><p><span>YOUR DECK</span> Bring the right abilities.</p><i aria-hidden="true">✦</i><p><span>YOUR COMPANY</span> Recruit. Rally. Advance.</p></section>
@@ -35,5 +39,6 @@
 <section class="return-note section-wrap" aria-labelledby="return-title"><div aria-hidden="true" class="save-mark">♜</div><div><h2 id="return-title">Keep your place on the road.</h2><p>Crownroad checkpoints stay in this browser on this device. Open the game to choose a saved campaign or begin a new one. Export a campaign file before changing browsers or clearing your data.</p><p class="save-detail">Checkpoints restore battle preparation or a settled result, not an active fight. Saves do not automatically travel between website addresses.</p></div><a class="button button-outline" href="./battle">Open the game <span aria-hidden="true">→</span></a></section>
 </main>
 <footer class="site-footer section-wrap"><div><a class="wordmark" href="./">CASTLEDECKS</a><p>An archery and army game, still growing.</p></div><nav aria-label="Footer navigation"><a href="./battle">Play</a><a href="./about">About &amp; credits</a><a href="https://github.com/jaydensouthworth/castledecks">Source</a></nav></footer>
+<script type="module" src="./frontpage-campaign.mjs"></script>
 </body>
 </html>

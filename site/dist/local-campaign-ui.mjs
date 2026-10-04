@@ -8,7 +8,7 @@ const lockNote='Safe autosave is unavailable in this browser. Existing local sav
 /** Captures immutable safe snapshots synchronously, then serializes writes under
  * the store's same-origin Web Lock. Late completions belong to their original
  * manager, never whichever campaign happens to be active when a promise resolves. */
-export function createLocalCampaignUI({document,window,getState,onRestore,openVault,notify=()=>{},store=createLocalCampaignStore({storage:()=>window.localStorage,locks:()=>window.navigator?.locks})}){
+export function createLocalCampaignUI({document,window,getState,onRestore,openVault,notify=()=>{},chooseBeforeCreate=false,store=createLocalCampaignStore({storage:()=>window.localStorage,locks:()=>window.navigator?.locks})}){
  const $=id=>document.getElementById?.(id)??document.querySelector('#'+id);
  const sessions=new WeakMap(),reserved=new Map();let pending=null,suspended=false,queue=Promise.resolve(),intent=0;
  const state=()=>getState(),campaign=()=>state().destination==='campaign';
@@ -19,7 +19,8 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   if(!campaign())return null;
   const {profiles}=state();let session=sessions.get(profiles);if(session)return session;
   const slots=store.list(),empty=slots.every(slot=>slot.ok&&slot.status==='empty'),unavailable=slots.every(slot=>!slot.ok),writable=store.canWrite();
-  session=record({decision:empty&&writable?'local':unavailable||empty?'session':'pending',slot:empty&&writable?1:null,error:unavailable?slots[0].message:!writable?lockNote:''});
+  const needsChoice=chooseBeforeCreate&&empty;
+  session=record({decision:needsChoice?'pending':empty&&writable?'local':unavailable||empty?'session':'pending',slot:!needsChoice&&empty&&writable?1:null,error:unavailable?slots[0].message:!writable?lockNote:''});
   sessions.set(profiles,session);if(session.slot)reserved.set(session.slot,session);return session;
  }
  function message(){
@@ -27,6 +28,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
   if(state().destination==='expedition')return 'The Wayfarer Charter is independent, with its own supplied starting kit. Keep a charter file or code before closing; it has no local checkpoints.';
   if(!campaign())return 'Practice and showcase sessions stay separate. Export a file if you want to keep this assisted session.';
   const session=initialize();const newer=store.list().find(slot=>slot.status==='newer'&&(session.slot===slot.slot||session.decision==='pending'));if(newer)return newer.message;if(session.error)return session.error;
+  if(session.decision==='pending'&&chooseBeforeCreate&&store.list().every(slot=>slot.ok&&slot.status==='empty'))return 'Choose a new local campaign or play for this session only. No campaign has been created.';
   if(session.decision==='pending')return 'A local campaign is available. Continue it, or start a new campaign without replacing it.';
   if(session.decision==='session')return 'Session only. Export a file or code before closing this tab.';
   if(session.pending)return `Local slot ${session.slot} · Saving checkpoint… Keep this tab open until saving is verified.`;

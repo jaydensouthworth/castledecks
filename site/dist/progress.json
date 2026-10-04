@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-03T23:29:53.008926+00:00",
-  "stage": "armory-trial-preparation-correction",
-  "internal_tests_passing": 1702,
+  "updated": "2026-10-04T00:25:33.926428+00:00",
+  "stage": "returning-crownroad-command-hall",
+  "internal_tests_passing": 1762,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of preparation-safe Armory contract trials",
+    "Native acceptance of returning-player command hall and read-only chooser entry",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -37,14 +37,15 @@
     "Player homepage/About load at 1165 and 485 native content pixels with no horizontal overflow",
     "Build55\u201357 six-field Wayfarer board, locked inspection, reset focus, earned QA branch choice without reward replay and explicit Start",
     "Build55\u201357 native Rear/Center/Forward selector, R release/reapply, paused Army orders, portrait/740x320 safe-inset aim, corrected route/Army/Build rails",
-    "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim"
+    "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim",
+    "Build65 disposable unowned card trials: delayed Fire Dragon deployment and actual damage, Priest healing, Trebuchet keep damage, reset and exact original card/cart/wishlist return"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 65,
+  "build": 66,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes. The frontpage previews validated same-origin local Crownroad checkpoints with actual frontier artwork; the explicit chooser entry never creates or restores a campaign without a choice.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,
