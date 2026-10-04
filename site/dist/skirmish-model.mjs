@@ -5,6 +5,7 @@
 import {levyStages} from './engine/levy-encounter.mjs';
 import {seededRandom} from './engine/combat.mjs';
 import {validateBattleEncounter} from './engine/battle-encounter.mjs';
+import {CAUSEWAY_OBJECTIVE} from './engine/causeway-objective.mjs';
 import {BATTERY_OBJECTIVE} from './engine/battery-objective.mjs';
 import {validateAutoAimZones} from './engine/assisted-auto-aim.mjs';
 import {resolveCastleConfig,DEFAULT_CASTLE_SELECTION} from './engine/castle-catalog.mjs';
@@ -27,6 +28,7 @@ export const SKIRMISH_THREATS=Object.freeze({
 });
 export const SKIRMISH_DOCTRINES=Object.freeze({
  highwatch:Object.freeze({name:'Highwatch comparison · SK2',description:'An optional castle sidegrade field. Both sides begin with Highwatch: a firing station 50 units higher, two shelter berths and 20% less keep health. Switch your supplied castle to Classic in Build before Start to compare. Hold your keep, break theirs, then clear the finite company.'}),
+ causeway:Object.freeze({name:'Causeway Hold',description:'Hold the marked ground for 30 cumulative seconds while your home flag is safe. Contesting or leaving pauses progress. Secure it to withdraw undispatched reserves, then clear the finite enemy company.'}),
  levy:Object.freeze({name:'Levy defense',description:'Four manual five-unit levy waves join an ordinary paid army. Hold against a timed rider and siege counterattack, break their keep, then clear the field. Losing your hero, home flag or home keep defeats this practice attempt.'}),
  vanguard:Object.freeze({name:'Vanguard',description:'Mounted flag runners backed by heavy infantry. Watch the ground lanes.'}),
  skywatch:Object.freeze({name:'Skywatch',description:'A smaller ground escort with aerial pressure. Lead flyers and keep elemental counters ready.'}),
@@ -52,7 +54,7 @@ export function validateSkirmishDescriptor(value){
 export function encodeSkirmishDescriptor(value){const d=validateSkirmishDescriptor(value);return `SK${d.version}:${d.seed.toString(36).toUpperCase()}:${d.biome}:${d.threat}:${d.doctrine}`;}
 export function decodeSkirmishDescriptor(text){
  if(typeof text!=='string'||text.length>100)throw new TypeError('Enter a Skirmish seed code under 100 characters.');
- const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege|battery|levy|highwatch)$/i.exec(text.trim());
+ const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege|battery|levy|highwatch|causeway)$/i.exec(text.trim());
  if(!match)throw new TypeError('That is not a complete Skirmish seed code.');
  const seed=parseInt(match[2],36),value=validateSkirmishDescriptor({version:Number(match[1]),seed,biome:match[3].toLowerCase(),threat:match[4].toLowerCase(),doctrine:match[5].toLowerCase()});
  if(encodeSkirmishDescriptor(value).split(':')[1]!==match[2].toUpperCase())throw new TypeError('Seed code has a noncanonical number.');
@@ -91,6 +93,12 @@ function makeTerrain(d,attenuation=1){
 }
 function makeCompany(d){
  const r=stream(d,'company'),tier=Object.keys(SKIRMISH_THREATS).indexOf(d.threat),spec=SKIRMISH_THREATS[d.threat],count=spec.base+Math.floor(r()*(spec.variance+1));
+ if(d.doctrine==='causeway'){
+  const counts={grunt:8+2*tier,tallGrunt:3+tier,archer:3+tier,priest:1+tier,mount:3+tier};
+  const roster=Object.entries(counts).flatMap(([type,n])=>Array(n).fill(type));
+  for(let i=roster.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[roster[i],roster[j]]=[roster[j],roster[i]];}
+  return {counts,roster};
+ }
  if(d.doctrine==='highwatch'){
   // An ordinary finite mixed company: the two home archers below are consumed
   // by predeployment, not added to this count. No elite or bespoke defender AI.
@@ -125,12 +133,12 @@ function sampledReach(heights,towers){
 }
 export function createSkirmish(value=DEFAULT_SKIRMISH){
  const descriptor=validateSkirmishDescriptor(value),r=stream(descriptor,'landmarks'),spec=SKIRMISH_THREATS[descriptor.threat];
- const sites=[760+Math.round(r()*90),1080+Math.round(r()*90),1370+Math.round(r()*70)],towerCount=Math.floor(r()*3),towers=sites.slice(0,towerCount===2?3:towerCount).filter((_,i)=>towerCount!==2||i!==1);
+ const sites=[760+Math.round(r()*90),1080+Math.round(r()*90),1370+Math.round(r()*70)],towerCount=Math.floor(r()*3),towers=descriptor.doctrine==='causeway'?[950]:sites.slice(0,towerCount===2?3:towerCount).filter((_,i)=>towerCount!==2||i!==1);
  let heights,reach,attempt=0;
  for(const scale of [1,.72,.4,0]){heights=makeTerrain(descriptor,scale);reach=sampledReach(heights,towers);attempt++;if(reach.ok)break;}
  if(!reach.ok)throw new Error('The bounded fallback did not pass the sampled reach check.');
  const levy=descriptor.doctrine==='levy',stages=levy?levyStages(descriptor.threat):null,company=levy?{roster:stages.flatMap(s=>s.types),counts:Object.fromEntries([...new Set(stages.flatMap(s=>s.types))].map(type=>[type,stages.flatMap(s=>s.types).filter(t=>t===type).length]))}:makeCompany(descriptor),light=['dawn','noon','dusk'][Math.floor(r()*3)],enemyKeepHP=Math.round(spec.keepHP*(.9+r()*.2)/100)*100;
- const castlePractice=descriptor.doctrine==='highwatch',code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:descriptor.doctrine==='battery'?BATTERY_OBJECTIVE:levy||castlePractice?'break-keep':'standard',...(castlePractice?{enemyCastle:HIGHWATCH_SELECTION}:{})});
+ const castlePractice=descriptor.doctrine==='highwatch',code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:descriptor.doctrine==='causeway'?CAUSEWAY_OBJECTIVE:descriptor.doctrine==='battery'?BATTERY_OBJECTIVE:levy||castlePractice?'break-keep':'standard',...(castlePractice?{enemyCastle:HIGHWATCH_SELECTION}:{})});
  const nameR=stream(descriptor,'name'),prefix=['Amber','Broken','Hidden','Last','Quiet','Silver','Windward','Red'],suffix=['Crossing','Watch','Hollow','Rise','Causeway','Pass','Reach','Vale'];
  return Object.freeze({descriptor,code,name:`${prefix[Math.floor(nameR()*prefix.length)]} ${suffix[Math.floor(nameR()*suffix.length)]}`,level:spec.level,difficulty:spec.difficulty,encounter,counts:Object.freeze({...company.counts}),reach:Object.freeze({...reach,attempts:attempt}),kit:SKIRMISH_KIT,...(levy?{levyStages:stages}:{}),...(castlePractice?{castlePractice:Object.freeze({supplied:Object.freeze([DEFAULT_CASTLE_SELECTION,HIGHWATCH_SELECTION]),selected:HIGHWATCH_SELECTION,predeployedArchers:HIGHWATCH_PREDEPLOYED_ARCHERS,friendly:resolveCastleConfig(HIGHWATCH_SELECTION,{team:'good',baseHp:8000+SKIRMISH_KIT.rank*400}),enemy:resolveCastleConfig(HIGHWATCH_SELECTION,{team:'bad',baseHp:enemyKeepHP})})}:{})});
 }

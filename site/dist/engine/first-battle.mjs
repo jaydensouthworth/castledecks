@@ -1,4 +1,5 @@
 import {selectSiegeStructureTarget,canReleaseSiegeTarget} from './siege-targeting.mjs';
+import {causewayNeedsOccupation} from './causeway-objective.mjs';
 import {ArmyOrders} from './army-orders.mjs';
 /** First CTF battle integration. Independent code and new presentation only.
  * Game-object scheduling is emulator-source-grounded, not a recorded Flash run.
@@ -260,7 +261,7 @@ export class FirstBattle {
   updateGeometry(entity){if(entity.clipPresent===false){entity.hitbox=null;entity.headbox=null;return;}if(!entity.regionKind)return;Object.assign(entity,unitRegions(entity.regionKind,{x:entity.x,y:entity.y,scaleX:entity.facing??1,rotation:entity.collisionRotation??entity.rotation??0}));}
   createCastle(team,x,baseHp,selection=DEFAULT_CASTLE_SELECTION){
     const config=resolveCastleConfig(selection,{team,baseHp});
-    const castle=new Castle({x,y:this.elevationAt(x),hp:config.hp,team,maxOccupants:config.maxOccupants,shotOffset:config.shotOffset,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders&&this.armyOrders.mode!=='advance')this.armyOrders.set('advance',undefined,'all');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
+    const castle=new Castle({x,y:this.elevationAt(x),hp:config.hp,team,maxOccupants:config.maxOccupants,shotOffset:config.shotOffset,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(!causewayNeedsOccupation(this)&&this.armyOrders&&this.armyOrders.mode!=='advance')this.armyOrders.set('advance',undefined,'all');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
     castle.castleId=config.id;castle.castleLevel=config.level;castle.regionKind=config.regionKind;this.assignGeometry(castle);
     castleOrigins.set(castle,Object.freeze({battle:this,profile:this.profile,baseHp}));
     this.objects.add(castle);this.structures.push(castle);this.garrisons.push(castle);(team==='good'?this.goodStructures:this.badStructures).push(castle);return castle;

@@ -82,6 +82,14 @@ SK2 is limited to the optional Highwatch doctrine; it supplies its own disposabl
 
 The portrait fixed Build grid owns two independent scroll regions. Open castle/help disclosures must not inherit legacy overflow-visible behavior. Keep the higher-specificity correction scoped to portrait and preserve short-landscape controls. After castle Equip replaces its buttons, restore focus to a live enabled action with preventScroll; retain pane offsets and prepared-field identity. Saved-deck action copy includes both dedicated slots and wraps within narrow screens. Battle-report actor classification uses an explicit authored keep-type allowlist, never untrusted region text.
 
+## Causeway occupation and conservative recovery
+
+Only explicitly registered Causeway objectives may extend their ground-order availability or count occupation. Keep ordinary encounter behavior unchanged. Validate actual world/controller ownership and eligible living ground identities on every tick; snapshots are pure and repeated reads never award time. Occupation advances once after the whole normal tick and retains cumulative progress across interruptions. Victory requires secured occupation, resolved finite enemies and the home flag at base, with ordinary mandatory losses taking priority.
+
+Grounded-flag impossibility is a separate conservative proof. Preserve recoverers already alive, pending paid arrivals, refundable reserve and affordable-or-later-affordable owned contracts. Unknown producers, actors, transformations or effects must not become false terminal losses. Do not use present gold, cooldowns, menu assignments or battlefield capacity as impossibility proofs. The diagnostic reads state and cannot mutate queues or grant supplies.
+
+Castle Equip should retain focus on the same card choice and its stable accessible name while aria-pressed changes. Reselecting the current choice must return before invoking the host, rerendering, announcing or writing a checkpoint. Preserve unowned, live, read-only and stale-profile guards, pane offsets and all ability identities. The bounded keyboard harness models the resulting native button click explicitly; real keyboard activation, tab order and visible focus still require native acceptance.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

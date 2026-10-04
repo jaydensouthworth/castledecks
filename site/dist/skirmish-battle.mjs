@@ -1,6 +1,8 @@
+import {flagRecoveryOptions} from './engine/flag-recovery-options.mjs';
 /** Disposable practice adapter. Every attempt gets its own profile and RNG.
  * Ordinary combat/economy remain active; no supplied kit can become a campaign.
  */
+import {CausewayObjective,CAUSEWAY_OBJECTIVE} from './engine/causeway-objective.mjs';
 import {AuxiliaryController} from './engine/auxiliary-controller.mjs';
 import {LevyEncounterDirector} from './engine/levy-encounter.mjs';
 import {FLAG_STATUS as FS} from './engine/flag-troop.mjs';
@@ -52,6 +54,13 @@ export class SkirmishBattle extends CampaignBattle{
    }
   }
   if(scenario.descriptor.doctrine==='levy'){this.enemies=new LevyEncounterDirector({stages:scenario.levyStages,wave:this.wave,level:this.level});this.auxiliaries=new AuxiliaryController(this);}
+  if(this.encounter.objective===CAUSEWAY_OBJECTIVE){
+   this.causewayObjective=new CausewayObjective(this);
+   for(const [type,x] of [['grunt',1040],['grunt',1160],['tallGrunt',1100],['archer',1280],['priest',1340]]){
+    if(this.enemies.take(type)!==type)throw new Error('Required Causeway guard missing from finite company');
+    const unit=this.createUnit(type);unit.x=x;unit.y=this.elevationAt(x);unit.facing=unit.forward;unit.vx=0;this.updateGeometry(unit);
+   }
+  }
   if(this.encounter.objective===BATTERY_OBJECTIVE){
    this.batteryObjective=new BatteryObjective(this);
    for(const target of BATTERY_TARGETS){
@@ -69,9 +78,17 @@ export class SkirmishBattle extends CampaignBattle{
  }
  emit(event){if(event.type==='spawn')this.auxiliaries?.claimSpawn(event.unit);super.emit(event);}
  get regularArmyCount(){return this.auxiliaries?this.goodTeam.filter(unit=>unit!==this.hero&&!unit.isCompanion&&!this.auxiliaries.owns(unit)).length:super.regularArmyCount;}
- get objectiveProgress(){return this.batteryObjective?.snapshot??null;}
+ get objectiveProgress(){return this.causewayObjective?.snapshot??this.batteryObjective?.snapshot??null;}
  get objectiveMarkers(){return this.objectiveProgress?.targets??Object.freeze([]);}
  checkOutcome(){
+  if(this.encounter?.objective===CAUSEWAY_OBJECTIVE){
+   if(this.outcome||!this.causewayObjective||this.causewayFrame)return;
+   let decision=this.causewayObjective.decision();
+   if(!decision&&this.causewayPostTick&&flagRecoveryOptions(this).state==='impossible')decision={outcome:'defeat',causes:Object.freeze(['unrecoverable-home-flag'])};
+   if(!decision)return;
+   if(decision.causes.length&&!Object.hasOwn(this,'causewayDefeatCauses'))Object.defineProperty(this,'causewayDefeatCauses',{value:decision.causes,enumerable:true});
+   this.finishOutcome(decision.outcome);return;
+  }
   if(this.skirmish?.descriptor.doctrine==='levy'||this.skirmish?.castlePractice){
    if(this.outcome||this.levyFrame)return;
    // Capture the actual terminal conditions at the authoritative whole-tick
@@ -90,6 +107,17 @@ export class SkirmishBattle extends CampaignBattle{
   if(outcome)this.finishOutcome(outcome);
  }
  step(){
+  if(this.causewayObjective){
+   if(this.paused||this.outcome||this.summary){super.step();return;}
+   this.causewayFrame=true;try{super.step();}finally{this.causewayFrame=false;}
+   this.causewayPostTick=true;try{this.checkOutcome();}finally{this.causewayPostTick=false;}
+   if(!this.outcome&&this.causewayObjective.afterTick()){
+    const retreat=this.enemies.closeReserves();
+    this.armyOrders.set('advance',undefined,'all');
+    this.emit({type:'causeway-secured',withdrawn:retreat?.withdrawn??0});
+   }
+   this.checkOutcome();return;
+  }
   if(this.auxiliaries||this.skirmish?.castlePractice){
    if(this.paused||this.outcome||this.summary){super.step();return;}
    this.levyFrame=true;try{super.step();}finally{this.levyFrame=false;}

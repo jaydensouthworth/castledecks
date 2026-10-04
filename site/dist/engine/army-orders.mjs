@@ -1,5 +1,8 @@
 /** Transient ground-company orders. Advance keeps the original AI path exactly.
  * No actor roster, economy, statistics, skill, or save state lives here. */
+import {causewayRallyAvailability} from './causeway-objective.mjs';
+export const rallyObjectiveAvailable=battle=>causewayRallyAvailability(battle)??battle.badCastle.hp>0;
+export const rallyEligible=battle=>!battle.outcome&&!battle.summary&&rallyObjectiveAvailable(battle)&&battle.hero.hp>0&&!battle.hero.dead&&Number.isFinite(battle.hero.x);
 const FRONTLINE=new Set(['grunt','tallGrunt','mount','fire_demon','ice_demon']);
 const SUPPORT=new Set(['archer','priest']);
 export const ARMY_ORDER_MODES=Object.freeze(['advance','rally']);
@@ -31,7 +34,7 @@ export class ArmyOrders {
   if(!ARMY_ORDER_MODES.includes(mode)||!ARMY_ORDER_GROUPS.includes(group)||b.outcome||b.summary)return false;
   if(position===undefined)position=group==='all'?this.position:this.groups[group].position;
   if(!ARMY_RALLY_POSITIONS.includes(position))return false;
-  if(mode==='rally'&&(!(b.badCastle.hp>0)||!(b.hero.hp>0)||b.hero.dead||!Number.isFinite(b.hero.x)))return false;
+  if(mode==='rally'&&!rallyEligible(b))return false;
   const anchor=mode==='rally'?armyRallyAnchor(b,position):null;
   if(mode==='rally'&&(anchor===null||!Number.isFinite(b.elevationAt(anchor-100))))return false;
   const targets=group==='all'?['frontline','support']:[group];
@@ -53,7 +56,7 @@ export class ArmyOrders {
  }
  activeFor(unit){
   const group=armyCompany(unit);
-  return !!group&&this.groups[group].mode==='rally'&&!this.battle.outcome&&!this.battle.summary&&this.battle.badCastle.hp>0&&!exempt(unit);
+  return !!group&&this.groups[group].mode==='rally'&&!this.battle.outcome&&!this.battle.summary&&rallyObjectiveAvailable(this.battle)&&!exempt(unit);
  }
  frontlineAction(unit){
   if(!respondsToRally(unit)||!this.activeFor(unit))return null;

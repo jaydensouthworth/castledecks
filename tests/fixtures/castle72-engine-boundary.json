@@ -1,0 +1,49 @@
+{
+  "baseline": "979a33fae2af52f348465175632364dd4f0de30f",
+  "reviewed_changes": [
+    "army-orders.mjs",
+    "battle-encounter.mjs",
+    "first-battle.mjs"
+  ],
+  "reviewed_additions": [
+    "causeway-objective.mjs",
+    "flag-recovery-options.mjs"
+  ],
+  "unchanged": {
+    "action-bar-layout.mjs": "7c0edeef40bf5d642520dfd9eeb79f7a85dddc7d7b9113b6382e9fd24bb8e8ea",
+    "actors.mjs": "08a8bb131c9600914ac8e88194f37f6711ae9098c12def297758cba4121d12eb",
+    "alternate-shooter.mjs": "c57e48684ad7b389f4ae90b350bd7831f9bb9c363ecebceec156da258b0c670c",
+    "assisted-auto-aim.mjs": "915206803d96fdead611b571849b6e8e3c3b713d17b9ad7a4a2a707da1af2eee",
+    "attack-allegiance.mjs": "20c6f1391e890e1b19bdd59971de8ef0855abd3bd12cd2b20809d135d43a2076",
+    "auxiliary-controller.mjs": "fb3906f9fa04a845825e25c2d43762488e87251a0958d25ab0b7b9d308a86037",
+    "ballistics.mjs": "f7b8333f3e88708f50c0ad3bba450286a087711a7eb1c057b9143863a53c61b8",
+    "battery-objective.mjs": "cca62ae2df6d17280fccb3bce8c851497e2dc18ac3e83720e8372a6e53dc3f7a",
+    "battle-director.mjs": "8d2b401407587100446005cb5a068dfb99ef97da786c3eb3f6816d495dc5e084",
+    "boss-geometry.mjs": "a4142f99047bf71b843921c9268800a47ac5c86cabac311da12219fc08dc430b",
+    "campaign.mjs": "295ba6d9c029e15664fa80996e2e79f65450967405b4b977641e099f5694b4a1",
+    "castle-catalog.mjs": "f3e0b619f6845cbf5a6d903d0b7a1cc737f2d28796dbb167fbc6e1a3f417e893",
+    "clock.mjs": "f036d61b1c392bbadcb6e272f70264d057b57a3a46277d3915845cca7f5eee7a",
+    "collision.mjs": "5e1ebb5cbf870dec23bbc55ff955974bc07931d174a369990770605dea872ac5",
+    "combat.mjs": "850c683d6fad3e49d9669ce3ecbc7fe1f021b841bd55224f33b231bad43cd97a",
+    "companions.mjs": "c98e9bfc76e08e35824d764d14f4f149252ebba3be5cca24484d06040f7cb103",
+    "drag-shooter.mjs": "c3c480e2f7907ec5a49aed837d3163f46f47a786a1066cf35d153da1321cceb8",
+    "effects.mjs": "e32e6e6674cd7a7527c53d4bf7a0c80a60d785a67cce1290f8b90d33ce4f7808",
+    "flag-troop.mjs": "6f4f93f7776a96ed5406d87c2312b6ec5dcef8fff2a62b0f9d06ada0265c0e51",
+    "ground-position.mjs": "25232312bb2b10f6d1edc9645980ef665ed4771335a2b9e4e557fb7d74a684f5",
+    "hotbar.mjs": "c836fde45e7ff30ea30901681fe12ec776c7dd57b4476cdf10370ddae3beefbc",
+    "later-enemies.mjs": "d25cb4febd281097ac54aee378d132a5fa653f9b0c05948c78021f424e81d83e",
+    "levels.mjs": "18a5aa8103ae145f1ab59cebb356033e2c9cb1036b701941d26d4d02a54c9440",
+    "levy-encounter.mjs": "2aa49c0f25c9e11bd02a68a8a4f875ac924aa0263afa1a68b3d62a9a43a07d75",
+    "mounted-troop.mjs": "8b6c888f7d4d77df13b78da1321fda224aa804ce43a63362eb0928531cfda544",
+    "profile-manager.mjs": "24e7b08f07b1ad09023127f4c6aefac66c9f6aeba20b8809af771d401bf8c3ba",
+    "progression.mjs": "2a11c88470d07e83b9ae89a31a5a558aaa0f01cc1055635e734d2c316d62b089",
+    "projectile-targets.mjs": "cba174e2d497b461c58cbdd490d9af57a50bc5e683261cf5171064e72aa1c0ff",
+    "ranged-troop.mjs": "1b59186c7d3ebd3e98aba9d91ce12dde6ddec6bba5e646bdfaceceefc0af1ad5",
+    "recruitment.mjs": "5ce9fcd1d8801e35eb87894c841c425d0ff6af1cbd78cbbd9270f6646abde8c1",
+    "siege-targeting.mjs": "a4c386a60e38c4280dda6292cbc35a3b9e0ce56bd4b6621bf8d90da01e40f683",
+    "special-projectiles.mjs": "2f7b931ca725d5a32a44e6d37fc657bb6cb51a2a73a3aed9119dba941f826177",
+    "terrain.mjs": "5e7dd5cf4b70fe34d9443e921e19c1735f70c4786f6495be6701ed819c75dec0",
+    "tower.mjs": "74b67a946a1aefe48dc309eff08ff8164160226c595d57c87ea4f2442ed51cbe",
+    "world-order.mjs": "a646c5ded2d7d64f0e3669c7d0504900138fe161a66845505578f31166fac973"
+  }
+}

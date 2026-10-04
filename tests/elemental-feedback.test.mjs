@@ -1,3 +1,6 @@
+// Causeway integration adds the reviewed objective/recovery modules plus narrow
+// encounter validation, Rally eligibility and keep-release gates. Unaffected
+// castle72 engine source hashes remain pinned by causeway-castle-integration73.
 // Highwatch intentionally extends castle construction and versioned profile codecs.
 // Frozen Classic traces, 144 legacy seeds, collision/controller and migration
 // behavior are separately asserted by castle-mechanics70/castle-saves70. This
@@ -190,5 +193,5 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // seed/level cases. See company-orders61 and the isolated parity report.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'a6a1d21ea88723c8f00799f3f55ee513541cd9126374ec4a7b7fd09575c2f85a','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'19be69210580e8270c55390ba462335d3ccd7b01b668012b48367c0b89a1f829','reviewed engine boundary');
 });

@@ -1,3 +1,4 @@
+import {CAUSEWAY_BRIEF} from './causeway-presentation.mjs';
 import {LEVY_BRIEF} from './levy-presentation.mjs';
 /** Read-only preparation view. Browsing never changes a profile, route or battle. */
 import {BATTERY_BRIEF} from './objective-feedback.mjs';
@@ -16,6 +17,7 @@ export function hallPreparation({profile,battle,destination='campaign',run=null,
  let title=brief?.name??run?.current?.name??battle.skirmish?.name??`Battle ${battle.level}`,objective=brief?.objective??run?.current?.objectiveText??'Protect your flag and hero. Defeat the company or bring the enemy flag home.',advice=brief?.advice??run?.current?.tradeoff??'Practice supplies belong to this session. Inspect the field and arrange your action bars before departing.';
  if(destination==='skirmish'&&battle.objectiveProgress?.type==='intercept-battery'){title=`${battle.skirmish.name} · ${BATTERY_BRIEF.title}`;objective=BATTERY_BRIEF.goal;advice=`${BATTERY_BRIEF.opening} ${BATTERY_BRIEF.counterplay}`;}
  if(destination==='skirmish'&&battle.skirmish?.castlePractice){title=`${battle.skirmish.name} · Highwatch comparison`;objective='Break their keep, clear the deployed company and recover your home flag. Protect your hero, home keep and flag; enemy flag capture alone cannot win.';advice='Both castle cards are supplied. Compare their firing station, health and shelter in Build before Start. Ordinary enemy archers may leave their opening shelter immediately; this is not a stationary turret challenge.';}
+ if(destination==='skirmish'&&battle.causewayObjective){title=`${battle.skirmish.name} · ${CAUSEWAY_BRIEF.title}`;objective=CAUSEWAY_BRIEF.goal;advice=`${CAUSEWAY_BRIEF.finish} ${CAUSEWAY_BRIEF.advice}`;}
  if(destination==='skirmish'&&battle.auxiliaries){title=`${battle.skirmish.name} · ${LEVY_BRIEF.title}`;objective=LEVY_BRIEF.goal;advice=LEVY_BRIEF.advice;}
  const roster=battle.enemies?.roster??battle.skirmish?.encounter?.roster??[],threats=brief?.threats.filter(t=>(t.count??t.maximum)>0).map(t=>({name:t.name,count:t.count}))??Object.entries(roster.reduce((a,id)=>(a[id]=(a[id]??0)+1,a),{})).map(([id,count])=>({name:SKILLS[id]?.name??id.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()),count}));
  const progress=brief?campaignProgress(profile):null;

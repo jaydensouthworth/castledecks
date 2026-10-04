@@ -20,7 +20,7 @@ export function validateBattleEncounter(value){
  const enemyCastle=Object.hasOwn(value,'enemyCastle')?validateCastleSelection(value.enemyCastle):null;
  if(typeof value.id!=='string'||!value.id||value.id.length>64)throw new TypeError('Invalid encounter identity');
  if(!['oaks','lowlands','pines','wasteland'].includes(value.scenery)||!['dawn','noon','default','dusk','night'].includes(value.timeOfDay))throw new RangeError('Unknown encounter scenery');
- if(!['standard','break-keep','intercept-battery'].includes(value.objective))throw new RangeError('Unknown encounter objective');
+ if(!['standard','break-keep','intercept-battery','causeway-hold'].includes(value.objective))throw new RangeError('Unknown encounter objective');
  if(!Array.isArray(value.heights)||value.heights.length!==101||value.heights.some(h=>!Number.isFinite(h)||h<300||h>850))throw new RangeError('Encounter needs 101 finite terrain heights');
  if(!Array.isArray(value.roster)||!value.roster.length||value.roster.length>500||value.roster.some(type=>!enemyTypes.has(type)))throw new RangeError('Invalid finite encounter roster');
  if(value.objective==='intercept-battery'&&value.roster.filter(type=>type==='trebuchet').length!==2)throw new RangeError('Battery interception needs exactly two finite-roster trebuchets');
