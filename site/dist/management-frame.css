@@ -90,12 +90,13 @@
 }
 /* Cards share a stable illustration/name/action rhythm; longer names may wrap
    instead of being clipped. Every row stretches to its longest real content. */
-#managementFrame #shopPanel .shop-grid,#managementFrame #queuePanel .army-roster{align-items:stretch;grid-auto-rows:auto}
-#managementFrame #shopPanel .shop-card,#managementFrame #queuePanel .army-contract{align-self:stretch;display:flex;flex-direction:column}
+#managementFrame #shopPanel .shop-grid,#managementFrame #queuePanel .army-roster{align-items:stretch;grid-auto-rows:max-content}
+#managementFrame #shopPanel .shop-card{align-self:stretch;display:flex;flex-direction:column}
+#managementFrame #queuePanel .army-contract{align-self:stretch}
 #managementFrame #shopPanel .shop-card .card-name{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 #managementFrame #shopPanel .shop-card .shop-card-actions{margin-top:auto;min-height:44px}
 #managementFrame #shopPanel .shop-card-actions>button{min-height:44px}
-#managementFrame #queuePanel .army-card-inspect{flex:1}
+
 @media(max-height:600px) and (orientation:landscape){
  #managementFrame #queuePanel .panel-head>div:first-child{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
  #managementFrame #queuePanel .army-muster-strip{position:static;inset:auto;width:auto;height:auto;min-height:34px;padding:4px 12px;gap:10px;pointer-events:auto;background:#1d1820;border-bottom:1px solid #bc945555}
@@ -119,4 +120,40 @@
 @media(max-height:600px) and (orientation:landscape){
  #managementFrame #intro .preparation-shell{position:static;overflow:visible}
  #managementFrame #intro .preparation-shell>.game-shell-nav{z-index:5}
+}
+
+/* Landscape text-space contract: global frame geometry stays shared, while
+   Build reserves its real secondary rail and content-sized cards keep labels. */
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame>#skillsPanel{padding-left:148px}
+ #managementFrame>#skillsPanel>.panel-head{margin-left:-148px}
+ #managementFrame>#skillsPanel>.deck-workspace-nav{left:68px;width:80px}
+ #managementFrame #skillsPanel .loadout-slot-grid{grid-template-columns:repeat(auto-fit,minmax(min(92px,100%),1fr));grid-auto-rows:max-content;align-items:stretch}
+ #managementFrame #skillsPanel .loadout-slot-grid>.loadout-slot{height:auto;min-height:128px;padding:20px 6px 8px;gap:5px}
+ #managementFrame #skillsPanel .loadout-slot-art{height:36px;min-height:36px;flex:none}
+ #managementFrame #skillsPanel .loadout-slot-label,#managementFrame #skillsPanel .loadout-slot-identity{width:100%;min-height:0;max-height:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:12px;line-height:1.35;flex:none}
+ /* Region names and progression labels wrap in a wider rail. The rail itself
+    scrolls; individual buttons never crop their own text into ellipses. */
+ #managementFrame #campaignPanel .atlas-regions{width:144px;grid-template-rows:repeat(4,max-content);align-content:start}
+ #managementFrame #campaignPanel .atlas-regions button{height:auto;min-height:64px;align-items:center}
+ #managementFrame #campaignPanel .atlas-regions span{flex:1;min-width:0}
+ #managementFrame #campaignPanel .atlas-regions strong{white-space:normal;overflow-wrap:anywhere}
+ #managementFrame #campaignPanel .atlas-regions small{white-space:normal;overflow:visible;text-overflow:clip;font-size:12px;line-height:1.35}
+ #managementFrame #campaignPanel .atlas-workspace{margin-left:156px}
+}
+/* Skirmish previously scrolled at its outer panel. The shared frame must stay
+   fixed, so its real body now owns scrolling all the way to Prepare/Cancel. */
+#managementFrame #skirmishWorkshopHost{flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+#managementFrame #skirmishReplaceConfirm{flex:none;min-height:0;max-height:calc(100% - 44px);overflow:auto;padding:12px;box-sizing:border-box}
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #skillsPanel .loadout-refine-sheet .ability-filters{display:flex;flex-wrap:wrap}
+ #managementFrame #skillsPanel .loadout-refine-sheet .ability-filters>button{flex:1 1 112px;min-width:0;min-height:44px;height:auto;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+}
+/* Bounded stopgap for the current Hall's narrow destination table. A separate
+   player-home redesign will replace this legacy table, not inherit its layout. */
+@media(max-width:900px) and (max-height:600px) and (orientation:landscape){
+ #managementFrame #intro .hall-atlas-board .hub-destinations{grid-template-columns:repeat(2,minmax(0,1fr));height:auto;min-height:260px;padding:18px 12px;gap:12px}
+ #managementFrame #intro .hall-atlas-board .hub-destinations>button.hall-realm{height:auto;min-height:120px;min-width:0}
+ #managementFrame #intro .hall-atlas-board .hub-destinations strong{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+ #managementFrame #intro .hall-atlas-board .hub-destinations small,#managementFrame #intro .hall-atlas-board .hub-destinations span{max-width:100%;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
 }

@@ -1,6 +1,6 @@
 {
-  "updated": "2026-10-04T19:30:00Z",
-  "stage": "shared-frame-native-follow-through",
+  "updated": "2026-10-04T20:15:30Z",
+  "stage": "landscape-content-readability-repair",
   "internal_tests_passing": 2382,
   "campaign_layouts": 30,
   "skill_families": 25,
@@ -9,13 +9,14 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build88 native shared-frame/navigation and account presentation acceptance",
+    "Build89 populated/empty/max-owned/long-label native content acceptance before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
     "Original-runtime comparison",
     "Independent real-provider and cloud-save acceptance beyond the player-reported first sign-in and saved slot",
-    "Production recovery and operational acceptance beyond the deployment preparation checks"
+    "Production recovery and operational acceptance beyond the deployment preparation checks",
+    "Structural Hall player-home and scalable campaign browsing follow-through; no future stages or PvP implied"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
@@ -53,7 +54,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 88,
+  "build": 89,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -72,6 +73,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build87 passed2412 canonical and2420 portable checks but native testing found Hall rail positioning and active navigation visibility defects. Build88 corrects those two observed issues, restores the concise Hall header, and completes return-label consistency. Final88 gate is recorded separately in the release receipt; native acceptance is separate. All40 gameplay engine modules, save formats, backend protocol and transfer safeguards remain unchanged. No automatic upload or migration. Accounts remain runtime-host gated; enabled custom deployment reports a first successful user sign-in and saved cloud slot, not complete production acceptance. internal_tests_passing belongs to internal_tests_build.",
+  "test_evidence": "Build88 passed2416 canonical and2424 portable/CI but subsequent independent populated-content audit found critical Army/Build/Skirmish cascade regressions; custom frontend was rolled back to86 with backend unchanged. Build89 restores content-sized Army rows and native compact cards, reserves both Build rails, gives Skirmish an explicit body scroll owner, and wraps readable slot/region/refinement/Hall text in more space. All40 engine modules and all cloud-account files remain byte-identical to88. Final89 gate is recorded separately; native fullaffected content cases must pass before custom forwarding. No saveformat, backendprotocol, authentication or data-transfer changes. internal_tests_passing belongs to internal_tests_build.",
   "internal_tests_build": 86
 }

@@ -138,6 +138,8 @@ Management geometry belongs to the shared management frame and its last-loaded s
 
 Capture the previous workspace navigation scroll before hiding it; after restoration and resize, reveal the active route inside its own rail. Keep the Hall inner wrapper from establishing a competing absolute-position anchor, explicitly retain the Hall heading, and stack Catalog titles above subtitles.
 
+Army content rows must size to their actual cards. In short-landscape Build, reserve both shared and secondary rails and allow real labels to wrap without hiding facts. Fixed Skirmish frames must have an explicit shrinking body scroller. Native acceptance must inspect empty, populated and maximum-owned affected content and full action rectangles, including actual long names; passing shared-frame geometry alone is insufficient.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.
