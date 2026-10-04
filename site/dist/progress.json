@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T01:09:10.241316+00:00",
-  "stage": "finite-levies-and-controlled-battle-lab",
-  "internal_tests_passing": 1867,
+  "updated": "2026-10-04T02:00:09.250549+00:00",
+  "stage": "finite-levies-and-temporary-return-correction",
+  "internal_tests_passing": 1883,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -42,7 +42,7 @@
     "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 67,
+  "build": 68,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",

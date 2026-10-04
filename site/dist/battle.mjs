@@ -120,7 +120,7 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='67';
+const GAME_BUILD='68';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null;
@@ -832,11 +832,25 @@ function renderTrainingEntry({force=false}={}){
  for(const id of ['#openTesting','#introTesting','#pauseTesting','#endingTesting'])$(id).classList[testingMode&&!guided?'remove':'add']('hidden');
  for(const id of ['#introSave','#introLoad','#introProfiles','#saveGame','#loadGame','#openProfiles'])$(id).disabled=guided;
 }
+/** Temporary fields replace a few shared labels without replacing the origin
+ * battle. Keep their exact presentation too; restoring it never steps combat. */
+function captureTemporaryIdentity(){
+ const selectors=['#battleTitle','#testModeBadge','#combatBattleTitle','#combatEnemyState','#enemyHud','#waveHud','#viewStatus','#batteryObjectiveBrief','#flagHud','#saveStatus','#settingsSaveNote','#autoHelp'];
+ const standard=$('.live-battle-standard'),controls=['#introSave','#introLoad','#introProfiles','#saveGame','#loadGame','#openProfiles','#endingSave','#endingLoad','#endingProfiles'].map(selector=>({selector,disabled:$(selector).disabled}));
+ return {controls,fields:selectors.map(selector=>{const node=$(selector);return {selector,text:node.textContent,aria:node.getAttribute('aria-label'),hidden:node.classList.contains('hidden')};}),standard:{aria:standard.getAttribute('aria-label'),objective:standard.dataset.objective}};
+}
+function restoreTemporaryIdentity(identity){
+ if(!identity)return;
+ for(const control of identity.controls)$(control.selector).disabled=control.disabled;
+ for(const field of identity.fields){const node=$(field.selector);node.textContent=field.text;node.classList[field.hidden?'add':'remove']('hidden');if(field.aria===null)node.removeAttribute('aria-label');else node.setAttribute('aria-label',field.aria);}
+ const standard=$('.live-battle-standard');if(identity.standard.aria===null)standard.removeAttribute('aria-label');else standard.setAttribute('aria-label',identity.standard.aria);
+ if(identity.standard.objective===undefined)delete standard.dataset.objective;else standard.dataset.objective=identity.standard.objective;
+}
 /** Disposable synthetic load borrows only the scene. Never register this attempt
  * as a destination session, campaign checkpoint or account-restorable profile. */
 function enterStressField(preset){
  if(!testingMode||temporarySessionActive()||openPanelId!=='#testingPanel'||battle.outcome&&!battle.summary||!['standard','veteran'].includes(preset))return false;
- const origin={profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview,trainingRun,trainingSandbox,trainingReturnDestination,activeDestination,selectedDestination,testingMode,demoMode,expeditionMode,skirmishMode,recruitShowcase,skirmishDescriptor,hubOpen,panelResume,panelFocus,pauseMessage,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout,loadoutOrigin,editorBar,title:document.title,trajectory:$('#trajectory').value,shooterAngleMode:battle.shooter.angleMode,showAssist:$('#showAssist').checked,profileKind:$('#renderProfileKind').value,returnFocus:preset==='veteran'?'#stressVeteran':'#stressStandard'};
+ const origin={profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview,trainingRun,trainingSandbox,trainingReturnDestination,activeDestination,selectedDestination,testingMode,demoMode,expeditionMode,skirmishMode,recruitShowcase,skirmishDescriptor,hubOpen,panelResume,panelFocus,pauseMessage,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout,loadoutOrigin,editorBar,title:document.title,uiIdentity:captureTemporaryIdentity(),trajectory:$('#trajectory').value,shooterAngleMode:battle.shooter.angleMode,showAssist:$('#showAssist').checked,profileKind:$('#renderProfileKind').value,returnFocus:preset==='veteran'?'#stressVeteran':'#stressStandard'};
  clearInput();cancelPendingImport();loadoutDrag.cancel();deckPresets.close();if(bindingLayout&&!bindingLayout.closed)bindingLayout.close();liveSkills?.dispose();
  stressFieldOrigin=origin;stressFieldPreset=preset;testingProtection=false;testingCollision=false;angle=20;power=100;
  setup();document.title='Castledecks · Synthetic stress field';renderStressField(document,battle);$('#pauseBattleReport').focus?.();return true;
@@ -852,7 +866,7 @@ function exitStressField(){
  syncSessionMenus();document.title=saved.title;$('#difficulty').value=profile.difficulty;$('#aimMode').value=profile.shootingMode;$('#battleAngle').value=String(angle);$('#battleAngleOut').textContent=angle+'°';$('#battlePower').value=String(power);$('#trajectory').value=saved.trajectory;$('#showAssist').checked=saved.showAssist;$('#battleFire').classList[saved.showAssist?'remove':'add']('hidden');$('#resumeGame').disabled=false;$('#renderProfileKind').value=saved.profileKind;$('#batteryObjectiveBrief').classList.add('hidden');
  attachLiveSkills();updatePowerMode();battle.shooter.angleMode=saved.shooterAngleMode;barSignature='';drawHotbar();now=performance.now();lastPaint=null;
  $('#intro').classList[hubOpen?'remove':'add']('hidden');$('#ending').classList[battle.summary&&!hubOpen?'remove':'add']('hidden');renderHub();showTesting();
- ({panelResume,panelFocus,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout}=saved);$('#testingStatus').textContent='Synthetic field discarded. Your original profile and battlefield are unchanged.';renderStressField(document,battle);$(saved.returnFocus).focus?.({preventScroll:true});syncPause();visualDirty=true;return true;
+ ({panelResume,panelFocus,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout}=saved);$('#testingStatus').textContent='Synthetic field discarded. Your original profile and battlefield are unchanged.';renderStressField(document,battle);$(saved.returnFocus).focus?.({preventScroll:true});syncPause();restoreTemporaryIdentity(saved.uiIdentity);visualDirty=true;return true;
 }
 $('#stressStandard').onclick=()=>enterStressField('standard');$('#stressVeteran').onclick=()=>enterStressField('veteran');
 $('#stressReset').onclick=()=>{if(openPanelId==='#testingPanel')resetStressField();};$('#stressReturn').onclick=()=>{if(openPanelId==='#testingPanel')exitStressField();};
@@ -864,7 +878,7 @@ function enterUnitTrial(id){
  const run=createUnitTrial(id,createArmorySnapshot(profile));
  invalidateRenderProfile();
  clearInput();cancelPendingImport();loadoutDrag.cancel();if(bindingLayout&&!bindingLayout.closed)bindingLayout.close();liveSkills?.dispose();
- cardPracticeOrigin={profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview,trainingRun,trainingSandbox,trainingReturnDestination,activeDestination,selectedDestination,testingMode,demoMode,expeditionMode,skirmishMode,recruitShowcase,skirmishDescriptor,hubOpen,panelResume,panelFocus,pauseMessage,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout,loadoutOrigin,editorBar,title:document.title,trajectory:$('#trajectory').value,shooterAngleMode:battle.shooter.angleMode,showAssist:$('#showAssist').checked};
+ cardPracticeOrigin={profiles,profile,battle,clock,combatPoses,specialMotion,started,testingProtection,testingCollision,angle,power,notices,portraitCenter,portraitOverview,trainingRun,trainingSandbox,trainingReturnDestination,activeDestination,selectedDestination,testingMode,demoMode,expeditionMode,skirmishMode,recruitShowcase,skirmishDescriptor,hubOpen,panelResume,panelFocus,pauseMessage,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout,loadoutOrigin,editorBar,title:document.title,uiIdentity:captureTemporaryIdentity(),trajectory:$('#trajectory').value,shooterAngleMode:battle.shooter.angleMode,showAssist:$('#showAssist').checked};
  activeDestination=selectedDestination='training';testingMode=true;demoMode=expeditionMode=skirmishMode=recruitShowcase=false;
  trainingRun=run;trainingSandbox=null;trainingReturnDestination=null;angle=20;power=100;$('#trajectory').value='1';$('#showAssist').checked=false;
  setup(1);trainingCoach.reset();document.title='Castledecks · '+SKILLS[id].name+' trial';begin();renderTrainingEntry({force:true});return true;
@@ -880,7 +894,7 @@ function exitUnitTrial(){
  $('#intro').classList[hubOpen?'remove':'add']('hidden');$('#ending').classList[battle.summary&&!hubOpen?'remove':'add']('hidden');renderHub();
  shop();({panelResume,panelFocus,loadoutReturnPanel,armoryReturnFromLoadout,armyReturnFromLoadout}=saved);
  $('#closeShop').textContent=loadoutReturnPanel?'Back to loadout':hubOpen?'Back to lobby':battle.summary?'Back to results':'Back to Pause';
- $('#shopStatus').textContent='Field trial closed. Your cards, gold and battlefield are unchanged.';$('#shopTryCard')?.focus?.({preventScroll:true});syncPause();visualDirty=true;return true;
+ $('#shopStatus').textContent='Field trial closed. Your cards, gold and battlefield are unchanged.';$('#shopTryCard')?.focus?.({preventScroll:true});syncPause();restoreTemporaryIdentity(saved.uiIdentity);visualDirty=true;return true;
 }
 function enterGuidedTraining(){
  if(stressFieldOrigin||activeDestination!=='training'||trainingRun)return;
