@@ -1,6 +1,6 @@
 {
-  "updated": "2026-10-04T07:44:53.483357+00:00",
-  "stage": "portrait-build-card-rows-candidate",
+  "updated": "2026-10-04T08:13:19.115860+00:00",
+  "stage": "portrait-build-row-budget-correction",
   "internal_tests_passing": 2234,
   "campaign_layouts": 30,
   "skill_families": 25,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 75 exact gate and native complete portrait card/fact/Inspect, scroll and long return-label acceptance",
+    "Build 76 exact gate and native full portrait pagination/control clearance after row-budget correction",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -47,7 +47,7 @@
     "Build74 native740x320 collection201px with complete HorseRiders deployment/Inspect, all25owned-card pages, support filters, real drag swap and keyboard restore;915x360 and separate portrait castle scrolling."
   ],
   "latest_gameplay_fix": "Causeway Hold accepted: real ground occupation, interrupted progress retained, finite cleanup and safe home flag. Candidate74 makes short-landscape Build use one collection scroller instead of a clipped nested card viewport.",
-  "build": 75,
+  "build": 76,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -66,5 +66,5 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted74 canonical2234 and portable2242 checks passed, exact GitHub CI/container188file proof and native short-landscape collection201px/full-card/search/page/filter/drag/keyboard checks. Candidate75 has7new structural/actual-UI checks; final combined/native acceptance pending."
+  "test_evidence": "Accepted74 canonical2234/portable2242 passed. Candidate75 canonical2241/portable2249 passed but native portrait pagination exposed old fixed row minima extending beneath the footer; not accepted. Candidate76 corrects only the portrait row budget and metadata, with final gate/native pending."
 }

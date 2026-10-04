@@ -209,3 +209,10 @@
  #skillsPanel.game-management .loadout-unit-deployment>span:last-child small{display:inline;margin:0;font:inherit;letter-spacing:0;text-transform:none}
  #skillsPanel.game-management .loadout-card-tools>button,#skillsPanel.game-management .loadout-card-tools .ability-drag-handle{height:44px;min-height:44px}
 }
+
+/* The portrait grid must fit its actual flex allocation, including short
+   screens and the footer. Positive row minima previously overflowed by30px
+   at360x640 and clipped pagination even at the end of its own scroller. */
+@media(max-width:620px) and (orientation:portrait){
+ #skillsPanel.game-management .loadout-workspace{grid-template-rows:minmax(0,.65fr) minmax(0,1fr)}
+}

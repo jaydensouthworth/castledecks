@@ -43,6 +43,7 @@ for(const [width,height]of [[360,640],[412,780],[620,900]])test(`portrait ${widt
   assert.equal(placement['overflow-x'],'auto',JSON.stringify(state));assert.equal(placement['overflow-y'],'auto',JSON.stringify(state));assert.equal(placement['min-height'],'0');
   assert.equal(inventory['overflow-x'],'auto');assert.equal(inventory['overflow-y'],'auto');assert.equal(inventory['overscroll-behavior'],'contain');assert.equal(cards['overflow-y'],'visible');assert.equal(cards['min-height'],'0');
   if(castle||help)assert.equal(placement['overscroll-behavior'],'contain');
+  assert.equal(cascade('loadout-workspace',state)['grid-template-rows'],'minmax(0,.65fr) minmax(0,1fr)');
  }
 });
 test('disclosure correction only applies inside fixed portrait grid and outranks each legacy open selector without important',()=>{

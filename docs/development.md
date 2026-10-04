@@ -102,6 +102,8 @@ Compact illustrated portrait rows are scoped to Build at widths up to 620 pixels
 
 Search, paging, inspection, drag edge scrolling, keyboard placement and rotation retain their existing state callbacks and node identities. Header resource reservation must accommodate the longest current return action and allow factual wrapping without intercepting pointer input. Verify real pixels, current long labels and native interactions; source selectors alone are not clearance evidence. Catalog and desktop remain separate from this bounded presentation change.
 
+Portrait Build tracks must share the actual available flex height rather than forcing positive minimums beyond the footer. The final scoped rule uses zero-minimum fractional tracks (.65fr/1fr), with placement and inventory keeping independent scroll ownership. Verify the complete Previous/Next rectangles at maximum collection scroll in the native browser, including safe-bottom insets; a button present in the DOM or partly clickable is not a full-target pass.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

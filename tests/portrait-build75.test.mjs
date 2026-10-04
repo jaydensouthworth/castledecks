@@ -3,8 +3,8 @@ import {loadGameUI} from './helpers/game-ui-harness.mjs';
 const css=readFileSync(new URL('../site/dist/game-shell.css',import.meta.url),'utf8'),portrait=css.slice(css.indexOf('/* Portrait Build uses'));
 // Structural cascade guards and actual UI callbacks; native painting is separate.
 test('portrait compact cards are scoped to Build at620px and preserve the independent placement grid',()=>{
- assert.match(portrait,/@media\(max-width:620px\) and \(orientation:portrait\)/);assert.equal((portrait.match(/@media/g)||[]).length,1);assert.doesNotMatch(portrait,/#shopPanel|\.shop-card|\.loadout-placement\{/);
- assert.match(css,/grid-template-rows:minmax\(170px,\.72fr\) minmax\(235px,1fr\)/);
+ assert.match(portrait,/@media\(max-width:620px\) and \(orientation:portrait\)/);assert.equal((portrait.match(/@media/g)||[]).length,2);assert.doesNotMatch(portrait,/#shopPanel|\.shop-card|\.loadout-placement\{/);
+ assert.match(css,/grid-template-rows:minmax\(0,\.65fr\) minmax\(0,1fr\)/);
 });
 test('portrait collection scrolls whole card rows with real44px controls and narrow-safe columns',()=>{
  assert.match(portrait,/grid-template-rows:44px max-content 44px;align-content:start;overflow:auto;overscroll-behavior:contain/);
@@ -30,4 +30,12 @@ for(const [width,height] of [[360,640],[412,780]])test(`portrait${width}x${heigh
 test('rotation keeps both scroll owner nodes and the selected card without modifying the loadout',async t=>{
  const ui=await editor(t,360,640),inv=ui.get('skillsPanel').querySelector('.loadout-inventory'),place=ui.get('skillsPanel').querySelector('.loadout-placement');ui.click('owned-fireArrow');inv.scrollTop=240;place.scrollTop=120;const before=ui.battle.profile.skills.map(s=>s.binding);
  for(const [width,height]of [[740,320],[412,780],[915,360],[360,640]]){ui.window.innerWidth=width;ui.window.innerHeight=height;ui.dispatch(ui.window,'resize');ui.frames();assert.equal(ui.get('skillsPanel').querySelector('.loadout-inventory'),inv);assert.equal(ui.get('skillsPanel').querySelector('.loadout-placement'),place);assert.equal(ui.get('owned-fireArrow').getAttribute('aria-pressed'),'true');assert.deepEqual(ui.battle.profile.skills.map(s=>s.binding),before);}
+});
+
+test('final portrait grid rule overrides positive minima so neither scroller can extend under the footer',()=>{
+ const rules=[...css.matchAll(/#skillsPanel\.game-management \.loadout-workspace\{([^}]*)\}/g)];assert.ok(rules.length>1);
+ assert.equal(rules.at(-1)[1],'grid-template-rows:minmax(0,.65fr) minmax(0,1fr)');
+ const tail=css.slice(css.lastIndexOf('/* The portrait grid must fit'));assert.match(tail,/@media\(max-width:620px\) and \(orientation:portrait\)/);assert.doesNotMatch(tail,/minmax\([1-9]\d*px/);
+ // Structural fractional-budget arithmetic, not a rendering measurement.
+ for(const available of [358,375,510,517]){const placement=available*.65/1.65,inventory=available/1.65;assert.ok(Math.abs(placement+inventory-available)<1e-9);assert.ok(placement>44&&inventory>44);}
 });
