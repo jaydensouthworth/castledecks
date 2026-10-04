@@ -314,3 +314,115 @@
  .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"],
  .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-context button{height:48px;min-height:48px}
 }
+
+/* Adaptive short-landscape dock. Company commands remain adjacent, explicit
+   44px controls; the selected-card caption no longer fills their whole row.
+   The container gates below depend only on viewport and card composition. */
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal { --lh-cell:44px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)) { width:100%; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-slot-list { gap:2px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-action-bar { gap:6px; padding:1px 4px; min-height:52px; width:max-content; margin-left:auto; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-slot,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-bar-cycle { height:48px;min-height:48px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-bar-cycle { width:44px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-slot { gap:0; padding:1px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-slot[aria-pressed="true"] { padding:0; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-slot .skill-icon { width:20px; height:20px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-short-name { flex:none; font-size:10px; line-height:12px; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)) .live-arsenal-caption {
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end;
+  width:calc(100% - 209px); min-height:20px; margin-top:24px;
+  gap:2px; padding:1px 5px 3px;
+ }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal-caption:has(#liveArmyOrder:not(.hidden)) .live-selected-caption { width:100%; }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)) #liveArmyOrder {
+  position:absolute; right:110px; bottom:55px; width:94px; min-width:94px;
+ }
+ .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)) #liveRallyPosition {
+  position:absolute; right:5px; bottom:55px; width:100px;
+ }
+}
+
+/* 46n + 263 = n×44px cards + gaps + page control + frame + 205px bay.
+   Two pixels of spare tolerance keep native fractional geometry inside. */
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:311px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(2))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(2))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(2))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(2))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:357px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(3))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(3))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(3))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(3))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:403px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(4))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(4))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(4))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(4))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:449px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(5))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(5))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(5))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(5))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:495px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(6))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(6))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(6))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(6))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:541px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(7))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(7))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(7))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(7))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:587px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(8))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(8))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(8))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(8))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:633px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(9))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(9))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(9))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(9))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:679px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(10))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(10))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(10))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(10))) #liveRallyPosition { bottom:4px; }
+ }
+}
+@media (orientation:landscape) and (min-width:700px) and (max-width:1000px) and (max-height:500px) {
+ @container live-lane (min-width:725px) {
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(11))) { padding-right:205px; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(11))) .live-arsenal-caption { width:100%; margin-top:0; }
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(11))) #liveArmyOrder,
+  .live-hud:not(:has(.live-battle-standard[data-objective="intercept-battery"])) .live-arsenal:has(#liveArmyOrder:not(.hidden)):has(#liveRallyPosition:not(.hidden)):not(:has(#hotbar > :nth-child(11))) #liveRallyPosition { bottom:4px; }
+ }
+}

@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T16:15:16.312403+00:00",
-  "stage": "scout-reading-space",
-  "internal_tests_passing": 2358,
+  "updated": "2026-10-04T17:37:23.703760+00:00",
+  "stage": "adaptive-short-landscape-dock",
+  "internal_tests_passing": 2366,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build85 exact merged automated gate and native scout reading/return acceptance",
+    "Build86 exact canonical gate and native sparse/full-kit adaptive landscape acceptance; full-kit aim crowding remains open",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -53,7 +53,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 85,
+  "build": 86,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -72,6 +72,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted83 canonical2358 and exact portable CI2366 passed; native portrait label containment accepted. Published84 canonical2365 and portable2373 passed, but native360x640 scout content868.5px was squeezed into55.6px viewport and149px width. Build85 corrects scout width and compact reading state with a sticky close-to-preparation exit and preserved scroll/focus. Focused26 checks passed before metadata integration. Exact85 gate and native acceptance pending. internal_tests_passing belongs to internal_tests_build. All40 engine modules unchanged.",
-  "internal_tests_build": 83
+  "test_evidence": "Accepted85 canonical2366 and exact portable CI2374 passed, with native Scout reading/return acceptance. Build86 is a CSS-only adaptive short-landscape dock plus release metadata; isolated final prototype2381 combined checks and88 focused checks passed. Exact merged86 gate, publication and native acceptance remain pending. At740x320 safe44/24, source model retains two full-kit command interceptions; sparse pages of at most six cards fit the command pair alongside the skills. Caption envelope reduction is not an input-interception claim. Battery Intercept, portrait and desktop outside the bounded media query retain accepted layout. All40 engine modules, HUD tags and diagnostic math are unchanged. internal_tests_passing belongs to internal_tests_build.",
+  "internal_tests_build": 85
 }
