@@ -97,7 +97,7 @@ test('live control leaves an in-progress native choice alone during unchanged fr
 test('live selection guards paused, inactive, preparation, hidden, guided, stale and settled flows',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=demo'});ui.click('start');ui.frames();
  for(const mutate of [x=>{x.state.active=false;},x=>{x.state.started=false;},x=>{x.state.visible=false;},x=>{x.state.readOnly=true;},x=>{x.state.battle.paused=true;},x=>{x.state.battle=fresh();},x=>{x.state.battle.hero.hp=0;},x=>{x.state.battle.outcome='victory';},x=>{x.state.battle.summary={outcome:'defeat'};}]){
-  const live=mountLive(ui),original=fresh();live.state.battle=original;live.control.render();mutate(live);live.choose('forward');assert.equal(original.armyOrder.mode,'advance');assert.equal(live.state.battle.armyOrder.mode,'advance');assert.equal(live.changes,0);assert.equal(live.select.value,'rear');
+  const live=mountLive(ui),original=fresh();live.state.battle=original;live.control.render();mutate(live);live.choose('forward');assert.equal(original.armyOrder.mode,'advance');assert.equal(live.state.battle.armyOrder.mode,'advance');assert.equal(live.changes,0);assert.equal(live.select.value,'current');
  }
 });
 test('live selector and panel fit existing 390px portrait / 740px landscape source constraints',()=>{

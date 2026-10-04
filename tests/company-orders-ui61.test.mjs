@@ -18,7 +18,7 @@ test('Army selector changes focus only; existing controls command the visibly se
 test('split orders are disclosed on both existing live controls; R explicitly advances both',async t=>{
  const ui=await prepare(t),b=ui.battle;selectGroup(ui,'frontline');line(ui,'forward');selectGroup(ui,'support');line(ui,'rear');ui.click('closeQueue');ui.click('resumeGame');ui.frames();
  assert.equal(ui.get('liveArmyOrderLabel').textContent,'Split');assert.match(ui.get('liveArmyOrder').getAttribute('aria-label'),/Split company orders.*All ground.*Release both companies/);
- const select=ui.get('liveRallyPosition').querySelector('select');assert.equal(select.value,'split');assert.match(select.getAttribute('aria-label'),/Split company orders.*all ground.*replace both/);
+ const select=ui.get('liveRallyPosition').querySelector('select');assert.equal(select.value,'current');assert.match(select.getAttribute('aria-label'),/Companies: Split orders.*all-ground button always targets both/);
  ui.get('battlefield').focus();ui.key('keydown','r');ui.key('keyup','r');assert.equal(b.armyOrder.mode,'advance');for(const g of ['frontline','support'])assert.equal(b.armyOrder.groups[g].mode,'advance');assert.equal(b.paused,false);
 });
 test('live line selector replaces both split orders without changing resources, time, pause or shot queue',async t=>{
@@ -43,8 +43,8 @@ test('group commands retain preparation, paused, inactive, guided, outcome and s
  }
 });
 test('split live display preserves uncommitted native choice during repeated render and rejects invalid option',async t=>{
- const ui=await prepare(t),root=ui.document.createElement('div');ui.document.appendChild(root);const b=ui.battle;b.setArmyOrder('rally','rear','support');b.paused=false;const state={battle:b,active:true,started:true,readOnly:false,visible:true};const view=createLiveRallyPositionUI({root,getState:()=>state});view.render();const select=root.querySelector('select');assert.equal(select.value,'split');select.value='forward';for(let i=0;i<100;i++)view.render();assert.equal(select.value,'forward');assert.equal(b.armyOrder.mode,'split');ui.dispatch(select,'change');assert.equal(b.armyOrder.mode,'rally');assert.equal(b.armyOrder.groups.support.position,'forward');
- select.value='split';ui.dispatch(select,'change');assert.equal(b.armyOrder.mode,'rally');assert.equal(select.value,'forward');
+ const ui=await prepare(t),root=ui.document.createElement('div');ui.document.appendChild(root);const b=ui.battle;b.setArmyOrder('rally','rear','support');b.paused=false;const state={battle:b,active:true,started:true,readOnly:false,visible:true};const view=createLiveRallyPositionUI({root,getState:()=>state});view.render();const select=root.querySelector('select');assert.equal(select.value,'current');select.value='forward';for(let i=0;i<100;i++)view.render();assert.equal(select.value,'forward');assert.equal(b.armyOrder.mode,'split');ui.dispatch(select,'change');assert.equal(b.armyOrder.mode,'rally');assert.equal(b.armyOrder.groups.support.position,'forward');
+ select.value='split';ui.dispatch(select,'change');assert.equal(b.armyOrder.mode,'rally');assert.equal(select.value,'current');
 });
 test('split Army control still uses the remapped order key and announces all-ground override',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=demo'});ui.click('introSettings');ui.click('openControls');ui.click('control-armyOrder');ui.key('keydown','h');ui.click('applyControls');ui.click('closeSettings');ui.click('start');ui.frames();const b=ui.battle;b.setArmyOrder('rally','rear','support');ui.frames();assert.match(ui.get('liveArmyOrder').getAttribute('aria-label'),/Split.*All ground.*H/);

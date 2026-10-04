@@ -40,3 +40,15 @@
 #queuePanel .army-orders{grid-template-columns:116px 165px minmax(210px,1fr) 32px}#queuePanel .army-order-heading{min-width:0}#queuePanel .army-order-heading span{display:none}
 @media(max-height:600px) and (orientation:landscape){#queuePanel .army-orders{grid-template-columns:110px 144px minmax(195px,1fr) 32px}}
 @media(max-width:620px) and (orientation:portrait){#queuePanel .army-orders{grid-template-columns:110px minmax(0,1fr) 32px}}
+
+/* The existing line slot now carries complete company commands. The visual
+   two-line state stays legible at91px while the real native SELECT owns input,
+   full option wording, focus and platform picker behavior. No extra HUD row. */
+#liveRallyPosition{position:relative;width:100px;height:44px;border-radius:4px;background:#30222d;box-shadow:inset 0 0 0 1px #b89862}
+.live-company-order-readout{box-sizing:border-box;position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:4px 16px 4px 7px;color:#ebd7ad;text-shadow:none;pointer-events:none}
+.live-company-order-readout strong{font:600 11px/1.1 system-ui}.live-company-order-readout span{font:10px/1.1 system-ui;white-space:nowrap}.live-company-order-readout i{position:absolute;right:5px;top:14px;font:12px/1 system-ui;font-style:normal}
+#liveRallyPosition[data-holding] .live-rally-position-select{position:absolute;inset:0;z-index:1;width:100%;color:transparent;background:transparent;border-color:transparent;box-shadow:none;text-shadow:none;appearance:none;-webkit-appearance:none}
+#liveRallyPosition .live-rally-position-select option{color:#ebd7ad;background:#30222d;font:12px system-ui}
+#liveRallyPosition[data-holding=true]{background:#213b41;box-shadow:inset 0 0 0 1px #a4d7c9}#liveRallyPosition[data-holding=true] .live-company-order-readout{color:#caffee}
+#liveRallyPosition:has(select:disabled) .live-company-order-readout{opacity:.55}
+@media(max-width:620px) and (orientation:portrait){#liveRallyPosition{width:91px}.live-company-order-readout{padding-left:6px;padding-right:12px}.live-company-order-readout strong{font-size:10px}.live-company-order-readout i{right:4px}}

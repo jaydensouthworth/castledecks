@@ -108,6 +108,8 @@ Archer liveness checks apply when acquiring a new target on either team. Do not 
 
 The optional owned-card Inspector comparison reads current visible slots and wrappers. Keep replacement and swap semantics distinct: swapping equipped cards does not change deck membership or army-job coverage. Revalidate the source, target, ownership, layout and profile before arming a reviewed destination; stale or dismissed handlers must not overwrite current intent. Only compare metrics sharing key, unit and scope, and never infer mechanics from copied artwork. Keep actual placement in the existing action-bar path.
 
+The live company picker issues complete named commands on native SELECT change. Preserve native arrow/Enter/Escape semantics and keep focus in the picker until the player exits; global battle shortcuts remain blocked while it owns focus. Current-state labels must read the real order snapshot, not retain last-command text. Revalidate shown and interaction battle identities before dispatch. The separate all-ground shortcut always targets both companies. An issued-order toast owns only its matching displayed text, so external orders/outcomes clear stale receipts without hiding unrelated warnings. Keep engine rules and the existing 44-pixel input slot unchanged.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.
