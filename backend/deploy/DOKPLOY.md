@@ -1,6 +1,6 @@
 # Dokploy candidate setup
 
-This is a separate Compose application on `backend-go-staging`. Do not change the existing static application's branch, Dockerfile or domain assignment during preparation. The new gateway image copies the repository's existing `site/dist` bytes; it does not enable the frontend account feature.
+This is a separate Compose application on `backend-go-staging`. Do not change the existing static application's branch, Dockerfile or domain assignment during preparation. The new gateway image copies the repository's existing `site/dist` bytes; the gateway alone adds a runtime flag to the battle page. It defaults off and follows ACCOUNT_ROUTES.
 
 ## First deploy: static only
 
@@ -45,6 +45,12 @@ With explicit approval for the domain routing change, use this Compose applicati
 
 Use Preview Compose to verify that `gateway` retains the private network shared with `accounts` plus Dokploy's ingress network. Accounts must stay off the public ingress. Dokploy's [Compose Domains guide](https://docs.dokploy.com/docs/core/docker-compose/domains) explains native domain routing and Preview Compose.
 
-Only after these checks set `ACCOUNT_ROUTES=true` and redeploy the gateway. Missing/unhealthy Go is a rollback condition: set routes false to restore static-only behavior. The existing frontend account flag still needs a separately coordinated activation. Verify the exact callback `https://castledecks.jaydensrealm.com/api/auth/google/callback`, real login/session behavior, actual trusted proxy path, account deletion/recovery and local-save origin migration before calling the system production-ready.
+Only after these checks set `ACCOUNT_ROUTES=true` and redeploy the gateway. Missing/unhealthy Go is a rollback condition: set routes false to restore static-only behavior. With routes true, a same-origin runtime script enables the existing Cloud saves control in the battle page. Reload the game after deployment, then open the Campaign vault. Main’s original static image has no flag and stays unchanged. Verify the exact callback `https://castledecks.jaydensrealm.com/api/auth/google/callback`, real login/session behavior, actual trusted proxy path, account deletion/recovery and local-save origin migration before calling the system production-ready.
 
 The candidate has no published host ports. Gateway health checks only static availability; Go has its own provider/database/journal readiness. API routing is never enabled automatically by merely entering credentials. The old public static application and its local saves remain available until an explicit migration choice.
+
+## Runtime flag, navigation and rollback
+
+Only the gateway image derives battle.html by adding one external script before battle.mjs. `/castledecks-runtime.js` contains a fixed boolean, never credential/environment/account values. It has `Cache-Control: no-store`, JavaScript MIME type and nosniff. The normal HTML revalidation policy remains. Both `/battle` and `/battle.html` load the absolute same-origin script before the game module, with no inline/eval requirement and no CSP relaxation. Existing tabs, including browser back/forward cache entries, keep their loaded state until reload; reload after changing the route flag. A routes-off gateway rejects API requests even if an older tab still shows controls. Guest/local data is not migrated or uploaded by enabling the control.
+
+Set ACCOUNT_ROUTES=false and redeploy to roll back API routing and write the flag false. Keep the old hostname available: its browser storage remains separate from the chosen domain. Actual Google login and browser UI behavior must still be verified; container checks establish the served configuration, ordering, cache headers and rollback, not a completed provider sign-in.
