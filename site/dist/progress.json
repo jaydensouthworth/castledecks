@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T17:37:23.703760+00:00",
-  "stage": "adaptive-short-landscape-dock",
-  "internal_tests_passing": 2366,
+  "updated": "2026-10-04T19:06:48Z",
+  "stage": "unified-management-and-cloud-save-ux",
+  "internal_tests_passing": 2382,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,13 +9,13 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build86 exact canonical gate and native sparse/full-kit adaptive landscape acceptance; full-kit aim crowding remains open",
+    "Build87 final combined regression gate and native shared-frame/account presentation acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
     "Original-runtime comparison",
-    "Google/provider setup and enabled account UI remain unverified and disabled",
-    "Inactive Go service schema compatibility before any provider activation"
+    "Independent real-provider and cloud-save acceptance beyond the player-reported first sign-in and saved slot",
+    "Production recovery and operational acceptance beyond the deployment preparation checks"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
@@ -53,7 +53,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 86,
+  "build": 87,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -72,6 +72,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted85 canonical2366 and exact portable CI2374 passed, with native Scout reading/return acceptance. Build86 is a CSS-only adaptive short-landscape dock plus release metadata; isolated final prototype2381 combined checks and88 focused checks passed. Exact merged86 gate, publication and native acceptance remain pending. At740x320 safe44/24, source model retains two full-kit command interceptions; sparse pages of at most six cards fit the command pair alongside the skills. Caption envelope reduction is not an input-interception claim. Battery Intercept, portrait and desktop outside the bounded media query retain accepted layout. All40 engine modules, HUD tags and diagnostic math are unchanged. internal_tests_passing belongs to internal_tests_build.",
-  "internal_tests_build": 85
+  "test_evidence": "Accepted86 passed2382 canonical and2390 portable CI checks with bounded native adaptive-dock acceptance. Build87 unifies management geometry and Hall navigation, standardizes card rows, and simplifies optional account/cloud-save presentation. The initial management-only gate passed2389 checks; the final combined account/layout gate is recorded in the release receipt; native acceptance is separate. No gameplay engine, save format, backend protocol, automatic upload or migration changes. Accounts remain runtime-host gated; enabled custom deployment reports a successful first user sign-in and saved cloud slot, not complete production acceptance. internal_tests_passing belongs to internal_tests_build.",
+  "internal_tests_build": 86
 }

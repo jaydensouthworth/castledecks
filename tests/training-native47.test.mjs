@@ -24,5 +24,5 @@ test('only live coach Loadout entry labels its actual return as guided practice'
  const ui=await loadGameUI(t,{search:'?mode=test&guide=1'});ui.click('start');ui.frames();for(let i=0;i<5;i++){ui.click('trainingSkip');ui.frames();}
  ui.click('trainingLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to guided practice');assert.equal(ui.get('closeSkills').getAttribute('aria-label'),'Back to guided practice');ui.click('closeSkills');ui.frames();assert.equal(ui.battle.paused,false);assert.equal(ui.visible('trainingCoach'),true);
  ui.click('battlePause');ui.click('pauseSkills');assert.equal(ui.get('closeSkills').textContent,'Back to Pause');ui.click('closeSkills');ui.frames();assert.equal(ui.battle.paused,true);assert.equal(ui.visible('pauseOverlay'),true);
- ui.click('pauseLobby');ui.click('introLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to lobby');ui.click('closeSkills');assert.equal(ui.visible('intro'),true);assert.equal(ui.battle.paused,true);
+ ui.click('pauseLobby');ui.click('introLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to hall');ui.click('closeSkills');assert.equal(ui.visible('intro'),true);assert.equal(ui.battle.paused,true);
 });

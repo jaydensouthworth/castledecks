@@ -26,7 +26,7 @@ test('all direct entry routes show a frozen player lobby and require one explici
 test('lobby Armory Loadout Army Settings and Save routes return without starting the demo',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=demo'}),b=ui.battle,before=snapshot(b);
  for(const [open,panel,close] of [['introArmory','shopPanel','closeShop'],['introLoadout','skillsPanel','closeSkills'],['introArmy','queuePanel','closeQueue'],['introSettings','settingsPanel','closeSettings'],['introSave','savePanel','closeSave']]){ui.click(open);assert.equal(ui.visible(panel),true);ui.frames(10);ui.click(close);assert.equal(ui.visible(panel),false);assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);}
- ui.click('introLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);assert.equal(ui.get('closeSkills').textContent,'Back to lobby');ui.click('closeSkills');
+ ui.click('introLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);assert.equal(ui.get('closeSkills').textContent,'Back to hall');ui.click('closeSkills');
  ui.click('introArmory');ui.click('shopLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to deck');route(ui,'skillsPanel','settings');ui.click('closeSettings');assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);
 });
 
