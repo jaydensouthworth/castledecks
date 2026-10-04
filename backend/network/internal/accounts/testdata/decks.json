@@ -1,0 +1,41 @@
+{
+  "schema": "castledecks-deck-presets-1",
+  "decks": [
+    {
+      "name": "Synthetic QA",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companion": null
+    }
+  ]
+}

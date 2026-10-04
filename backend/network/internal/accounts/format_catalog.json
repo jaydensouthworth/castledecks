@@ -1,0 +1,44 @@
+{
+  "source": "791a1055d29820abeaf1de83ec56e1cc80d5a4a9",
+  "skills": [
+    "arrow",
+    "fireArrow",
+    "pierceArrow",
+    "bombWave",
+    "cometArrow",
+    "fireWave",
+    "healWave",
+    "iceArrow",
+    "meteorArrow",
+    "thunderArrow",
+    "iceWave",
+    "flakArrow",
+    "bombArrow",
+    "archer",
+    "grunt",
+    "tallGrunt",
+    "mount",
+    "trebuchet",
+    "priest",
+    "air",
+    "poisonDragon",
+    "fireDragon",
+    "iceDragon",
+    "fireDemon",
+    "iceDemon"
+  ],
+  "companions": [
+    "gorath"
+  ],
+  "castles": [
+    "classic",
+    "highwatch"
+  ],
+  "palettes": [
+    "azure",
+    "indigo-brass",
+    "ivory-slate"
+  ],
+  "defaultCastle": "classic",
+  "defaultPalette": "azure"
+}

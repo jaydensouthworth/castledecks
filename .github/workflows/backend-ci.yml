@@ -1,0 +1,32 @@
+name: Go accounts preparation
+on:
+  pull_request:
+    paths: ['backend/**', '.github/workflows/backend-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-and-container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/network/go.mod
+          cache-dependency-path: backend/network/go.sum
+      - name: Go race, vet and module checks
+        working-directory: backend/network
+        run: |
+          go mod verify
+          go test -race -count=3 ./...
+          go vet ./...
+          go build -trimpath -buildvcs=false -o ../deploy/bin/server.test ./cmd/server
+          go build -trimpath -buildvcs=false -o ../deploy/bin/recoveryctl.test ./cmd/recoveryctl
+      - name: Packaging and native process tests
+        run: python3 -m unittest discover -s backend/deploy/tests -v
+      - name: Disposable container and Nginx exercise
+        run: python3 backend/ci/container_smoke.py
