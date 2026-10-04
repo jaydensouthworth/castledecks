@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T22:24:00Z",
-  "stage": "wayfarer-directory-return-correction",
-  "internal_tests_passing": 2513,
+  "updated": "2026-10-04T22:56:00Z",
+  "stage": "visible-banner-customization",
+  "internal_tests_passing": 2516,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build92 native Wayfarer return correction and affected-content replay before custom-site update",
+    "Build93 native banner preview/apply/cancel and32-character names across workspaces before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -17,7 +17,6 @@
     "Independent real-provider and cloud-save acceptance beyond the player-reported first sign-in and saved slot",
     "Production recovery and operational acceptance beyond the deployment preparation checks",
     "Physical-device and future authored-content expansion remain separate; no invented stages or PvP",
-    "Visible Hall banner customization with draft preview, Apply and Cancel",
     "Card-led Discover/shopfront refinement using real catalog prices and ownership"
   ],
   "historical_tests_passing": 554,
@@ -56,7 +55,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 92,
+  "build": 93,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -75,6 +74,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build91 passed2513 canonical and2521 portable/exact CI checks. Its integrated Hall, desktop map proportions, scout composition, Catalog rail and synthetic inline cloud-review checks passed their bounded native cases, but Wayfarer directory Back/Escape lost the visible search context, so91 was not accepted or forwarded to the custom host. Build92 narrowly preserves Wayfarer directory view, query, selection, scroll and focus through map dismissal while explicit Hall/navigation/preparation still reset appropriately. Build91 intentionally changed cloud UI/model/bridge and local/deck import callbacks to keep final load choices inline; the old progress sentence claiming all cloud-account code was unchanged was stale and is corrected here. Engine, production cloud-client protocol, upload journal and backend configuration remain unchanged. Native synthetic fixtures establish layout/interaction only, not real-provider or host persistence acceptance. Final92 gates and native results are recorded separately.",
-  "internal_tests_build": 91
+  "test_evidence": "Build92 passed2516 canonical/2524 portable and exact CI plus the native Wayfarer return correction; its delivery receipts are separate. Build93 adds a visible Hall banner identity card and dedicated draft editor with real standard/selected-keep previews, existing heraldry palettes, name editing, explicit Apply/Cancel/Back and navigation/profile/session invalidation. New names are limited to32 characters at the UI boundary; unchanged imported names and existing profile/cloud codecs are preserved. Applying uses the existing safe settings checkpoint path, with no stat, gold, castle, card, enemy or status-color changes. The owner merged bounded lifecycle hunks with the92 directory fix and keeps the48px action bar inside its scrollport. Final aggregate and native visual/interaction acceptance remain separate; no real-provider or physical-device claim. The compact Hall heading now identifies the destination; the full profile identity remains visible in the banner card, with explicit long-name wrapping in save/history summaries.",
+  "internal_tests_build": 92
 }

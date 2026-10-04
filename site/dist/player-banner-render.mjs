@@ -1,0 +1,7 @@
+/** Decorative player standard, using the same curated cloth and fixed allied
+ * cue as the battlefield. No arbitrary color, profile name or markup inputs. */
+import {resolvePlayerPalette,FRIENDLY_HERALDRY_CUE as CUE} from './player-palette.mjs';
+export function playerBannerSvg(paletteId){
+ const {tokens}=resolvePlayerPalette(paletteId),path=CUE.strokes.map(points=>points.map(([x,y],i)=>`${i?'L':'M'}${42+x*4} ${47+y*4}`).join('')).join('');
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 164" width="132" height="164" role="img" aria-label="Allied double-chevron banner"><title>Allied double-chevron banner</title><path d="M25 16H107V132L66 155L25 132Z" fill="${tokens.troopPose.dark}" stroke="#d2b47d" stroke-width="2"/><path d="M31 23H101V128L66 147L31 128Z" fill="${tokens.fortress.cloth}"/><path d="M31 23H42V132L31 128Z" fill="${tokens.troopPose.dark}"/><path d="M94 23H101V128L94 132Z" fill="${tokens.troopPose.light}" opacity=".65"/><path d="M46 24H51V129L46 132Z" fill="${tokens.flag.cloth}" opacity=".5"/><path d="M22 14H110" stroke="#d2b47d" stroke-width="5" stroke-linecap="round"/><circle cx="19" cy="14" r="4" fill="#e9d6a5"/><circle cx="113" cy="14" r="4" fill="#e9d6a5"/><path d="${path}" fill="none" stroke="${CUE.outline}" stroke-width="${CUE.outerWidth*4}" stroke-linejoin="round" stroke-linecap="round"/><path d="${path}" fill="none" stroke="${CUE.ink}" stroke-width="${CUE.innerWidth*4}" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
