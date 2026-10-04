@@ -136,6 +136,8 @@ Short-landscape adaptive dock rules are bounded to 700–1000px width and at mos
 
 Management geometry belongs to the shared management frame and its last-loaded stylesheet. Preserve workspace node identities, safe-area frame/header/rail consistency, covered-Hall accessibility and existing session return lifecycles. Cloud account discovery is read-only; transfer review and confirmation remain explicit. Keep the static account flag absent/default-off and backend deployment code separate. Harness checks do not certify native geometry or real-provider/cloud-slot operation.
 
+Capture the previous workspace navigation scroll before hiding it; after restoration and resize, reveal the active route inside its own rail. Keep the Hall inner wrapper from establishing a competing absolute-position anchor, explicitly retain the Hall heading, and stack Catalog titles above subtitles.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

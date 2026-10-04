@@ -18,7 +18,7 @@ test('registry distinguishes the real campaign from implemented practice destina
 
 test('all direct entry routes show a frozen player lobby and require one explicit start',async t=>{
  for(const search of ['', '?mode=test','?mode=demo','?mode=demo&showcase=companions&aim=point_aim'])await t.test(search||'campaign',async t=>{
-  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'The command hall');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
+  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'Hall');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
   ui.frames(120);assert.equal(snapshot(b),before);ui.click('start');ui.click('start');assert.equal(ui.battle,b);assert.equal(ui.visible('intro'),false);ui.frames(2);assert.ok(b.tick>JSON.parse(before).tick);assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,0);
  });
 });

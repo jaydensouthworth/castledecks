@@ -92,7 +92,7 @@
    instead of being clipped. Every row stretches to its longest real content. */
 #managementFrame #shopPanel .shop-grid,#managementFrame #queuePanel .army-roster{align-items:stretch;grid-auto-rows:auto}
 #managementFrame #shopPanel .shop-card,#managementFrame #queuePanel .army-contract{align-self:stretch;display:flex;flex-direction:column}
-#managementFrame #shopPanel .shop-card .card-name{min-height:52px;display:flex;align-items:center;justify-content:center}
+#managementFrame #shopPanel .shop-card .card-name{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 #managementFrame #shopPanel .shop-card .shop-card-actions{margin-top:auto;min-height:44px}
 #managementFrame #shopPanel .shop-card-actions>button{min-height:44px}
 #managementFrame #queuePanel .army-card-inspect{flex:1}
@@ -111,4 +111,12 @@
  #managementFrame #intro .hall-utility:has(#introTesting.hidden){display:flex}
  #managementFrame #intro .hall-utility .hub-controls{display:block}
  #managementFrame #shopPanel .shop-card .card-name{min-height:44px;justify-content:flex-start}
+}
+/* Native87 follow-through: Hall's old positioned startbox made the global rail
+   relative to the content column, hiding it behind the command table. The root
+   workspace now supplies the positioning context, just like every other tab. */
+#managementFrame #intro .hall-heading{display:block;min-width:0}
+@media(max-height:600px) and (orientation:landscape){
+ #managementFrame #intro .preparation-shell{position:static;overflow:visible}
+ #managementFrame #intro .preparation-shell>.game-shell-nav{z-index:5}
 }

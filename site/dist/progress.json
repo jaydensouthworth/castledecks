@@ -1,6 +1,6 @@
 {
-  "updated": "2026-10-04T19:06:48Z",
-  "stage": "unified-management-and-cloud-save-ux",
+  "updated": "2026-10-04T19:30:00Z",
+  "stage": "shared-frame-native-follow-through",
   "internal_tests_passing": 2382,
   "campaign_layouts": 30,
   "skill_families": 25,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build87 final combined regression gate and native shared-frame/account presentation acceptance",
+    "Build88 native shared-frame/navigation and account presentation acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -53,7 +53,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 87,
+  "build": 88,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -72,6 +72,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted86 passed2382 canonical and2390 portable CI checks with bounded native adaptive-dock acceptance. Build87 unifies management geometry and Hall navigation, standardizes card rows, and simplifies optional account/cloud-save presentation. The initial management-only gate passed2389 checks; the final combined account/layout gate is recorded in the release receipt; native acceptance is separate. No gameplay engine, save format, backend protocol, automatic upload or migration changes. Accounts remain runtime-host gated; enabled custom deployment reports a successful first user sign-in and saved cloud slot, not complete production acceptance. internal_tests_passing belongs to internal_tests_build.",
+  "test_evidence": "Build87 passed2412 canonical and2420 portable checks but native testing found Hall rail positioning and active navigation visibility defects. Build88 corrects those two observed issues, restores the concise Hall header, and completes return-label consistency. Final88 gate is recorded separately in the release receipt; native acceptance is separate. All40 gameplay engine modules, save formats, backend protocol and transfer safeguards remain unchanged. No automatic upload or migration. Accounts remain runtime-host gated; enabled custom deployment reports a first successful user sign-in and saved cloud slot, not complete production acceptance. internal_tests_passing belongs to internal_tests_build.",
   "internal_tests_build": 86
 }
