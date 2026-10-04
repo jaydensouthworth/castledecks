@@ -18,7 +18,7 @@ test('registry distinguishes the real campaign from implemented practice destina
 
 test('all direct entry routes show a frozen player lobby and require one explicit start',async t=>{
  for(const search of ['', '?mode=test','?mode=demo','?mode=demo&showcase=companions&aim=point_aim'])await t.test(search||'campaign',async t=>{
-  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'The command hall');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
+  const ui=await loadGameUI(t,{search}),b=ui.battle,before=snapshot(b);assert.equal(ui.visible('intro'),true);assert.equal(ui.get('introTitle').textContent,'Hall');assert.match(ui.get('start').textContent,/Start battle/);assert.equal(ui.visible('ending'),false);assert.equal(ui.visible('pauseOverlay'),false);
   ui.frames(120);assert.equal(snapshot(b),before);ui.click('start');ui.click('start');assert.equal(ui.battle,b);assert.equal(ui.visible('intro'),false);ui.frames(2);assert.ok(b.tick>JSON.parse(before).tick);assert.equal(b.profile.victories,0);assert.equal(b.profile.defeats,0);
  });
 });
@@ -26,7 +26,7 @@ test('all direct entry routes show a frozen player lobby and require one explici
 test('lobby Armory Loadout Army Settings and Save routes return without starting the demo',async t=>{
  const ui=await loadGameUI(t,{search:'?mode=demo'}),b=ui.battle,before=snapshot(b);
  for(const [open,panel,close] of [['introArmory','shopPanel','closeShop'],['introLoadout','skillsPanel','closeSkills'],['introArmy','queuePanel','closeQueue'],['introSettings','settingsPanel','closeSettings'],['introSave','savePanel','closeSave']]){ui.click(open);assert.equal(ui.visible(panel),true);ui.frames(10);ui.click(close);assert.equal(ui.visible(panel),false);assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);}
- ui.click('introLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);assert.equal(ui.get('closeSkills').textContent,'Back to lobby');ui.click('closeSkills');
+ ui.click('introLoadout');ui.click('loadoutArmory');assert.equal(ui.get('closeShop').textContent,'Back to loadout');ui.click('closeShop');assert.equal(ui.visible('skillsPanel'),true);assert.equal(ui.get('closeSkills').textContent,'Back to hall');ui.click('closeSkills');
  ui.click('introArmory');ui.click('shopLoadout');assert.equal(ui.get('closeSkills').textContent,'Back to deck');route(ui,'skillsPanel','settings');ui.click('closeSettings');assert.equal(ui.visible('intro'),true);assert.equal(snapshot(b),before);
 });
 

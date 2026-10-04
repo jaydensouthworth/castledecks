@@ -1,8 +1,50 @@
 #cloudAccounts[hidden],#openCloudAccounts[hidden]{display:none!important}
-.cloud-account-panel{border:1px solid #ad8958;border-radius:.6rem;padding:1rem;margin-block:1rem;background:#211b18;color:#f3e7d1}
+.cloud-account-panel{--cloud-border:#755444;--cloud-muted:#cbb697;border:1px solid var(--cloud-border);border-radius:4px;padding:clamp(16px,2.5vw,24px);margin:0 0 22px;background:linear-gradient(135deg,#32232c,#281d25);color:#f3e7d1;min-width:0}
 .cloud-account-panel [hidden]{display:none!important}
-.cloud-account-panel button,.cloud-account-panel select,.cloud-account-panel a{min-height:44px;margin:.25rem;padding:.55rem .75rem;font:inherit}
-.cloud-account-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
-.cloud-account-panel a{color:#ffd891;display:inline-flex;align-items:center}
-.cloud-account-panel p{max-width:65ch;overflow-wrap:anywhere}
-.cloud-account-panel button:disabled{opacity:.55}
+.cloud-account-panel *{box-sizing:border-box}
+.cloud-account-panel h3{font-size:22px;margin:0 0 7px;line-height:1.15}
+.cloud-account-panel h4{margin:0;font-size:18px;line-height:1.35}
+.cloud-account-panel p{margin:0;max-width:70ch;overflow-wrap:anywhere;line-height:1.5}
+.cloud-account-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.cloud-account-identity{display:inline-flex;align-items:center;gap:7px;color:var(--cloud-muted);font-size:12px;font-weight:600;line-height:1.5}
+.cloud-account-identity:before{content:'';width:7px;height:7px;border-radius:50%;background:#9b9385}
+.cloud-account-identity[data-connected=true]{color:#bcd5b1}
+.cloud-account-identity[data-connected=true]:before{background:#b0cc9c}
+.cloud-account-panel button,.cloud-account-panel select,.cloud-account-panel a{min-height:44px;margin:0;padding:10px 14px;border:1px solid var(--cloud-border);border-radius:3px;background:#32232c;color:#f4e8d4;font:inherit;font-size:13px;line-height:1.35;text-transform:none;letter-spacing:0;white-space:normal}
+.cloud-account-panel button,.cloud-account-panel a{cursor:pointer}
+.cloud-account-panel button:hover:not(:disabled),.cloud-account-panel a:hover{background:#503442;border-color:#c5a475}
+.cloud-account-panel button:focus-visible,.cloud-account-panel select:focus-visible,.cloud-account-panel a:focus-visible,.cloud-account-panel summary:focus-visible{outline:2px solid #f4d49a;outline-offset:3px}
+.cloud-account-panel button.primary{background:#d3ac70;color:#201b14;border-color:#d3ac70;font-weight:700}
+.cloud-account-panel button.primary:hover:not(:disabled){background:#e6c590;border-color:#e6c590}
+.cloud-account-panel button:disabled,.cloud-account-panel select:disabled{opacity:.5;cursor:default}
+.cloud-account-actions,.cloud-account-transfer{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.cloud-account-actions{justify-content:flex-end}
+.cloud-account-panel .cloud-google-button{background:#f5f0e6;color:#2b1a20;border-color:#f5f0e6;font-weight:700}
+.cloud-account-panel .cloud-google-button:hover:not(:disabled){background:#fffaf1;border-color:#fffaf1}
+.cloud-account-panel a{color:#f2d5a1;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:3px}
+.cloud-account-panel .cloud-account-intro{margin-top:14px;font-size:14px;color:#ddcbae}
+.cloud-account-panel .cloud-account-status{font-size:13px;margin-top:12px;color:#ead3af;min-height:1.5em}
+.cloud-account-panel .cloud-account-hint{font-size:12px;color:var(--cloud-muted);margin-top:10px}
+.cloud-account-workspace{margin-top:20px;display:grid;gap:12px}
+.cloud-account-type{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;color:var(--cloud-muted)}
+.cloud-account-type select{min-width:0;max-width:100%;flex:1;max-width:320px;background:#281d25}
+.cloud-account-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cloud-account-panel .cloud-slot-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:6px;min-height:116px;padding:13px 14px;min-width:0;position:relative}
+.cloud-slot-card strong{font-size:14px;line-height:1.35;padding-right:18px}
+.cloud-slot-card span{font-size:12px;color:#dacbb6}
+.cloud-slot-card small{font-size:12px;line-height:1.4;color:var(--cloud-muted);overflow-wrap:anywhere}
+.cloud-account-panel .cloud-slot-card[aria-pressed=true]{border-color:#d3ac70;background:#573842;box-shadow:inset 0 0 0 1px #d3ac70}
+.cloud-slot-card[aria-pressed=true]:after{content:'✓';position:absolute;right:12px;top:12px;color:#f2d5a1;font-weight:700}
+.cloud-account-panel .cloud-account-availability{margin-top:0}
+.cloud-account-review{padding:18px;margin-top:20px;border:1px solid #be9860;border-radius:4px;background:#3a2930;display:grid;gap:14px;outline-offset:4px}
+.cloud-review-copies{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.cloud-review-copy{padding:12px;border:1px solid #67543d;border-radius:3px;background:#281d25;min-width:0}
+.cloud-review-copy>span{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#d2b78e;margin-bottom:6px}
+.cloud-review-copy p,.cloud-account-review>p{font-size:13px}
+.cloud-account-recovery{margin-top:16px;padding:14px;border:1px solid #a48050;border-radius:4px;background:#49332c;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.cloud-account-recovery p{font-size:13px;flex:1;min-width:min(100%,220px)}
+.cloud-account-details{margin-top:18px;padding-top:12px;border-top:1px solid #634638;color:var(--cloud-muted);font-size:12px}
+.cloud-account-details summary{cursor:pointer;min-height:44px;display:list-item;line-height:1.5;padding-block:6px}
+.cloud-account-details p{margin-top:8px}
+@media(max-width:540px){.cloud-account-header{gap:12px}.cloud-account-actions{justify-content:flex-start;width:100%}.cloud-account-type{display:grid;gap:7px}.cloud-account-type select{max-width:none;width:100%}.cloud-account-slots{grid-template-columns:1fr;gap:8px}.cloud-account-panel .cloud-slot-card{min-height:80px;padding:11px 13px;gap:3px}.cloud-account-panel .cloud-account-transfer>*{flex:1;min-width:min(100%,140px)}.cloud-account-review{padding:14px}.cloud-account-panel{border-radius:4px}.cloud-account-details summary{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.cloud-account-panel *{transition:none!important}}
