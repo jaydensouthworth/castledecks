@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T04:43:39.275986+00:00",
-  "stage": "castle-cards-highwatch-and-heraldry-candidate",
-  "internal_tests_passing": 2112,
+  "updated": "2026-10-04T05:15:26.023802+00:00",
+  "stage": "castle-cards-portrait-scroll-correction",
+  "internal_tests_passing": 2122,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of castle purchase/equip, Highwatch geometry, heraldry and new save schemas",
+    "Native acceptance of expanded portrait castle/heraldry scrolling, focus and full saved-deck labels",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -41,10 +41,11 @@
     "Build55\u201357 native Rear/Center/Forward selector, R release/reapply, paused Army orders, portrait/740x320 safe-inset aim, corrected route/Army/Build rails",
     "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim",
     "Build65 disposable unowned card trials: delayed Fire Dragon deployment and actual damage, Priest healing, Trebuchet keep damage, reset and exact original card/cart/wishlist return",
-    "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance"
+    "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance",
+    "Build71: native old-profile import to Classic,1500gold Highwatch purchase, separate equip, castle-only saved-deck apply, palette preview/cancel/apply, unknown-castle rejection, all aim modes and hero leave/re-entry; portrait expanded-disclosure correction awaits72 acceptance"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 71,
+  "build": 72,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",

@@ -27,6 +27,9 @@ export function createCastleLoadoutUI({root,getState,onEquip,onPaletteApply,onFi
   for(const item of Object.values(CASTLE_CATALOG))$('castleEquip-'+item.id).onclick=()=>{
    const latest=getState();if(latest.profile!==profile||latest.readOnly)return;
    const result=onEquip({id:item.id,level:1},{profile});signature='';render();message(result?.ok?`${item.name} ${latest.summary?'selected for the next field':'equipped'}. Ability keys are unchanged.`:result?.message??result?.blockers?.join(' ')??'This castle could not be changed.');
+   // Equip replaces its own button. Keep keyboard focus on a live action
+   // without moving the independently scrolled Build or collection panes.
+   $('castleFindCatalog').focus?.({preventScroll:true});
   };
   $('castleFindCatalog').onclick=()=>{if(getState().profile===profile)onFindCastles();};
   $('playerPalette').onchange=()=>{if(getState().profile!==profile||getState().readOnly)return;try{draft=validatePlayerPaletteId($('playerPalette').value);paintPreview();$('applyPlayerPalette').disabled=draft===profile.paletteId;$('cancelPlayerPalette').disabled=draft===profile.paletteId;$('playerPaletteStatus').textContent='Preview only. Apply to keep these colors.';}catch{draft=profile.paletteId;signature='';render();}};

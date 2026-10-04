@@ -3,6 +3,7 @@
  * No timers, storage, network, engine mutation, RNG calls or automatic export. */
 export const REPORT_LIMITS=Object.freeze({events:96,perTick:8,perWindow:32,windowTicks:33,scan:256,actors:80,warnings:24});
 const TEAMS=new Set(['good','bad','neutral']);
+const CASTLE_REGIONS=new Set(['friendlyCastle','enemyCastle','friendlyHighwatchCastle','enemyHighwatchCastle']);
 const TYPES=new Set(['hero','castle','tower','grunt','tallGrunt','archer','priest','mount','trebuchet','air','air_fighter','poisonDragon','fireDragon','iceDragon','fireDemon','iceDemon','gorath','dragon_scout_poison','dragon_scout_fire','dragon_scout_ice','fire_demon','ice_demon','test_boss']);
 const KINDS=new Set(['hero_arrow','arrow','trebuchet_ammo','bounce_arrow','bomb_arrow','flak_arrow','fire_arrow','ice_arrow','pierce_arrow','poison_arrow','fire_wave_arrow','ice_wave_arrow','bomb_wave_arrow','heal_wave_arrow','meteor_arrow','comet_arrow','meteor','comet','fire_ball','ice_ball','sky_marker','thunder_arrow','reactive_fire','reactive_ice','reactive_poison','gorath_shock_wave']);
 const EVENTS=new Set(['damage','hit','projectile-hit','heal','spawn','shot','aim-unreachable','castle-destroyed','tower-destroyed','enemy-reserves-withdrawn','outcome','summary','companion-summoned','companion-departed','companion-signature']);
@@ -19,7 +20,7 @@ const object=value=>value!==null&&typeof value==='object';
 const alive=actor=>Number.isFinite(actor?.hp)&&actor.hp>0&&!actor.dead&&!actor.destroyed;
 const corpse=actor=>object(actor)&&(Number.isFinite(actor.hp)&&actor.hp<=0||actor.dead===true||actor.destroyed===true);
 const team=actor=>choice(actor?.team,TEAMS);
-const type=actor=>TYPES.has(actor?.type)?actor.type:actor?.regionKind==='friendlyCastle'||actor?.regionKind==='enemyCastle'?'castle':choice(actor?.kind,KINDS);
+const type=actor=>TYPES.has(actor?.type)?actor.type:CASTLE_REGIONS.has(actor?.regionKind)?'castle':choice(actor?.kind,KINDS);
 const safeBuild=value=>typeof value==='string'&&/^\d{1,6}(?:\.\d{1,6}){0,3}$/.test(value)?value:Number.isSafeInteger(value)&&value>=0?String(value):'unavailable';
 const saturate=value=>Math.min(Number.MAX_SAFE_INTEGER,value+1);
 

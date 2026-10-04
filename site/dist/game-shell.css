@@ -95,6 +95,11 @@
     visible working area. No page scroll is needed to discover the cards. */
  #skillsPanel.game-management .loadout-workspace{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(170px,.72fr) minmax(235px,1fr);overflow:hidden}
  #skillsPanel.game-management .loadout-placement{grid-column:1;grid-row:1;min-height:0;overflow:auto;padding:8px 10px;gap:7px;border-bottom:1px solid #b6925955}
+ /* The legacy phone disclosure rules use :has() and outrank the plain
+    placement selector. Keep expanded content inside this fixed grid row,
+    with the collection retaining its own independent scroller below. */
+ #skillsPanel.game-management .loadout-placement:has(.loadout-companion-section[open]),
+ #skillsPanel.game-management .loadout-placement:has(.loadout-help[open]){overflow:auto;overscroll-behavior:contain}
  #skillsPanel.game-management .loadout-inventory{grid-column:1;grid-row:2;display:grid;grid-template-rows:44px minmax(0,1fr) 34px;padding:8px 10px;gap:7px;min-height:0;overflow:hidden}
  #skillsPanel.game-management .inventory-heading{display:none}
  #skillsPanel.game-management .loadout-search,#skillsPanel.game-management .loadout-refine{grid-row:1}

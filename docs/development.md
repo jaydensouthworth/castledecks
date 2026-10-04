@@ -80,6 +80,8 @@ Keep old imports and new schema writers explicit. Independent frozen44/69 codec 
 
 SK2 is limited to the optional Highwatch doctrine; it supplies its own disposable profile and cannot confer campaign ownership. SK1 seeds and old default stages retain their pinned behavior. The optional enemy archers leave their gallery immediately under ordinary AI. Keep staged gallery evidence clearly separate from that default scenario and keep bounded unresolved balance observations unresolved.
 
+The portrait fixed Build grid owns two independent scroll regions. Open castle/help disclosures must not inherit legacy overflow-visible behavior. Keep the higher-specificity correction scoped to portrait and preserve short-landscape controls. After castle Equip replaces its buttons, restore focus to a live enabled action with preventScroll; retain pane offsets and prepared-field identity. Saved-deck action copy includes both dedicated slots and wraps within narrow screens. Battle-report actor classification uses an explicit authored keep-type allowlist, never untrusted region text.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

@@ -40,3 +40,6 @@
 #skillsPanel #deckTitle:focus{outline:2px solid #e1c58e;outline-offset:4px}
 @media(max-width:700px){#skillsPanel .deck-presets{--deck-pad:15px}}
 @media(max-height:620px) and (orientation:landscape){#skillsPanel .deck-presets{--deck-pad:12px}}
+
+/* The full-loadout action names both dedicated slots, even on narrow phones. */
+#skillsPanel #deckApply{min-height:44px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
