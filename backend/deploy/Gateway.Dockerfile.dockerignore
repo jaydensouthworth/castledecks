@@ -1,0 +1,12 @@
+**
+!site/
+!site/dist/
+!site/dist/**
+!backend/
+!backend/deploy/
+!backend/deploy/Gateway.Dockerfile
+!backend/deploy/nginx/
+!backend/deploy/nginx/off.conf
+!backend/deploy/nginx/accounts.conf
+!backend/deploy/bin/
+!backend/deploy/bin/gateway-config.sh
