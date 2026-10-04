@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T13:08:03.812558+00:00",
-  "stage": "viewport-interaction-visibility",
-  "internal_tests_passing": 2325,
+  "updated": "2026-10-04T13:59:58.151212+00:00",
+  "stage": "portrait-compact-controls",
+  "internal_tests_passing": 2350,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 81 exact merged automated gate and native viewport diagnostic acceptance",
+    "Build 82 exact merged automated gate and native compact portrait control acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -48,10 +48,11 @@
     "Build76 native360/412/620portrait whole-card facts, full44pxpagination abovefooter, drag/keyboard restoration, independent castle pane, long guided-return label, session return and full desktop/Catalog artwork.",
     "Build77 actual supplied midgame with no hero inputs reached natural home-flag defeat matching hero380/keep10270/gold790/reserve30/queue16; Pause/report/resume and fresh playground return verified. Exact acquisition/tick remains automated evidence.",
     "Build78 contextual Build comparison at360/412portrait,740/915landscape,1280desktop: reserve replacement, equipped swap, explicit arming then commit, Escape/focus, numeric disclosure, native drag and original arrangement restoration.",
-    "Build79 actual live Frontline/Support orders, role-specific world markers and troop cohorts, current-state readout, native keyboard focus/Tab-R, immediate receipt clearing, paused Army edits, real aiming and clean assisted-session return across360/390portrait and740/915landscape."
+    "Build79 actual live Frontline/Support orders, role-specific world markers and troop cohorts, current-state readout, native keyboard focus/Tab-R, immediate receipt clearing, paused Army edits, real aiming and clean assisted-session return across360/390portrait and740/915landscape.",
+    "Build81 actual-host Inspector and disclosure diagnostic correction: exposed controls count, inert and closed content excluded; genuine live HUD warnings remain."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 81,
+  "build": 82,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -70,6 +71,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted80 canonical 2325 and exact portable CI 2333 passed. Build81 corrects only viewport diagnostic interaction visibility plus release metadata; its exact combined gate and native acceptance are pending. internal_tests_passing belongs to internal_tests_build. Inert painted surfaces remain in occlusion totals; genuine tiny-target, overlap and aim-interception warnings are retained.",
-  "internal_tests_build": 80
+  "test_evidence": "Accepted81 canonical2350 and exact portable CI2358 passed with native diagnostic acceptance. Isolated portrait compact-controls candidate passed2357; exact merged82 gate and actual-host portrait acceptance remain pending. internal_tests_passing belongs to internal_tests_build. No engine modules, command semantics, saves or diagnostic thresholds change. Landscape placement remains unchanged.",
+  "internal_tests_build": 81
 }

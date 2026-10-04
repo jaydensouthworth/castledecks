@@ -124,6 +124,8 @@ Optional battle diagnostics are disabled initially and stay in bounded memory. T
 
 Viewport-lab interaction warnings must distinguish painted geometry from exposed interaction targets. Inert and closed-disclosure content is ineligible; each disclosure's first direct summary stays exposed, subject to all enclosing disclosure and visibility checks. Preserve painted inert HUD area in occlusion totals and retain thresholds, clipping, deduplication, aim samples and genuine live warnings. Synthetic geometry tests are a regression boundary, not native layout acceptance.
 
+Portrait thumb controls follow measured arsenal height through the presentation-only dock helper. Preserve 48px height and accepted minimum 44px widths, complete action labels and cooldowns, sparse/full dock behavior, company/companion utilities, and unchanged landscape placement. Ignore invalid or hidden measurements and avoid repeated identical style writes. The existing camera uses movement geometry; verify resulting framing and clearance natively rather than treating synthetic geometry as browser acceptance.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

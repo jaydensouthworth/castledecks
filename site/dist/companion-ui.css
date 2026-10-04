@@ -26,3 +26,5 @@
 }
 
 #shopPanel .armory-scroll{overflow:auto;min-height:0;overscroll-behavior:contain;scrollbar-width:thin}#shopPanel .armory-scroll .shop-grid{overflow:visible;flex:none}#companionArmory{margin:12px 2px 6px}
+
+@media(orientation:portrait){.live-hud .live-companion-action{height:48px;min-height:48px}}

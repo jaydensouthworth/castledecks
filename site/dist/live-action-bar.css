@@ -292,3 +292,24 @@
 /* The relocated context now shares the safe-area deck as its containing block. */
 @media(orientation:landscape) and (min-height:501px){.live-deck>.live-context{right:18px;bottom:80px}}
 @media(min-width:1050px) and (min-height:560px) and (hover:hover) and (pointer:fine){.live-deck>.live-context{right:18px;bottom:6px}}
+
+/* Compact portrait thumb deck: real 48px targets and recognizable named cards.
+   The movement/action row follows the measured dock, including sparse bars,
+   company controls, companion slots and font-driven caption growth. */
+@media(orientation:portrait){
+ .live-hud .live-slot,.live-hud .live-bar-cycle{height:48px;min-height:48px}
+ .live-slot .skill-icon{width:22px;height:22px}
+ .live-hud .live-slot{gap:1px;padding:3px}
+ .live-short-name{font-size:10px;line-height:10px}
+ .live-countdown{top:3px;height:24px;font-size:14px}
+ .live-hud .live-companion-action{height:48px;min-height:48px}
+ .live-movement,.live-context,
+ .live-hud[data-army-page="true"] .live-movement,
+ .live-hud[data-army-page="true"] .live-context{bottom:calc(var(--portrait-dock-height,171px) + 8px)}
+ .live-movement button,.live-movement .live-garrison{height:48px;min-height:48px}
+ .live-hud .live-context .live-fire,.live-hud .live-context .live-activation{height:48px;min-height:48px;padding:3px 6px;gap:2px}
+ .live-context .live-fire::before,.live-context .live-activation::before{display:none}
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement button,
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-movement [data-requires="near-garrison"],
+ .battle-screen[data-hero-mode="foot"][data-near-garrison="true"] .live-context button{height:48px;min-height:48px}
+}
