@@ -106,6 +106,8 @@ Portrait Build tracks must share the actual available flex height rather than fo
 
 Archer liveness checks apply when acquiring a new target on either team. Do not generalize the caller prefilter for newer recruit skills to regular archers: they receive unfiltered opponents too. New acquisition excludes dead/destroyed targets, but existing windups and launched shots intentionally keep their committed target. Review deterministic trajectory and resource changes with causal receipts; do not describe unchanged prices or cooldowns as proof of balance neutrality.
 
+The optional owned-card Inspector comparison reads current visible slots and wrappers. Keep replacement and swap semantics distinct: swapping equipped cards does not change deck membership or army-job coverage. Revalidate the source, target, ownership, layout and profile before arming a reviewed destination; stale or dismissed handlers must not overwrite current intent. Only compare metrics sharing key, unit and scope, and never infer mechanics from copied artwork. Keep actual placement in the existing action-bar path.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

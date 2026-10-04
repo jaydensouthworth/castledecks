@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T08:43:56.632684+00:00",
-  "stage": "living-carrier-target-acquisition",
-  "internal_tests_passing": 2242,
+  "updated": "2026-10-04T09:25:22.287566+00:00",
+  "stage": "contextual-placement-comparison",
+  "internal_tests_passing": 2265,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build 77 merged automated gate and targeted ordinary idle-demo native acceptance",
+    "Build 78 merged automated gate and responsive contextual placement comparison acceptance",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -45,10 +45,11 @@
     "Build71\u201372: old-profile import, Highwatch purchase/equip and castle-only saved-deck apply, heraldry transactions, unknown-castle rejection, all aim modes and hero leave/re-entry; expanded portrait scrolling, checkpoint reload, trial return and real optional Highwatch victory.",
     "Build73 actual Causeway troop-only occupation and victory, contest/pause retention, fresh retry and original-session return across740x320/412x780; visible same-card castle Equip focus at360/412.",
     "Build74 native740x320 collection201px with complete HorseRiders deployment/Inspect, all25owned-card pages, support filters, real drag swap and keyboard restore;915x360 and separate portrait castle scrolling.",
-    "Build76 native360/412/620portrait whole-card facts, full44pxpagination abovefooter, drag/keyboard restoration, independent castle pane, long guided-return label, session return and full desktop/Catalog artwork."
+    "Build76 native360/412/620portrait whole-card facts, full44pxpagination abovefooter, drag/keyboard restoration, independent castle pane, long guided-return label, session return and full desktop/Catalog artwork.",
+    "Build77 actual supplied midgame with no hero inputs reached natural home-flag defeat matching hero380/keep10270/gold790/reserve30/queue16; Pause/report/resume and fresh playground return verified. Exact acquisition/tick remains automated evidence."
   ],
-  "latest_gameplay_fix": "Candidate: archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 77,
+  "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
+  "build": 78,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -67,6 +68,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Last accepted76 canonical2242 and portable2250 checks passed with exact CI/container byte proof and native portrait row/card/pagination/long-return-label checks. internal_tests_passing is explicitly associated with internal_tests_build. Isolated targeting correction2264 passed with23new regressions and preserved causal before/after idle-demo receipts; final77 merged/native gate pending.",
-  "internal_tests_build": 76
+  "test_evidence": "Accepted77 canonical2265 and portable/remote2273 checks passed, with CI-container188-file proof and actual native no-input midgame fingerprint. internal_tests_passing belongs to internal_tests_build. Isolated optional Inspector comparison2286 passed plus1200 ordered placement cases; merged78/native gates pending.",
+  "internal_tests_build": 77
 }

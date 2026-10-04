@@ -167,3 +167,31 @@
  #skillsPanel .loadout-selected-card>#selectedSkillIcon{width:84px;height:78px}
  #skillsPanel .loadout-card-purpose{font-size:11px;min-height:2.8em}
 }
+
+/* Optional, read-only placement comparison lives in the existing Inspector.
+   It never adds a row to the fixed Build planner or changes its scroll owners. */
+#skillsPanel .loadout-compare{margin:18px 0;border:1px solid #b68c4955;padding:0 14px;background:#17121b55;font:12px/1.5 system-ui,sans-serif;min-width:0}
+#skillsPanel .loadout-compare>summary{cursor:pointer;align-content:center;color:#f0d095;font-size:14px;min-height:44px}
+#skillsPanel .loadout-compare label{display:block;margin:8px 0;color:#dcc6a1}
+#skillsPanel .loadout-compare select{display:block;width:100%;max-width:100%;min-width:0;min-height:44px;padding:9px;color:#f1dab2;background:#211722;border:1px solid #b68c4977;font:12px system-ui,sans-serif}
+#skillsPanel .loadout-compare p{font-size:12px;line-height:1.6;margin:12px 0;overflow-wrap:anywhere}
+#skillsPanel .loadout-compare-summary{color:#f4d49e}
+#skillsPanel .loadout-compare-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#skillsPanel .loadout-compare-cards>article{padding:12px;border:1px solid #b68c4944;min-width:0}
+#skillsPanel .loadout-compare-cards strong{display:block;font:21px/1.2 Georgia,serif;color:#eed2a2;overflow-wrap:anywhere}
+#skillsPanel .loadout-compare-cards span{display:block;font-size:11px;margin-top:6px;color:#bfae91}
+#skillsPanel .loadout-compare h4{font:20px/1.2 Georgia,serif;color:#ecd0a1;margin-top:18px}
+#skillsPanel .loadout-compare-metrics{margin:12px 0}
+#skillsPanel .loadout-compare-metric{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 0;border-top:1px solid #b68c4940;min-width:0}
+#skillsPanel .loadout-compare-metric dt,#skillsPanel .loadout-compare-metric dd.loadout-compare-difference{grid-column:1/-1;margin:0;color:#d6c19b}
+#skillsPanel .loadout-compare-metric dd{margin:0;min-width:0;padding:8px;background:#08061033;overflow-wrap:anywhere}
+#skillsPanel .loadout-compare-metric dd span,#skillsPanel .loadout-compare-metric dd b,#skillsPanel .loadout-compare-metric dd small{display:block;font-size:12px;line-height:1.5}
+#skillsPanel .loadout-compare-metric dd b{font-size:15px;color:#f0d49e;margin:5px 0}
+#skillsPanel .loadout-compare-metric dd small{color:#bfae91}
+#skillsPanel .loadout-inspector-footer button{white-space:normal}
+@media(max-width:480px){
+ #skillsPanel .loadout-compare{padding:0 10px}
+ #skillsPanel .loadout-compare-cards,#skillsPanel .loadout-compare-metric{grid-template-columns:minmax(0,1fr)}
+}
+
+#skillsPanel .loadout-compare-numbers>summary{cursor:pointer;align-content:center;min-height:44px;color:#eed2a2;font-size:13px}

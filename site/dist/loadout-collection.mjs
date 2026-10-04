@@ -1,3 +1,5 @@
+import {modalFocusCandidates} from './modal-focus.mjs';
+import {capturePlacementComparison,isPlacementComparisonCurrent,placementComparison} from './placement-comparison.mjs';
 import {defaultControlLabel} from './control-bindings.mjs';
 import {LoadoutCollection,LOADOUT_TYPES,LOADOUT_SORTS,loadoutPlacementPreview} from './loadout-collection-model.mjs';
 import {cardIdentity} from './armory-presentation.mjs';
@@ -10,7 +12,7 @@ const labels={frontline:'Frontline',ranged:'Ranged',support:'Support',siege:'Sie
 export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel,records,getState,icon,bindingLabel,onSelect,onMove,onBar}){
  const releasePortraits=bindCardPortraits(root);
  const $=selector=>root.querySelector(selector),doc=root.ownerDocument,model=new LoadoutCollection(records);
- let lastLayout=null,inspectedId=null,inspectReturn=null,gridSignature='',profileIdentity=null,selectedDestination=null;
+ let lastLayout=null,inspectedId=null,inspectReturn=null,gridSignature='',profileIdentity=null,selectedDestination=null,comparisonPlan=null,comparisonStale=false,inspectionVersion=0;
  const name=id=>model.byId.get(id)?.name??id;
  const options=(items,active)=>items.map(([id,label])=>`<option value="${esc(id)}" ${id===active?'selected':''}>${esc(label)}</option>`).join('');
  function view(patch,focusId){
@@ -24,8 +26,8 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
  }
  function restoreFocus(id){if(id)$('#'+id)?.focus?.({preventScroll:true});}
  function inspectionInert(active){for(const child of root.children)if(child!==$('#loadoutInspector'))child.inert=active;}
- function closeInspect(){if(!inspectedId)return false;inspectedId=null;$('#loadoutInspector').classList.add('hidden');inspectionInert(false);restoreFocus(inspectReturn);return true;}
- function inspect(id,returnId){inspectedId=id;inspectReturn=returnId;renderInspector();inspectionInert(true);$('#loadoutCloseInspector').focus?.();}
+ function closeInspect(){if(!inspectedId)return false;inspectedId=null;inspectionVersion++;comparisonPlan=null;comparisonStale=false;$('#loadoutCompareDetails').removeAttribute('open');$('#loadoutInspector').classList.add('hidden');inspectionInert(false);restoreFocus(inspectReturn);return true;}
+ function inspect(id,returnId){inspectionVersion++;comparisonPlan=null;comparisonStale=false;$('#loadoutCompareDetails').removeAttribute('open');inspectedId=id;inspectReturn=returnId;renderInspector();inspectionInert(true);$('#loadoutCloseInspector').focus?.();}
  function renderInspector(){
   if(!inspectedId)return;
   const {layout,profile}=getState(),wrapper=layout.dragIcons.find(w=>w.skill.id===inspectedId),item=model.byId.get(inspectedId);if(!wrapper||!item){closeInspect();return;}
@@ -35,12 +37,53 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
   $('#selectedSkillDetails').textContent=`${identity.tactics?identity.headline:identity.label} · Rank ${wrapper.skill.rank} · ${bindingLabel(wrapper.binding)}`;
   $('#loadoutInspectorFacts').innerHTML=insights.metrics.map(metric=>`<div><dt>${esc(metric.label)}</dt><dd>${esc(formatMetric(metric))}</dd><small>${esc(metric.scope)}</small></div>`).join('');
   $('#loadoutInspectorNotes').innerHTML=[...(identity.tactics?[identity.tactics.strength,'Know the tradeoff: '+identity.tactics.caution]:[]),...insights.notes,...insights.tactics].map(text=>`<p>${esc(text)}</p>`).join('');
-  $('#loadoutInspectorSelect').textContent=`Select ${item.name} for placement`;
-  $('#loadoutInspectorSelect').onclick=()=>{closeInspect();onSelect(wrapper,'assign-'+getState().bar*10);};
+  renderComparison();const actionVersion=inspectionVersion;
+  $('#loadoutInspectorSelect').onclick=()=>{
+   const now=getState();if(actionVersion!==inspectionVersion||inspectedId!==item.id)return;
+   if(now.layout!==layout||now.profile!==profile||layout.closed||!layout.dragIcons.includes(wrapper)||!profile.owned.has(item.id)){closeInspect();render();return;}
+   if(comparisonStale||comparisonPlan&&!isPlacementComparisonCurrent(comparisonPlan,now)){comparisonPlan=null;comparisonStale=true;renderComparison();$('#loadoutCompareTarget').focus?.();return;}
+   const destination=comparisonPlan?.destination??null;
+   closeInspect();if(destination!==null)onBar(Math.floor(destination/10));
+   onSelect(wrapper,'assign-'+(destination??getState().bar*10));
+   if(destination!==null)$('#assign-'+destination)?.scrollIntoView?.({block:'nearest',inline:'nearest',behavior:'auto'});
+  };
  }
+ function renderComparison(){
+  if(!inspectedId)return;
+  const state=getState(),{layout}=state,source=layout.dragIcons.find(w=>w.skill.id===inspectedId);if(!source)return;
+  if(comparisonPlan&&!isPlacementComparisonCurrent(comparisonPlan,state)){comparisonPlan=null;comparisonStale=true;}
+  const picker=$('#loadoutCompareTarget'),targets=layout.slots.slice(0,30).filter(slot=>slot.holding&&slot.holding!==source);
+  const choice=comparisonStale?'changed':comparisonPlan?String(comparisonPlan.destination):'';
+  picker.innerHTML=options([...(comparisonStale?[['changed','Previous choice changed · choose again']]:[]),['','No comparison'],...targets.map(slot=>[String(slot.index),`${bindingLabel(slot.index)} · ${name(slot.holding.skill.id)}`])],choice);picker.value=choice;
+  picker.disabled=!targets.length&&!comparisonStale;
+  $('#loadoutCompareNotice').textContent=comparisonStale?'Your loadout changed. Choose a card again, or choose No comparison to continue without a preview.':targets.length?'Preview only. Selecting a comparison does not move cards, buy or sell anything.':'No other equipped cards to compare. You can still select this card for placement.';
+  const preview=comparisonPlan?placementComparison(model.records,state,inspectedId,comparisonPlan.destination):null;
+  $('#loadoutCompareResult').innerHTML=preview?comparisonMarkup(preview):'';
+  $('#loadoutInspectorSelect').disabled=comparisonStale;
+  $('#loadoutInspectorSelect').textContent=preview?`Select ${name(inspectedId)} for ${bindingLabel(preview.destination)}`:`Select ${name(inspectedId)} for placement`;
+ }
+ function comparisonMarkup(preview){
+  const {source,target}=preview;
+  const summary=preview.kind==='replace'?`${source.name} would take ${bindingLabel(preview.destination)}. ${target.name} would move to reserve and stay owned.`:preview.kind==='swap'?`${source.name} and ${target.name} would swap keys. Both stay equipped; no card leaves your deck.`:`${source.name} stays equipped.`;
+  const jobs=preview.kind==='swap'||preview.kind==='unchanged'?'No equipped army jobs change.':[
+   ...preview.gained.map(job=>`Adds coverage for ${job.label}.`),
+   ...preview.lost.map(job=>`Removes your last equipped provider of ${job.label}.`),
+   ...preview.retained.map(job=>`${job.label} still covered by ${job.after.map(name).join(', ')}.`)
+  ].join(' ')||'No verified army-job coverage changes.';
+  const cards=[source,target].filter(Boolean).map(card=>`<article><strong>${esc(card.name)}</strong><span>Current rank ${card.rank} · ${esc(bindingLabel(card.binding))}</span><p>${esc(card.tactics?.subtitle??card.insights.tactics[0]??'No verified ability details')}</p>${card.tactics?`<p>${esc(card.tactics.caution)}</p>`:''}</article>`).join('');
+  const metric=entry=>entry?`${formatMetric(entry)}`:'No verified value';
+  const rows=preview.metrics.map(row=>`<div class="loadout-compare-metric"><dt>${esc(row.label)}</dt><dd><span>${esc(source.name)}</span><b>${esc(metric(row.source))}</b>${row.source?`<small>${esc(row.source.scope)}</small>`:''}</dd><dd><span>${esc(target.name)}</span><b>${esc(metric(row.target))}</b>${row.target?`<small>${esc(row.target.scope)}</small>`:''}</dd>${row.comparable&&row.delta!==0?`<dd class="loadout-compare-difference">Difference at this key: ${row.delta>0?'+':''}${esc(Number(row.delta).toLocaleString(undefined,{maximumFractionDigits:2}))} ${esc(row.source.unit)} with ${esc(source.name)}.</dd>`:''}</div>`).join('');
+  const orders=[source,target].filter(card=>card?.deployment).map(card=>{const d=card.deployment,remaining=preview.after.includes(card.id);return !remaining?`${card.name} in reserve will not reload or Auto-recruit. Troops already deployed stay on the field.`:d.automatic?`${card.name} Auto is on. After Start or Resume, it can repeatedly spend ${d.gold} gold and ${d.reserve} reserve per ${d.units}-unit squad when ready and resources allow.`:`${card.name} Auto is off. Manual deployment costs ${d.gold} gold and ${d.reserve} reserve per ${d.units}-unit squad.`;});
+  return `<p class="loadout-compare-summary">${esc(summary)}</p><p>Selecting this card focuses the reviewed key. Tap that key or press Enter to place it.</p><div class="loadout-compare-cards">${cards}</div><p class="loadout-compare-jobs">${esc(jobs)}</p>${preview.unverified.length?'<p>Some equipped army cards have no verified job data; they are excluded from these job counts.</p>':''}<p>Rearranging spends no gold or reserve. These are equipped-card capabilities, not troops on the field.</p>${orders.map(text=>`<p class="loadout-compare-orders">${esc(text)}</p>`).join('')}<details class="loadout-compare-numbers"><summary>Compare current-rank facts</summary><p>Numbers compare the same measure, unit and scope only. Attack types and effect timings differ; this is not a total damage or strength rating.</p>${rows?`<dl class="loadout-compare-metrics">${rows}</dl>`:'<p>No verified comparison metrics are available for these cards.</p>'}</details>`;
+ }
+ $('#loadoutCompareTarget').onchange=()=>{
+  const value=$('#loadoutCompareTarget').value,state=getState();
+  comparisonPlan=value===''?null:capturePlacementComparison(state,inspectedId,Number(value));comparisonStale=value!==''&&!comparisonPlan;
+  renderComparison();$('#'+($('#loadoutCompareTarget').disabled?'loadoutInspectorSelect':'loadoutCompareTarget')).focus?.({preventScroll:true});
+ };
  function render(){
   const {layout,selected,armed,bar,message,profile}=getState();if(!layout||layout.closed)return;
-  if(lastLayout!==layout){lastLayout=layout;gridSignature='';}
+  if(lastLayout!==layout){if(lastLayout)closeInspect();lastLayout=layout;gridSignature='';}
   if(profileIdentity!==profile){profileIdentity=profile;model.setView({type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped'});gridSignature='';selectedDestination=null;closeInspect();}
   $('#loadoutCompanionSummary').textContent=`${profile.companionId?records.find(item=>item.id===profile.companionId)?.name??'Companion':'Companion'} · separate slot · ${controlLabel('companion')} · ${profile.castleId==='highwatch'?'Highwatch':'Classic'} castle · Heraldry`;
   const result=model.query(layout.dragIcons),active=doc.activeElement?.id,list=$('#ownedSkillList'),scrollTop=list.scrollTop;
@@ -80,6 +123,6 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
  for(const [id,key]of [['loadoutRole','role'],['loadoutTrait','trait'],['loadoutState','status'],['loadoutSort','sort']])$('#'+id).onchange=()=>view({[key]:$('#'+id).value},id);
  $('#loadoutPrevious').onclick=()=>view({page:model.view.page-1},'loadoutPrevious');$('#loadoutNext').onclick=()=>view({page:model.view.page+1},'loadoutNext');
  $('#loadoutClearFilters').onclick=()=>view({type:'all',query:'',role:'all',trait:'all',status:'all'},'loadoutSearch');$('#loadoutCloseInspector').onclick=closeInspect;
- root.addEventListener('keydown',event=>{if(!inspectedId||event.key!=='Tab')return;const items=[...$('#loadoutInspector').querySelectorAll('button:not(:disabled),input,select,a[href]')].filter(node=>node.getClientRects().length);if(!items.length)return;const index=items.indexOf(doc.activeElement);if(event.shiftKey&&index<=0){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(index<0||index===items.length-1)){items[0].focus();event.preventDefault();}event.stopPropagation();});
+ root.addEventListener('keydown',event=>{if(!inspectedId||event.key!=='Tab')return;const items=modalFocusCandidates($('#loadoutInspector'));if(!items.length)return;const index=items.indexOf(doc.activeElement);if(event.shiftKey&&index<=0){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(index<0||index===items.length-1)){items[0].focus();event.preventDefault();}event.stopPropagation();});
  return {render,back:closeInspect,dispose:releasePortraits,reset(){closeInspect();profileIdentity=null;selectedDestination=null;gridSignature='';},get model(){return model;}};
 }
