@@ -196,6 +196,16 @@ export const COLLISION_REGIONS={
     ]
   }
 };
+// Highwatch extends the historical side-specific stone rectangle only upward.
+// Keep the different original widths, lower edges, flag pads and ground aprons.
+for (const [base, highwatch] of [
+  ['friendlyCastle', 'friendlyHighwatchCastle'],
+  ['enemyCastle', 'enemyHighwatchCastle'],
+]) {
+  const [left, right, top, bottom] = COLLISION_REGIONS[base].hitbox;
+  COLLISION_REGIONS[highwatch] = {hitbox: [left, right, top - 50, bottom]};
+}
+
 export function worldBounds(local,{x,y,scaleX=1,scaleY=1,rotation=0}) {
  const radians=rotation*Math.PI/180,c=Math.cos(radians),s=Math.sin(radians);
  const points=[];for(const px of [local[0],local[1]])for(const py of [local[2],local[3]])points.push({x:x+px*scaleX*c-py*scaleY*s,y:y+px*scaleX*s+py*scaleY*c});

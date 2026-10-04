@@ -9,6 +9,8 @@
  */
 import {SKILLS} from './engine/progression.mjs';
 import {COMPANIONS} from './engine/recruitment.mjs';
+import {CASTLE_CATALOG,resolveCastleConfig} from './engine/castle-catalog.mjs';
+import {castleCardIdentity} from './castle-presentation.mjs';
 import {DIFFICULTY,troopStats,heroArrowBaseDamage} from './engine/combat.mjs';
 import {laterEnemyStats} from './engine/later-enemies.mjs';
 
@@ -20,6 +22,10 @@ const flyers=new Set(['air','poisonDragon','fireDragon','iceDragon']);
 // A metric key always identifies the SAME measure/unit/scope, including in
 // mixed-category comparisons. Never compare nominal hit damage with DPS.
 const METRICS={
+ keepHealth:['Starting keep health','HP','friendly mode base at the current hero rank, before battle damage'],
+ keepHealthPercent:['Keep health modifier','%','of the mode pre-type base health'],
+ shelterBerths:['Shelter berths','berths','total capacity including the hero'],
+ launchElevation:['Firing station elevation','units','world distance above Classic Keep'],
  reloadSeconds:['Reload','s','between skill uses'],
  perUnitHp:['Health','HP','per unit'],
  perUnitSpeed:['Move speed','units/tick','ground movement before status effects'],
@@ -59,6 +65,7 @@ const METRICS={
 };
 const normalize=({rank=0,heroRank=1,difficulty='medium'}={})=>({rank:bounded(rank,0,10,0),heroRank:bounded(heroRank,1,26,1),difficulty:Object.hasOwn(DIFFICULTY,difficulty)?difficulty:'medium'});
 function progression(id,rank,heroRank){
+ if(Object.hasOwn(CASTLE_CATALOG,id??''))return {kind:'none',rank:0,maxRank:0,nextRank:null,description:'Castle types are sidegrades. Castle levels and paid upgrades are not available. Friendly base health follows hero rank.'};
  if(Object.hasOwn(COMPANIONS,id??''))return {kind:'hero',rank:heroRank,maxRank:26,nextRank:heroRank<26?heroRank+1:null,description:'Scales with your hero rank when summoned. There is no separate companion skill rank or paid upgrade.'};
  if(id==='fireDemon'||id==='iceDemon')return {kind:'skill',rank,maxRank:10,nextRank:rank<10?rank+1:null,threshold:(rank+1)*100,description:'Higher-rank values are formula previews. Demon melee currently awards no skill XP, so normal combat does not advance this skill. No paid upgrade exists.'};
  if(Object.hasOwn(SKILLS,id??''))return {kind:'skill',rank,maxRank:10,nextRank:rank<10?rank+1:null,threshold:(rank+1)*100,description:'Ranks are earned through skill XP, not bought. Passing the XP threshold advances one rank; purchase unlocks rank 0.'};
@@ -73,6 +80,13 @@ export function getCardInsights(item,options={}){
  const metrics=[],notes=[],tactics=[];
  const add=(key,value)=>{const [label,unit,scope]=METRICS[key];metrics.push({key,label,value,unit,scope});};
  const result={id,...context,metrics,notes,tactics,progression:progression(id,r,heroRank)};
+ if(Object.hasOwn(CASTLE_CATALOG,id??'')){
+  const entry=CASTLE_CATALOG[id],selection={id,level:1},baseHp=8000+heroRank*400,config=resolveCastleConfig(selection,{team:'good',baseHp}),card=castleCardIdentity(selection,{baseHp});
+  add('keepHealth',config.hp);add('keepHealthPercent',entry.hpMultiplier*100);add('shelterBerths',entry.berths);add('launchElevation',entry.launchElevation);
+  notes.push(...card.notes,`Health shown is the starting friendly keep at hero rank ${heroRank}, not its current damage.`,id==='highwatch'?'Highwatch price and tuning are provisional.':'Classic Keep is free and already owned.');
+  tactics.push(card.tradeoff,'The hero uses one shelter berth. Archers must reach and enter a free berth naturally. Keep destruction follows each mode’s own objective rules.');
+  return result;
+ }
  const entry=Object.hasOwn(SKILLS,id??'')?SKILLS[id]:null;
  if(id==='gorath'){
   // companions.mjs uses hero rank and overrides the enemy/difficulty stat model.

@@ -1,0 +1,21 @@
+/* The existing separate-slot disclosure owns these details. No persistent row
+   is added above the action keys or collection, including compact landscape. */
+#castleLoadout{margin:10px 0;min-width:0;color:#f0dfbb}
+#castleLoadout h3{font:700 18px/1.25 Georgia,serif;margin:8px 0}
+#castleLoadout h4{font:700 16px/1.2 Georgia,serif;margin:0 0 5px}
+#castleLoadout p{font:12px/1.45 system-ui,sans-serif;margin:5px 0}
+#castleLoadout .footnote{font-size:11px;color:#c6b79b}
+#castleLoadout button,#castleLoadout select{min-height:44px;max-width:100%;white-space:normal}
+#castleLoadout button{margin-top:6px}
+#castleLoadout .castle-slot-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+#castleLoadout .castle-slot-card{display:grid;grid-template-columns:90px minmax(0,1fr);gap:9px;align-items:center;padding:10px;border:1px solid #b6925955;border-radius:6px;background:#17292260}
+#castleLoadout .castle-slot-card>div{min-width:0}
+#castleLoadout .castle-slot-preview svg{width:90px;height:90px;display:block}
+#castleLoadout .player-heraldry{border-top:1px solid #b6925955;margin-top:15px;padding-top:8px}
+#castleLoadout .player-heraldry label{display:block;font:12px/1.5 system-ui;margin-top:8px}
+#castleLoadout .player-heraldry select{width:100%}
+#castleLoadout .player-palette-preview{max-width:160px;margin:5px auto}
+#castleLoadout .player-palette-preview svg{display:block;width:100%;height:auto}
+#castleLoadout .player-palette-actions{display:flex;flex-wrap:wrap;gap:6px}
+#castleLoadout [role=status]{min-height:0;color:#ead4a7}
+#skillsPanel.game-management .loadout-companion-section>summary{min-height:44px;display:flex;align-items:center;cursor:pointer}

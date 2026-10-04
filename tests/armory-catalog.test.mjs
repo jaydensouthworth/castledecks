@@ -6,6 +6,7 @@ import {buildArmoryRecords} from '../site/dist/armory-catalog-data.mjs';
 import {createArmoryCatalogUI} from '../site/dist/armory-catalog.mjs';
 import {SKILLS,PlayerProfile} from '../site/dist/engine/progression.mjs';
 import {COMPANIONS} from '../site/dist/engine/recruitment.mjs';
+import {CASTLE_CATALOG} from '../site/dist/engine/castle-catalog.mjs';
 import {loadGameUI} from './helpers/game-ui-harness.mjs';
 const records=buildArmoryRecords(SKILLS,COMPANIONS,{});
 const state=()=>createArmorySnapshot(new PlayerProfile());
@@ -15,7 +16,8 @@ const search=(ui,value)=>{const el=ui.get('shopSearch');el.value=value;el.focus(
 async function armory(t,gold=10000){const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testVictory');ui.frames(105);ui.battle.profile.gold=gold;ui.click('endingShop');ui.click('shopCatalogTab');return ui;}
 
 test('shipping records have exactly the real purchase inventory, explicit kinds and grounded facts',()=>{
- assert.equal(records.length,Object.keys(SKILLS).length+Object.keys(COMPANIONS).length);
+ // Castle slice adds free, already-owned Classic plus Highwatch as the only new purchasable card.
+ assert.equal(records.length,Object.keys(SKILLS).length+Object.keys(COMPANIONS).length+Object.keys(CASTLE_CATALOG).length);
  assert.equal(records.find(item=>item.id==='arrow').storefront,false);assert.ok(!records.some(item=>item.id.startsWith('fixture-')));
  assert.equal(records.find(item=>item.id==='gorath').kind,'companion');
  assert.deepEqual(records.filter(item=>item.alliedProtection).map(item=>item.id),['air','poisonDragon','fireDragon','iceDragon']);

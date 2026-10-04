@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T03:35:27.129471+00:00",
-  "stage": "tactical-card-jobs-and-visible-deployment-costs",
-  "internal_tests_passing": 1987,
+  "updated": "2026-10-04T04:43:39.275986+00:00",
+  "stage": "castle-cards-highwatch-and-heraldry-candidate",
+  "internal_tests_passing": 2112,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,12 +9,13 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of compact Build deployment-cost visibility correction",
+    "Native acceptance of castle purchase/equip, Highwatch geometry, heraldry and new save schemas",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
     "Original-runtime comparison",
-    "Google/provider setup and enabled account UI remain unverified and disabled"
+    "Google/provider setup and enabled account UI remain unverified and disabled",
+    "Inactive Go service schema compatibility before any provider activation"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
@@ -43,11 +44,11 @@
     "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 70,
+  "build": 71,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes. The frontpage previews validated same-origin local Crownroad checkpoints with actual frontier artwork; the explicit chooser entry never creates or restores a campaign without a choice. Optional levy defense adds 20 finite temporary tickets with 10 separate field slots, ordinary role orders and explicit finite enemy stages. Existing paid caps and saved contracts stay unchanged. The optional local 30-second profiler and clearly synthetic 44/48-troop lab create no campaign rewards or exports; factory counts are not device-performance evidence.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes. The frontpage previews validated same-origin local Crownroad checkpoints with actual frontier artwork; the explicit chooser entry never creates or restores a campaign without a choice. Optional levy defense adds 20 finite temporary tickets with 10 separate field slots, ordinary role orders and explicit finite enemy stages. Existing paid caps and saved contracts stay unchanged. The optional local 30-second profiler and clearly synthetic 44/48-troop lab create no campaign rewards or exports; factory counts are not device-performance evidence. Dedicated castle cards add free Classic and purchasable Highwatch: a 50-world-unit raised real firing station with two berths, 80% keep HP and taller collision. Explicit opt-in SK2 practice shares those mechanics with NPCs. Three free profile heraldry palettes retain non-color allied cues. Old saves migrate to Classic; newer unknown content remains protected.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,
@@ -59,7 +60,7 @@
     "seed_format": "SK1",
     "biomes": 4,
     "threat_tiers": 3,
-    "doctrines": 5,
+    "doctrines": 6,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
   "test_evidence": "Company63 canonical1656 and portable1664 checks passed; exactGitHubCI/Docker and native marker/receipt corrections accepted. Trial model/session29 focused checks pass including all12 real contract effects, origin restoration, queue readiness and protected-hero disclosure; final64 combined/native gate pending."

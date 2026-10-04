@@ -9,8 +9,8 @@ import {PlayerProfile,serializeProfile,restoreProfile} from './progression.mjs';
 export const MAX_ACTIVE_PROFILES=9;
 export const PROFILE_NAME_INPUT_LIMIT=12;
 export const MAX_PROFILE_BUNDLE_BYTES=1024*1024;
-export const PROFILE_BUNDLE_SCHEMA='bowmaster-reconstruction-profiles-1';
-const SINGLE_PROFILE_SCHEMAS=new Set(['bowmaster-reconstruction-1','bowmaster-reconstruction-2']);
+export const PROFILE_BUNDLE_SCHEMA='bowmaster-reconstruction-profiles-2';
+const SINGLE_PROFILE_SCHEMAS=new Set(['bowmaster-reconstruction-1','bowmaster-reconstruction-2','bowmaster-reconstruction-3']);
 const aimingModes=new Set(['classic','anywhere','point_aim','auto_aim']);
 const byteLength=text=>new TextEncoder().encode(text).byteLength;
 
@@ -166,12 +166,13 @@ export function restoreProfiles(text,options={}) {
   if(SINGLE_PROFILE_SCHEMAS.has(value?.schema))
     return new CampaignProfiles({...options,profiles:[restoreProfile(text)],retired:[],activeIndex:0});
   shape(value,['schema','profiles','retired'],'profile bundle');
-  if(value.schema!==PROFILE_BUNDLE_SCHEMA)throw new TypeError('Unsupported profile bundle');
+  if(!['bowmaster-reconstruction-profiles-1',PROFILE_BUNDLE_SCHEMA].includes(value.schema))throw new TypeError('Unsupported profile bundle');
   if(!Array.isArray(value.profiles)||!Array.isArray(value.retired))throw new TypeError('Invalid profile bundle lists');
   if(value.profiles.length>MAX_ACTIVE_PROFILES)throw new RangeError('At most nine active profiles are allowed');
   const restore=record=>{
     shape(record,['profile','cheated'],'profile record');
     if(typeof record.cheated!=='boolean')throw new TypeError('Invalid profile cheated flag');
+    if(value.schema==='bowmaster-reconstruction-profiles-1'&&record.profile?.schema==='bowmaster-reconstruction-3')throw new TypeError('Castle profile requires the newer profile bundle');
     const profile=restoreProfile(JSON.stringify(record.profile));
     profile.cheated=record.cheated;return profile;
   };

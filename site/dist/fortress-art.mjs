@@ -3,6 +3,8 @@
  */
 import {hostileTowerOccupantCount} from './garrison-intel.mjs';
 import {unitRegions} from './engine/collision.mjs';
+import {resolvePlayerPalette} from './player-palette.mjs';
+import {drawFriendlyHeraldryCue} from './player-heraldry-render.mjs';
 
 const TAU = Math.PI * 2;
 const ink = {edge:'#24343a',shadow:'#45585b',stone:'#899a98',light:'#bdc7b4',warm:'#d4bd88',mortar:'#627675',wood:'#534435',door:'#283838'};
@@ -129,17 +131,19 @@ export function drawHostileTowerOccupants(ctx,building,{scale=1}={}){
  ctx.restore();return true;
 }
 
-export function drawFortification(ctx,building,{scale=1,tick=0,elevationAt}={}){
+export function drawFortification(ctx,building,{scale=1,tick=0,elevationAt,paletteId='azure'}={}){
  const g=fortificationGeometry(building);if(!g)return false;
  ctx.save();ctx.lineJoin='round';
  if(building.destroyed||building.clipPresent===false){const x=g.centerX,w=g.body.width,y=building.y;poly(ctx,[[x-w*.58,y],[x-w*.5,y-9],[x-w*.25,y-6],[x-w*.2,y-20],[x,y-10],[x+w*.18,y-25],[x+w*.35,y-10],[x+w*.52,y-13],[x+w*.58,y]],ink.shadow);line(ctx,x-w*.18,y-12,x+w*.15,y-18,ink.stone,4);ctx.restore();return true;}
- const tower=building.type==='tower',team=tower?building.occupiedBy:building.team,cloth=team==='good'?'#427f90':team==='bad'?'#914654':'#aa9161';
+ const tower=building.type==='tower',team=tower?building.occupiedBy:building.team,cloth=team==='good'?resolvePlayerPalette(paletteId).tokens.fortress.cloth:team==='bad'?'#914654':'#aa9161';
  const footing=fortificationFooting(building,{elevationAt});
  foundation(ctx,g,footing);
  // Ground in front masks below-slope wall pixels, including tower colliders
  // whose mechanical bounds extend below the surface.
  ctx.save();ctx.beginPath();ctx.moveTo(footing.left,g.body.y-100);ctx.lineTo(footing.right,g.body.y-100);for(const p of footing.ground.slice().reverse())ctx.lineTo(...p);ctx.closePath();ctx.clip();
  masonry(ctx,g,tower,cloth);flag(ctx,g,cloth);
+ if(building.castleId==='highwatch'){const y=g.body.y+24;line(ctx,g.body.x+4,y,g.body.x+g.body.width-4,y,ink.warm,3);for(const x of [g.body.x+9,g.body.x+g.body.width-9]){rect(ctx,x-3,y-13,6,13,ink.shadow);line(ctx,x-2,y-12,x+2,y-12,ink.warm,1);}}
+ if(team==='good')drawFriendlyHeraldryCue(ctx,g.centerX+10,g.body.y-26,{size:8});
  gallery(ctx,building);
  ctx.restore();
  const fraction=building.maxHp>0?building.hp/building.maxHp:1;

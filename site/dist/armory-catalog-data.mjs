@@ -1,3 +1,5 @@
+import {CASTLE_CATALOG} from './engine/castle-catalog.mjs';
+import {castleCardIdentity} from './castle-presentation.mjs';
 import {STANDARD_EDITION} from './armory-presentation.mjs';
 /** Presentation metadata grounded in the existing abilities and recruit data.
  * Prices/reload/squad sizes remain sourced from the engine. No rarity, packs,
@@ -6,13 +8,15 @@ import {STANDARD_EDITION} from './armory-presentation.mjs';
 export const ARMORY_DEPARTMENTS=Object.freeze([
  {id:'bow',name:'Bow abilities',description:'Shots, waves and battlefield magic.',categories:['arrows','waves'],facets:['fire','ice','lightning','explosive','healing'],action:'Unlock and assign to an action bar'},
  {id:'army',name:'Army contracts',description:'Recruit squads for your battle line.',categories:['army'],facets:['ground','airborne','healing','siege','fire','ice','poison'],action:'Unlock, equip, then pay per squad'},
- {id:'companions',name:'Companions',description:'Persistent allies with their own command slot.',categories:['companions'],facets:[],action:'Hire and equip in the companion slot'}
+ {id:'companions',name:'Companions',description:'Persistent allies with their own command slot.',categories:['companions'],facets:[],action:'Hire and equip in the companion slot'},
+ {id:'castles',name:'Castles',description:'Choose a keep with a different battlefield tradeoff.',categories:['castles'],facets:[],action:'Acquire, then equip the dedicated Castle slot'}
 ]);
 const ROLES=Object.freeze({grunt:'frontline',tallGrunt:'frontline',mount:'frontline',fireDemon:'frontline',iceDemon:'frontline',archer:'ranged',air:'ranged',poisonDragon:'ranged',fireDragon:'ranged',iceDragon:'ranged',priest:'support',trebuchet:'siege'});
 const TRAITS=Object.freeze({fireArrow:['fire'],iceArrow:['ice'],bombArrow:['explosive'],flakArrow:['explosive'],bombWave:['explosive'],fireWave:['fire'],iceWave:['ice'],healWave:['healing'],thunderArrow:['lightning'],meteorArrow:['fire'],cometArrow:['ice'],grunt:['ground'],archer:['ground'],tallGrunt:['ground'],mount:['ground'],trebuchet:['ground','siege'],priest:['ground','healing'],air:['airborne'],poisonDragon:['airborne','poison'],fireDragon:['airborne','fire'],iceDragon:['airborne','ice'],fireDemon:['ground','fire'],iceDemon:['ground','ice']});
 export function buildArmoryRecords(skills,companions,descriptions){
  return [
   ...Object.entries(skills).map(([id,item])=>({id,edition:STANDARD_EDITION,kind:'skill',storefront:id!=='arrow',department:item.summon?'army':'bow',role:ROLES[id]??'bow',category:item.summon?'army':id.endsWith('Wave')?'waves':'arrows',name:item.name,description:descriptions[id]??item.description??'',price:item.price,reloadSeconds:item.cooldown/66,squad:item.summon?{gold:item.summon.cost,size:item.summon.amount,reserve:item.summon.amount*item.summon.population}:null,traits:TRAITS[id]??[],alliedProtection:['air','poisonDragon','fireDragon','iceDragon'].includes(id)})),
-  ...Object.values(companions).map(item=>({id:item.id,edition:STANDARD_EDITION,kind:'companion',storefront:true,department:'companions',role:'companion',category:'companions',name:item.name,title:item.title,description:item.description,price:item.price,traits:['ground'],summonCost:item.summonCost,signatureName:item.signatureName,signatureSeconds:item.signatureCooldownTicks/33,recallSeconds:item.recoveryTicks/33,defeatSeconds:item.defeatRecoveryTicks/33}))
+  ...Object.values(companions).map(item=>({id:item.id,edition:STANDARD_EDITION,kind:'companion',storefront:true,department:'companions',role:'companion',category:'companions',name:item.name,title:item.title,description:item.description,price:item.price,traits:['ground'],summonCost:item.summonCost,signatureName:item.signatureName,signatureSeconds:item.signatureCooldownTicks/33,recallSeconds:item.recoveryTicks/33,defeatSeconds:item.defeatRecoveryTicks/33})),
+  ...Object.values(CASTLE_CATALOG).map(item=>{const card=castleCardIdentity({id:item.id,level:1},{baseHp:8400});return {id:item.id,edition:STANDARD_EDITION,kind:'castle',storefront:true,department:'castles',role:'castle',category:'castles',name:item.name,description:card.summary,price:item.price,traits:[]};})
  ];
 }

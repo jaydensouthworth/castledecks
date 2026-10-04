@@ -70,6 +70,16 @@ The paused Army entry opens Muster directly only in real finite-levy encounters,
 
 Counted nearby pennants use bounded screen-space grouping with separate teams and genuine controller ownership. Dead, hidden, destroyed and garrisoned units do not acquire visible counts. Layout respects actual status/marker geometry, bounds and ordinary drawing order, with connectors beneath markers. Impossible tiny viewports explicitly omit a label instead of painting an overlap. This presentation adds no permanent live HUD row, input target or engine-state mutation.
 
+## Castle loadouts, heraldry and schema migration
+
+Castle identity is independent of the 30 ability keys. Classic remains the free/default old-save choice; Highwatch uses the shared catalog for both player and enemy health, shelter capacity, shot station and collision geometry. Purchasing does not equip. Preparation must mutate the same pristine keep atomically without field setup, RNG consumption or rerolling. Block mid-field castle changes, including through imported decks and stale handlers, while preserving ordinary same-castle ability edits. Settled choices apply next field.
+
+Palette preview and cancellation are pure. Apply changes only the current profile's approved appearance ID, and renderers read fixed tokens without overriding enemy, health, elemental or status cues. Retain two-tone allied chevrons so team identity is not solely color-based. Deck imports never import appearance.
+
+Keep old imports and new schema writers explicit. Independent frozen44/69 codec fixtures must retain their recorded hashes; do not adapt them to the current writer or replace their dependency closure with current modules. Verify both banks are unchanged when old readers encounter future metadata, unknown IDs/levels or unsupported palettes. A green current-reader round trip is insufficient migration evidence.
+
+SK2 is limited to the optional Highwatch doctrine; it supplies its own disposable profile and cannot confer campaign ownership. SK1 seeds and old default stages retain their pinned behavior. The optional enemy archers leave their gallery immediately under ordinary AI. Keep staged gallery evidence clearly separate from that default scenario and keep bounded unresolved balance observations unresolved.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.

@@ -18,7 +18,7 @@ test('direct charter never opens or writes campaign checkpoints across menus, pu
  // Explicit funded purchase fixture; natural combat is checked separately below.
  ui.battle.profile.gold=1501;ui.click('introArmory');ui.get('shopDiscover').querySelector('[data-discover-department="army"]').click();ui.click('buy-mount');assert.equal(ui.battle.profile.gold,1);ui.click('closeShop');ui.click('introSettings');ui.get('difficulty').value='hard';ui.click('applySettings');
  ui.click('introLoad');ui.get('loadCode').value=charter(131);ui.click('importCode');assert.equal(ui.visible('localConfirm'),false);
- ui.click('introProfiles');ui.get('newProfileName').value='Second';ui.click('createProfile');ui.click('introSave');ui.click('showSaveCode');assert.equal(JSON.parse(ui.get('saveCode').value).schema,'castledecks-expeditions-1');await settle();assert.equal(storage.writes,0);assert.equal(storage.data.size,0);
+ ui.click('introProfiles');ui.get('newProfileName').value='Second';ui.click('createProfile');ui.click('introSave');ui.click('showSaveCode');assert.equal(JSON.parse(ui.get('saveCode').value).schema,'castledecks-expeditions-2');await settle();assert.equal(storage.writes,0);assert.equal(storage.data.size,0);
 });
 test('release41 campaign and charter return to exact same-tab battles while preserving campaign checkpoint bytes',async t=>{
  const storage=new MemoryStorage(),ui=await loadGameUI(t,{storage});ui.click('start');ui.frames(18);ui.click('battlePause');ui.click('pauseLobby');await settle();

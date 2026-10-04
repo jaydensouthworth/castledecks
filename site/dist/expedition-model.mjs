@@ -1,10 +1,10 @@
-/** Strict, isolated charter state. The normal profile serializer stays unchanged.
+/** Strict, isolated charter state. Version2 includes castle-aware profile progress.
  * Saved live play restarts a field; settled results are receipts, not new grants.
  */
 import {PlayerProfile} from './engine/progression.mjs';
 import {CampaignProfiles,restoreProfiles,MAX_PROFILE_BUNDLE_BYTES} from './engine/profile-manager.mjs';
 import {EXPEDITION_ID,EXPEDITION_STARTER,EXPEDITION_LENGTH,expeditionField} from './expedition-data.mjs';
-export const EXPEDITION_SAVE_SCHEMA='castledecks-expeditions-1';
+export const EXPEDITION_SAVE_SCHEMA='castledecks-expeditions-2';
 const safeInteger=(value,min,max,label)=>{if(!Number.isSafeInteger(value)||value<min||value>max)throw new TypeError(`Invalid ${label}`);};
 const shape=(value,keys,label)=>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))throw new TypeError(`Invalid ${label} fields`);};
 const seedValue=()=>1+Math.floor(Math.random()*0xfffffffe);
@@ -111,7 +111,8 @@ export class ExpeditionProfiles{
 export function restoreExpeditions(text,{seedFactory=seedValue}={}){
  if(typeof text!=='string'||text.length>MAX_PROFILE_BUNDLE_BYTES||new TextEncoder().encode(text).byteLength>MAX_PROFILE_BUNDLE_BYTES)throw new RangeError('Charter save must be JSON text under 1 MiB');
  const value=JSON.parse(text);shape(value,['schema','campaign','profiles','runs','retiredRuns'],'charter save');
- if(value.schema!==EXPEDITION_SAVE_SCHEMA||value.campaign!==EXPEDITION_ID)throw new TypeError('Unsupported charter save');
+ if(!['castledecks-expeditions-1',EXPEDITION_SAVE_SCHEMA].includes(value.schema)||value.campaign!==EXPEDITION_ID)throw new TypeError('Unsupported charter save');
+ if(value.schema==='castledecks-expeditions-1'&&value.profiles?.schema!=='bowmaster-reconstruction-profiles-1')throw new TypeError('Castle profiles require the newer charter save');
  if(!Array.isArray(value.runs)||!Array.isArray(value.retiredRuns))throw new TypeError('Invalid charter profile lists');
  const states=value.runs.map(validateExpeditionState),retiredStates=value.retiredRuns.map(validateExpeditionState),manager=restoreProfiles(JSON.stringify(value.profiles),{defaultName:'Wayfarer'});
  if(states.length!==manager.profiles.length||retiredStates.length!==manager.retired.length||retiredStates.some(state=>state.cleared!==EXPEDITION_LENGTH))throw new TypeError('Invalid charter profile progress');

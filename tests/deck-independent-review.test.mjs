@@ -49,11 +49,11 @@ test('owned set without matching live skill cannot apply even one valid replacem
  const p=new PlayerProfile();p.owned.add('fireArrow');const d=deck();d.slots[0]='fireArrow';d.slots[29]='arrow';const original=JSON.stringify(p);const result=applyDeck(d,p,{paused:true});assert.equal(result.ok,false);assert.deepEqual(result.missing,['fireArrow']);assert.equal(JSON.stringify(p),original);
 });
 
-test('corrupted deck metadata falls back to previous v1 bank without changing either',async()=>{
+test('corrupted deck metadata falls back to previous current bank without changing either',async()=>{
  const p=new PlayerProfile(),profiles=new CampaignProfiles({profiles:[p]}),battle=new CampaignBattle({profile:p}),storage=new MemoryStorage(),store=createLocalCampaignStore({storage,locks:new TestLocks()}),library=createProfileDecks();
  await store.write(1,snapshotCampaign({profiles,battle}));library.set(p,[deck()]);let prior=store.read(1);await store.write(1,snapshotCampaign({profiles,battle,deckPresets:library.snapshot(profiles)}),{expected:prior.raw});
  const raw=JSON.parse(storage.getItem(checkpointSlotKey(1,'b')));raw.payload.deckPresets.profiles[0][0].slots[1]='arrow';storage.setItem(checkpointSlotKey(1,'b'),JSON.stringify(raw));const before=[...storage.data];const read=store.read(1);
- assert.equal(read.status,'recovered');assert.equal(read.latest.schema,'castledecks-local-checkpoint-1');assert.deepEqual([...storage.data],before);
+ assert.equal(read.status,'recovered');assert.equal(read.latest.schema,'castledecks-local-checkpoint-3');assert.deepEqual([...storage.data],before);
 });
 
 test('locked pending snapshot does not adopt later deck name or slot edits',async()=>{

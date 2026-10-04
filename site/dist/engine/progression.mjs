@@ -2,6 +2,8 @@
  * Catalog is numeric gameplay data; no original icons, help text or assets.
  */
 import {RECRUIT_SKILLS,COMPANIONS} from './recruitment.mjs';
+import {captureCastleCollection,validateCastleCollection,defaultCastleCollection,purchaseCastle,equipCastle} from '../castle-loadout-model.mjs';
+import {DEFAULT_PLAYER_PALETTE_ID,validatePlayerPaletteId} from '../player-palette.mjs';
 export const SKILLS={
   "arrow": {
     "name": "Basic Arrow",
@@ -137,7 +139,9 @@ export class SkillProgress {
  use(){if(this.cooldown>0)return false;this.cooldown=this.maximum;return true;}
 }
 export class PlayerProfile {
- constructor(name='BowMaster'){this.name=name;this.rank=1;this.xp=0;this.gold=0;this.scene=1;this.level=1;this.highestScene=1;this.highestLevel=1;this.victories=0;this.defeats=0;this.difficulty='medium';this.shootingMode='classic';this.skills=[];this.owned=new Set();this.companionOwned=new Set();this.companionId=null;this.addSkill('arrow');}
+ constructor(name='BowMaster'){this.name=name;this.rank=1;this.xp=0;this.gold=0;this.scene=1;this.level=1;this.highestScene=1;this.highestLevel=1;this.victories=0;this.defeats=0;this.difficulty='medium';this.shootingMode='classic';this.skills=[];this.owned=new Set();this.companionOwned=new Set();this.companionId=null;this.castleLevels=new Map([['classic',1]]);this.castleId='classic';this.paletteId=DEFAULT_PLAYER_PALETTE_ID;this.addSkill('arrow');}
+ purchaseCastle(id){return purchaseCastle(this,id);}
+ equipCastle(selection,context){return equipCastle(this,selection,context);}
  addXP(amount){const total=this.xp+Math.floor(amount),threshold=this.rank>=0&&this.rank<=25?this.rank*500:undefined;if(total>threshold){this.xp=Math.floor(total-threshold);this.rank++;}else this.xp=Math.floor(total);}
  addSkill(id){const skill=new SkillProgress(id),used=new Set(this.skills.map(s=>s.binding));for(let i=0;i<30;i++)if(!used.has(i)){skill.binding=i;break;}this.skills.push(skill);this.owned.add(id);return skill;}
  recruitCompanion(id){const item=COMPANIONS[id];if(!item||this.companionOwned.has(id)||this.gold<item.price)return false;this.gold-=item.price;this.companionOwned.add(id);this.companionId=id;return true;}
@@ -152,7 +156,10 @@ export function summaryBonuses({level,bodyShots=0,headShots=0,shotsFired=0,popul
 /** Portable own-format save, intentionally excluding live cooldown state. */
 export function serializeProfile(profile){
  if(profile===null||typeof profile!=='object'||Array.isArray(profile)||!Array.isArray(profile.skills)||profile.skills.length<1||profile.skills.length>Object.keys(SKILLS).length)throw new TypeError('Invalid reconstruction profile');
- const value={schema:'bowmaster-reconstruction-2',companions:{owned:[...profile.companionOwned],selected:profile.companionId},name:profile.name,rank:profile.rank,xp:profile.xp,gold:profile.gold,scene:profile.scene,level:profile.level,highestScene:profile.highestScene,highestLevel:profile.highestLevel,victories:profile.victories,defeats:profile.defeats,difficulty:profile.difficulty,shootingMode:profile.shootingMode,skills:profile.skills.map(s=>{
+ const paletteField=Object.getOwnPropertyDescriptor(profile,'paletteId');
+ if(paletteField&&!Object.hasOwn(paletteField,'value'))throw new TypeError('Player palette requires a plain data field');
+ const paletteId=validatePlayerPaletteId(paletteField?paletteField.value:DEFAULT_PLAYER_PALETTE_ID);
+ const value={schema:'bowmaster-reconstruction-3',castles:captureCastleCollection(profile),appearance:{palette:paletteId},companions:{owned:[...profile.companionOwned],selected:profile.companionId},name:profile.name,rank:profile.rank,xp:profile.xp,gold:profile.gold,scene:profile.scene,level:profile.level,highestScene:profile.highestScene,highestLevel:profile.highestLevel,victories:profile.victories,defeats:profile.defeats,difficulty:profile.difficulty,shootingMode:profile.shootingMode,skills:profile.skills.map(s=>{
   if(s===null||typeof s!=='object'||Array.isArray(s))throw new TypeError('Invalid saved skill');
   return {id:s.id,rank:s.rank,xp:s.xp,threshold:s.threshold,passive:s.passive,binding:s.binding,autocast:s.autocast};
  })};
@@ -161,7 +168,7 @@ export function serializeProfile(profile){
  // shared schema/range checks, including non-finite values serialized as null.
  const scalar=value=>['string','number','boolean'].includes(typeof value);
  if(!value.companions.owned.every(id=>typeof id==='string')||(value.companions.selected!==null&&typeof value.companions.selected!=='string'))throw new TypeError('Invalid saved companion scalar');
- if(!Object.entries(value).every(([key,item])=>key==='skills'||key==='companions'||scalar(item))||!value.skills.every(record=>Object.values(record).every(scalar)))throw new TypeError('Invalid saved scalar field');
+ if(!Object.entries(value).every(([key,item])=>key==='skills'||key==='companions'||key==='castles'||key==='appearance'||scalar(item))||!value.skills.every(record=>Object.values(record).every(scalar)))throw new TypeError('Invalid saved scalar field');
  const text=JSON.stringify(value);restoreProfile(text);return text;
 }
 
@@ -182,9 +189,12 @@ export function restoreProfile(text){
   if(!Number.isSafeInteger(value)||value<minimum||value>maximum)throw new TypeError(`Invalid ${label}`);
  };
  const maximum=Number.MAX_SAFE_INTEGER;
- const version1=value?.schema==='bowmaster-reconstruction-1';
- if(!version1&&value?.schema!=='bowmaster-reconstruction-2')throw new TypeError('Unsupported reconstruction save');
- shape(value,['schema','name','rank','xp','gold','scene','level','highestScene','highestLevel','victories','defeats','difficulty','shootingMode','skills',...(!version1?['companions']:[])],'save');
+ const version1=value?.schema==='bowmaster-reconstruction-1',version3=value?.schema==='bowmaster-reconstruction-3';
+ if(!version1&&!version3&&value?.schema!=='bowmaster-reconstruction-2')throw new TypeError('Unsupported reconstruction save');
+ shape(value,['schema','name','rank','xp','gold','scene','level','highestScene','highestLevel','victories','defeats','difficulty','shootingMode','skills',...(!version1?['companions']:[]),...(version3?['castles','appearance']:[])],'save');
+ const castles=version3?validateCastleCollection(value.castles):defaultCastleCollection();
+ if(version3)shape(value.appearance,['palette'],'appearance');
+ const paletteId=version3?validatePlayerPaletteId(value.appearance.palette):DEFAULT_PLAYER_PALETTE_ID;
  const companions=version1?{owned:[],selected:null}:value.companions;
  shape(companions,['owned','selected'],'companions');
  if(!Array.isArray(companions.owned)||companions.owned.length>Object.keys(COMPANIONS).length||companions.owned.some(id=>typeof id!=='string'||!Object.hasOwn(COMPANIONS,id))||new Set(companions.owned).size!==companions.owned.length)throw new TypeError('Invalid companion roster');
@@ -218,7 +228,7 @@ export function restoreProfile(text){
  if(!ids.has('arrow'))throw new TypeError('Save is missing the basic arrow skill');
  const profile=new PlayerProfile(value.name);
  for(const key of ['rank','xp','gold','scene','level','highestScene','highestLevel','victories','defeats','difficulty','shootingMode'])profile[key]=value[key];
- profile.skills=[];profile.owned.clear();profile.companionOwned=new Set(companions.owned);profile.companionId=companions.selected;
+ profile.skills=[];profile.owned.clear();profile.companionOwned=new Set(companions.owned);profile.companionId=companions.selected;profile.castleLevels=new Map(castles.owned.map(castle=>[castle.id,castle.level]));profile.castleId=castles.selected;profile.paletteId=paletteId;
  for(const record of value.skills){const skill=profile.addSkill(record.id);for(const key of ['rank','xp','threshold','binding','autocast','passive'])skill[key]=record[key];}
  return profile;
 }

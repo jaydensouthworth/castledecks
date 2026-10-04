@@ -1,0 +1,7 @@
+{
+  "local-campaign-store.mjs": "2e64c60bc886f617587c5097555ec0701fa9f3b92094d16ff312ad402ec72e6b",
+  "deck-presets-model.mjs": "6a61b8d03e919bb08f8d081271a3b1607b9468d974f9c5574ae09d2d23980740",
+  "engine/profile-manager.mjs": "79dd2af2f790ddd5b77268a1b3f8057b014e0d67ec6e8bf9fd31ffad3039168b",
+  "engine/progression.mjs": "fd4415cd42e11aff12adde49ebd582d9ea4aa4e0c422abf356b0bb96726b81da",
+  "engine/recruitment.mjs": "5ce9fcd1d8801e35eb87894c841c425d0ff6af1cbd78cbbd9270f6646abde8c1"
+}

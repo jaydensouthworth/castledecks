@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {CampaignProfiles} from '../site/dist/engine/profile-manager.mjs';
-import {createLocalCampaignStore,checkpointSlotKey,LOCAL_CHECKPOINT_SCHEMA} from '../site/dist/local-campaign-store.mjs';
+import {createLocalCampaignStore,checkpointSlotKey,CURRENT_LOCAL_CHECKPOINT_SCHEMA as LOCAL_CHECKPOINT_SCHEMA} from '../site/dist/local-campaign-store.mjs';
 import {loadGameUI} from './helpers/game-ui-harness.mjs';
 import {MemoryStorage,TestLocks} from './helpers/local-storage.mjs';
 const search='?open=local-saves';

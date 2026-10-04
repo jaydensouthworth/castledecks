@@ -38,4 +38,12 @@ for route in missing-route missing-module.mjs; do
   status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$origin/$route")
   [[ "$status" == 404 ]]
 done
+runtime_files=0
+while IFS= read -r -d '' file; do
+  route=${file#site/dist/}
+  curl --silent --show-error --fail "$origin/$route" --output "$response_dir/body"
+  cmp "$file" "$response_dir/body"
+  runtime_files=$((runtime_files + 1))
+done < <(find site/dist -type f -print0)
+echo "Container runtime byte equality passed: $runtime_files files."
 echo 'Container smoke checks passed: routes, exact source bytes, module MIME, cache headers and missing-file 404s.'

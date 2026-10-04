@@ -1,3 +1,4 @@
+import {CASTLE_CATALOG} from './engine/castle-catalog.mjs';
 import {cardTactics} from './card-tactics.mjs';
 /** Shared, data-only card identity for the market and collection editor.
  * A tone is a visual effect family, never a rarity or power rating.
@@ -7,6 +8,10 @@ const roleLabels={frontline:'Frontline',ranged:'Ranged',support:'Support',siege:
 const special={arrow:'A reliable opening shot',fireArrow:'Hit, then burn',iceArrow:'Strike and slow',pierceArrow:'Heavy piercing impact',bombArrow:'Impact and splash',flakArrow:'Detonate in flight',thunderArrow:'Call a lightning cloud',meteorArrow:'Fire from above',cometArrow:'Ice from above',bombWave:'Ground explosions',fireWave:'A rolling wall of fire',iceWave:'Frost along the ground',healWave:'Restore living allies',air:'Airborne patrol',poisonDragon:'Poison from the skies',fireDragon:'Flying fire support',iceDragon:'Flying frost support',fireDemon:'Fire at the front line',iceDemon:'Frost at the front line',gorath:'A companion of your own'};
 const n=value=>Number.isFinite(Number(value))?Number(value).toLocaleString(undefined,{maximumFractionDigits:2}):'—';
 export function cardIdentity(item){
+ if(item.kind==='castle'&&Object.hasOwn(CASTLE_CATALOG,item.id)){
+  const castle=CASTLE_CATALOG[item.id];
+  return {tone:'steel',label:'Castle sidegrade',headline:castle.launchElevation?'Higher station · less health and shelter':'Full health · four shelter berths',facts:[{label:'Firing station',value:castle.launchElevation?`+${castle.launchElevation} world units`:'Original height'},{label:'Shelter / health',value:`${castle.berths} berths · ${Math.round(castle.hpMultiplier*100)}% base HP`}],tactics:null};
+ }
  const tactics=cardTactics(item),traits=item.traits??[],tone=item.kind==='companion'?'companion':['fire','ice','poison','lightning','explosive','healing'].find(value=>traits.includes(value))??'steel';
  const label=item.kind==='companion'?'Companion':item.department==='army'?`${traits.includes('airborne')?'Airborne · ':''}${roleLabels[item.role]??'Army'}`:item.category==='waves'?`${labels[tone]} wave`:`${labels[tone]} shot`;
  const facts=item.kind==='companion'?[{label:'Summon',value:`${n(item.summonCost)} gold`},{label:'Command',value:'Separate slot'}]:item.squad?[{label:'Squad',value:`${n(item.squad.size)} units`},{label:'Deploy',value:`${n(item.squad.gold)} gold · ${n(item.squad.reserve)} reserve`}]:[{label:'Reload',value:`${n(item.reloadSeconds)}s`},{label:'Delivery',value:item.category==='waves'?'Ground wave':'Bow cast'}];

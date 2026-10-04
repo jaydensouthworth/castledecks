@@ -7,7 +7,7 @@ import {CONTROL_STORAGE_KEY,DEFAULT_CONTROL_BINDINGS} from '../site/dist/control
 const save=(ui,name)=>{ui.get('deckNewName').value=name;ui.dispatch(ui.get('deckSaveForm'),'submit');};
 const books=ui=>{ui.click('deckShowExport');return parseDeckCode(ui.get('deckExportCode').value);};
 const importDeck=(ui,d)=>{ui.get('deckImportCode').value=exportDeckCode([d]);ui.click('deckImportPrepare');ui.click('deckConfirmAccept');};
-const empty=(name='Reserve all')=>({name,slots:Array(30).fill(null),companion:null});
+const empty=(name='Reserve all')=>({name,slots:Array(30).fill(null),companion:null,castle:{id:'classic',level:1}});
 const open=ui=>{ui.click('introLoadout');ui.click('openDeckPresets');};
 const close=ui=>{ui.click('closeDeckPresets');if(ui.visible('skillsPanel'))ui.click('closeSkills');};
 const switchTo=(ui,id)=>{ui.get('hubDestinations').querySelector(`[data-hub-destination="${id}"]`).click();ui.click('start');if(ui.visible('switchSessionConfirm'))ui.click('confirmSessionSwitch');ui.frames();};

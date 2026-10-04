@@ -19,7 +19,7 @@ test('controls editor applies actual companion, arc, movement, pause, bar and ai
  const before=ui.battle.hotbar.bar;ui.key('keydown','m');assert.notEqual(ui.battle.hotbar.bar,before);ui.key('keydown','n');assert.equal(ui.battle.hotbar.bar,before);
  ui.key('keydown','p');assert.equal(ui.battle.paused,false);ui.key('keydown','o');assert.equal(ui.battle.paused,true);ui.key('keydown','o',{repeat:true});assert.equal(ui.battle.paused,true);ui.key('keydown','o');assert.equal(ui.battle.paused,false);ui.key('keydown','Escape');assert.equal(ui.battle.paused,true);
  assert.equal(JSON.parse(storage.getItem(CONTROL_STORAGE_KEY)).bindings.companion,'h');assert.match(ui.get('pauseControlsReference').textContent,/H commands.*J switches/);
- ui.click('pauseSkills');assert.match(ui.get('loadoutCompanionSummary').textContent,/ · H$/);assert.match(ui.get('loadoutControlsReference').textContent,/H controls/);
+ ui.click('pauseSkills');assert.match(ui.get('loadoutCompanionSummary').textContent,/ · H ·/);assert.match(ui.get('loadoutControlsReference').textContent,/H controls/);
 });
 test('Cancel, Back and Escape discard draft changes; capture Escape and Tab only stop capture',async t=>{
  const storage=new MemoryStorage(),ui=await ready(t,{storage});open(ui);rebind(ui,'arc','h');ui.click('cancelControls');ui.click('openControls');assert.equal(keyText(ui,'arc'),'V');assert.equal(storage.getItem(CONTROL_STORAGE_KEY),null);

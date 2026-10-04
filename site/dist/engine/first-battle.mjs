@@ -5,6 +5,7 @@ import {ArmyOrders} from './army-orders.mjs';
  * Geometry retains explicit static-measurement/twip-edge uncertainty.
  */
 import {validateBattleEncounter} from './battle-encounter.mjs';
+import {DEFAULT_CASTLE_SELECTION, validateCastleSelection, resolveCastleConfig} from './castle-catalog.mjs';
 import {HeightField} from './terrain.mjs';
 import {FRIENDLY_RECRUIT_GEOMETRY,RECRUIT_SKILLS} from './recruitment.mjs';
 import {CompanionController,GorathCompanion} from './companions.mjs';
@@ -82,9 +83,153 @@ class BattleArrow extends Arrow {
   destroy(reason){if(!this.active)return;this.active=false;this.reason=reason;this.battle.removeObject(this);}
 }
 
+// Private construction provenance prevents compounded health, copied castles and
+// stale profile/battle references from being accepted by preparation transactions.
+const castleOrigins = new WeakMap();
+
+function profileCastleSelection(profile) {
+  if (!Object.hasOwn(profile, 'castleId') && !Object.hasOwn(profile, 'castleLevels')) {
+    return DEFAULT_CASTLE_SELECTION;
+  }
+  if (!(profile.castleLevels instanceof Map) || !profile.castleLevels.has(profile.castleId)) {
+    throw new RangeError('Selected castle is not owned');
+  }
+  return validateCastleSelection({id: profile.castleId, level: profile.castleLevels.get(profile.castleId)});
+}
+
+function ownsSelection(profile, selection) {
+  if (!Object.hasOwn(profile, 'castleId') && !Object.hasOwn(profile, 'castleLevels')) {
+    return selection.id === 'classic' && selection.level === 1;
+  }
+  return profile.castleLevels instanceof Map && profile.castleLevels.get(selection.id) === selection.level;
+}
+
+/** Descriptor-only writes cannot call model hooks or setters. Preflight every
+ * target before committing any field, including the queued-shot array length.
+ * This seam operates on the engine's existing ordinary objects, not proxies.
+ */
+function castleDataWrites(target, values) {
+  const descriptors = {};
+  for (const [key, value] of Object.entries(values)) {
+    const field = Object.getOwnPropertyDescriptor(target, key);
+    if (!field || !Object.hasOwn(field, 'value') || !field.writable) {
+      throw new TypeError(`Prepared castle field is not writable: ${key}`);
+    }
+    descriptors[key] = {value};
+  }
+  return {target, descriptors};
+}
+
+/** Prepare immediately before the caller's synchronous, atomic deck commit.
+ * Does not equip the profile: the owning deck model must prevalidate its complete
+ * operation, then apply this transaction and its already validated profile edit.
+ * Keep options live until apply (or apply in the same synchronous turn) so a host
+ * can expose its current started flag. Changed selections require explicit false.
+ * A no-op selection preserves damaged keeps, ongoing aim and all object identity.
+ */
+export function prepareCastleSelection(battle, value, options = {}) {
+  const selection = validateCastleSelection(value);
+  const castle = battle?.goodCastle;
+  const origin = castleOrigins.get(castle);
+  const profile = options.profile;
+  const shooter = battle?.shooter, input = battle?.input;
+  const hero = battle?.hero, playerShots = battle?.playerShots;
+  const changed = !!castle && (castle.castleId !== selection.id || castle.castleLevel !== selection.level);
+  const config = origin ? resolveCastleConfig(selection, {team: 'good', baseHp: origin.baseHp}) : null;
+  const before = castle && {
+    castleId: castle.castleId, castleLevel: castle.castleLevel,
+    hp: castle.hp, maxHp: castle.maxHp, maxOccupants: castle.maxOccupants,
+    shotOffset: castle.shotOffset, regionKind: castle.regionKind,
+    x: castle.x, y: castle.y, width: castle.width, height: castle.height, hitbox: castle.hitbox,
+  };
+  const guard = () => {
+    if (!origin || origin.battle !== battle || origin.profile !== profile ||
+        battle.profile !== profile || battle.goodCastle !== castle ||
+        battle.shooter !== shooter || battle.input !== input ||
+        battle.hero !== hero || battle.playerShots !== playerShots) {
+      throw new Error('Prepared castle no longer matches this profile and battlefield');
+    }
+    if (!ownsSelection(profile, selection)) throw new RangeError('Selected castle is not owned');
+    if (Object.keys(before).some(key => castle[key] !== before[key])) {
+      throw new Error('The prepared castle changed before applying this selection');
+    }
+    if (!changed) return;
+    if (options.started !== false || battle.started === true || battle.tick !== 0 || battle.outcome || battle.summary) {
+      throw new Error('Change your castle before starting or after the battle');
+    }
+    if (castle.destroyed || castle.clipPresent === false || castle.hp !== castle.maxHp ||
+        castle.lastAttackTimer !== 0 || castle.effects.effects.length !== 0 ||
+        !battle.structures.includes(castle) || !battle.garrisons.includes(castle) ||
+        !battle.objects.items.includes(castle)) {
+      throw new Error('The prepared castle is no longer pristine');
+    }
+    // Count every real occupancy claim without evicting stale/dead/unexpected
+    // occupants. Ordinary tick-zero preparation contains only the hero.
+    const occupants = new Set(castle.occupants);
+    for (const unit of [...battle.goodTeam, ...battle.badTeam]) {
+      if (unit.garrisonBuilding === castle) occupants.add(unit);
+    }
+    if (Math.max(occupants.size, castle.occupants.length) > config.maxOccupants) {
+      throw new RangeError('The selected castle has too few shelter berths');
+    }
+  };
+  const stage = () => {
+    const geometry = unitRegions(config.regionKind, {
+      x: castle.x, y: castle.y, scaleX: castle.facing ?? 1,
+      rotation: castle.collisionRotation ?? castle.rotation ?? 0,
+    });
+    const launchPosition = hero.garrisonBuilding === castle
+      ? {x: castle.x + config.shotOffset.x, y: castle.y + config.shotOffset.y}
+      : hero.launchPosition;
+    const shooterValues = {origin: launchPosition, holding: false, active: null};
+    for (const key of ['sampledOrigin', 'lastAttempt', 'guide']) {
+      if (key in shooter) shooterValues[key] = null;
+    }
+    if ('fired' in shooter) shooterValues.fired = false;
+    const writes = [
+      castleDataWrites(castle, {
+        castleId: config.id, castleLevel: config.level,
+        hp: config.hp, maxHp: config.hp, maxOccupants: config.maxOccupants,
+        shotOffset: config.shotOffset, regionKind: config.regionKind,
+        width: config.width, height: config.height, ...geometry,
+      }),
+      castleDataWrites(shooter, shooterValues),
+      castleDataWrites(input, {mouseDown: false}),
+      castleDataWrites(battle, {queuedAim: null}),
+      castleDataWrites(playerShots, {length: 0}),
+    ];
+    for (const key of Object.getOwnPropertyNames(playerShots)) {
+      if (/^(0|[1-9][0-9]*)$/.test(key) && !Object.getOwnPropertyDescriptor(playerShots, key).configurable) {
+        throw new TypeError('Prepared player shot queue cannot be cleared');
+      }
+    }
+    const intent = Object.getOwnPropertyDescriptor(shooter, 'intentSkill');
+    if (intent && !intent.configurable) throw new TypeError('Prepared shooter intent cannot be cleared');
+    return {writes, clearIntent: !!intent};
+  };
+  guard();
+  if (changed) stage();
+  let applied = false;
+  return Object.freeze({selection, castle, changed, apply() {
+    if (applied) throw new Error('Castle transaction was already applied');
+    guard();
+    const staged = changed ? stage() : null;
+    // All throw-prone geometry, guards and descriptor checks completed above.
+    // Do not call assignGeometry, cancelPlayerShots, shooter.cancel or observers
+    // here: those are replaceable callbacks and could leave a partial commit.
+    if (staged) {
+      for (const write of staged.writes) Object.defineProperties(write.target, write.descriptors);
+      if (staged.clearIntent) delete shooter.intentSkill;
+    }
+    applied = true;
+    return castle;
+  }});
+}
+
 export class FirstBattle {
   constructor({profile=new PlayerProfile(),level=1,random=seededRandom(1234),createSpecialProjectile=buildSpecialProjectile,unitFactories={},geometryKinds={},onEvent=()=>{},testing=false,encounter=null}={}){
     this.encounter=validateBattleEncounter(encounter);
+    const playerCastle = profileCastleSelection(profile);
     this.testing=testing===true;this.protectedTesting=false;if(this.testing)profile.cheated=true;this.profile=profile;this.random=random;this.createSpecialProjectile=createSpecialProjectile;this.onEvent=onEvent;
     this.tick=0;this.width=2000;this.gravity=.3;this.level=level;this.scene=level+1;this.levelData=this.encounter?{...getLevel(level),scenery:this.encounter.scenery,timeOfDay:this.encounter.timeOfDay,heights:this.encounter.heights}:getLevel(level);this.unitFactories={...classFor,...unitFactories};this.geometryKinds=geometryKinds;this.paused=false;this.outcome=null;this.summary=null;
     this.terrain=this.encounter?new HeightField(this.encounter.heights):levelTerrain(level);this.objects=new WorldObjects();this.goodTeam=[];this.badTeam=[];this.airUnits=[];this.structures=[];this.goodStructures=[];this.badStructures=[];this.neutralStructures=[];this.garrisons=[];this.projectiles=[];this.spells=[];this.reactiveElements=[];this.activationObjects=[];this.input={left:false,right:false,up:false,down:false,mouseDown:false};
@@ -94,10 +239,10 @@ export class FirstBattle {
     this.wave=new WaveBudget({level,random});this.enemies=new BattleDirector({roster:this.encounter?.roster??campaignRoster(level,random),level,difficulty:profile.difficulty,wave:this.wave});this.friendlyQueue.cap=battleFieldLimits(level).friendly;
     this.hero=this.objects.add(new Hero({x:100,y:this.elevationAt(100),rank:profile.rank,world:this,structures:()=>this.garrisons,input:()=>({...this.input,shooterX:this.shooter?.shootingX}),services:{stateChange:()=>this.checkOutcome()}}));
     this.hero.regionKind='hero';this.assignGeometry(this.hero);this.goodTeam.push(this.hero);
-    this.goodCastle=this.createCastle('good',350,8000+profile.rank*400);
+    this.goodCastle=this.createCastle('good',350,8000+profile.rank*400,playerCastle);
     this.hero.x=this.goodCastle.x;this.hero.y=this.goodCastle.y;this.hero.garrisonInto(this.goodCastle);
     for(const x of (this.encounter?.towers??towerPlacements(level,random)))this.createTower(x);
-    this.badCastle=this.createCastle('bad',1800,this.encounter?.enemyKeepHP??Math.floor(8000*(1+level/30)));
+    this.badCastle=this.createCastle('bad',1800,this.encounter?.enemyKeepHP??Math.floor(8000*(1+level/30)),this.encounter?.enemyCastle??DEFAULT_CASTLE_SELECTION);
     this.ownFlag=this.objects.add(new FlagState({x:325,y:this.elevationAt(325)}));
     this.enemyFlag=this.objects.add(new FlagState({x:1725,y:this.elevationAt(1725)}));
     this.shooter=createShooter({origin:this.hero.launchPosition,mode:profile.shootingMode,aimSolver:assistedAutoAim,onFailure:()=>this.emit({type:'aim-unreachable'})});
@@ -113,9 +258,11 @@ export class FirstBattle {
   onHeal(event){this.emit({type:'heal',...event});}
   assignGeometry(entity){const local=COLLISION_REGIONS[entity.regionKind].hitbox;entity.height=local[3]-local[2];entity.width=local[1]-local[0];this.updateGeometry(entity);return entity;}
   updateGeometry(entity){if(entity.clipPresent===false){entity.hitbox=null;entity.headbox=null;return;}if(!entity.regionKind)return;Object.assign(entity,unitRegions(entity.regionKind,{x:entity.x,y:entity.y,scaleX:entity.facing??1,rotation:entity.collisionRotation??entity.rotation??0}));}
-  createCastle(team,x,hp){
-    const castle=new Castle({x,y:this.elevationAt(x),hp,team,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders&&this.armyOrders.mode!=='advance')this.armyOrders.set('advance',undefined,'all');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
-    castle.regionKind=team==='good'?'friendlyCastle':'enemyCastle';this.assignGeometry(castle);
+  createCastle(team,x,baseHp,selection=DEFAULT_CASTLE_SELECTION){
+    const config=resolveCastleConfig(selection,{team,baseHp});
+    const castle=new Castle({x,y:this.elevationAt(x),hp:config.hp,team,maxOccupants:config.maxOccupants,shotOffset:config.shotOffset,services:{ownershipChanged:b=>{remove(this.neutralStructures,b);if(b.occupiedBy==='good')this.goodStructures.push(b);else if(b.occupiedBy==='bad')this.badStructures.push(b);},destroyed:b=>{remove(b.occupiedBy==='good'?this.goodStructures:b.occupiedBy==='bad'?this.badStructures:this.neutralStructures,b);remove(this.garrisons,b);this.objects.remove(b);if(b.team==='bad'){if(this.armyOrders&&this.armyOrders.mode!=='advance')this.armyOrders.set('advance',undefined,'all');const retreat=this.enemies.closeReserves();if(retreat)this.emit({type:'enemy-reserves-withdrawn',...retreat});}this.emit({type:'castle-destroyed',castle:b});},stateChange:()=>this.checkOutcome()}});
+    castle.castleId=config.id;castle.castleLevel=config.level;castle.regionKind=config.regionKind;this.assignGeometry(castle);
+    castleOrigins.set(castle,Object.freeze({battle:this,profile:this.profile,baseHp}));
     this.objects.add(castle);this.structures.push(castle);this.garrisons.push(castle);(team==='good'?this.goodStructures:this.badStructures).push(castle);return castle;
   }
   createTower(x){

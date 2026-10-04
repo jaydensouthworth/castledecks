@@ -1,3 +1,4 @@
+import {legacyProfileBundle,legacyDeck} from './helpers/legacy-castle-fixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
@@ -16,8 +17,8 @@ function checkpoint({name='Oakward',level=1,phase='ready',outcome=null,assisted=
  const manager=new CampaignProfiles({defaultName:name});
  if(second)manager.create('Selected company');manager.select(activeIndex);
  manager.active.highestLevel=level;manager.active.cheated=assisted;
- const payload={bundle:manager.exportBundle(),activeIndex,resume:{phase,level:Math.min(30,level),outcome}};
- if(schema===LOCAL_DECK_CHECKPOINT_SCHEMA)payload.deckPresets={schema:PROFILE_DECK_SCHEMA,profiles:manager.profiles.map(profile=>[captureDeck(profile,'Field kit')]),retired:[]};
+ const payload={bundle:legacyProfileBundle(manager),activeIndex,resume:{phase,level:Math.min(30,level),outcome}};
+ if(schema===LOCAL_DECK_CHECKPOINT_SCHEMA)payload.deckPresets={schema:'castledecks-profile-decks-1',profiles:manager.profiles.map(profile=>[legacyDeck(captureDeck(profile,'Field kit'))]),retired:[]};
  return JSON.stringify({schema,revision,writtenAt,transaction:'frontpage-fixture',reason:phase==='result'?'result':phase==='opening'?'battle-start':'ready',payload});
 }
 const seed=(storage,options={},slot=1,bank='a')=>storage.data.set(checkpointSlotKey(slot,bank),checkpoint(options));
@@ -37,7 +38,7 @@ test('corrupt bank uses only the valid recovery copy and makes no repairs',()=>{
  const storage=new Storage();seed(storage,{level:7});storage.data.set(checkpointSlotKey(1,'b'),'{broken');const before=snapshot(storage),view=readFrontpageCampaign(reader(storage));
  assert.equal(view.campaign.region,'Bannerfen');assert.match(view.note,/last valid copy.*both copies are kept/);assert.deepEqual(snapshot(storage),before);assert.equal(storage.writes,0);assert.equal(storage.removes,0);
 });
-for(const schema of ['castledecks-local-checkpoint-3','castledecks-local-checkpoint-99','castledecks-local-checkpoint-99999999999999999999999999'])test(`newer ${schema} hides even an otherwise valid older bank without touching either`,()=>{
+for(const schema of ['castledecks-local-checkpoint-4','castledecks-local-checkpoint-99','castledecks-local-checkpoint-99999999999999999999999999'])test(`newer ${schema} hides even an otherwise valid older bank without touching either`,()=>{
  const storage=new Storage();seed(storage,{name:'Must not preview'});storage.data.set(checkpointSlotKey(1,'b'),JSON.stringify({schema,privateFutureData:{keep:true}}));const before=snapshot(storage),view=readFrontpageCampaign(reader(storage));
  assert.equal(view.status,'newer');assert.equal(view.campaign,null);assert.match(view.note,/newer game version.*Reload.*both checkpoint copies are kept/);assert.deepEqual(snapshot(storage),before);assert.equal(storage.writes,0);assert.equal(storage.removes,0);
 });
@@ -56,7 +57,7 @@ test('latest bank follows reader revisions; most recent valid slot follows game 
  const view=readFrontpageCampaign(reader(storage));assert.equal(view.campaign.name,'Other slot');assert.equal(view.campaign.slot,2);assert.equal(view.campaign.readableSlots,2);storage.data.delete(checkpointSlotKey(2,'a'));assert.equal(readFrontpageCampaign(reader(storage)).campaign.name,'Current bank');assert.equal(storage.writes,0);
 });
 test('another newer or unreadable slot does not hide a valid separate campaign or misstate all slots',()=>{
- const storage=new Storage();seed(storage,{level:24},2);storage.data.set(checkpointSlotKey(1,'a'),'{"schema":"castledecks-local-checkpoint-3"}');storage.data.set(checkpointSlotKey(3,'a'),'{broken');const view=readFrontpageCampaign(reader(storage));
+ const storage=new Storage();seed(storage,{level:24},2);storage.data.set(checkpointSlotKey(1,'a'),'{"schema":"castledecks-local-checkpoint-4"}');storage.data.set(checkpointSlotKey(3,'a'),'{broken');const view=readFrontpageCampaign(reader(storage));
  assert.equal(view.status,'ready');assert.equal(view.campaign.slot,2);assert.equal(view.campaign.region,'Cinderlands');assert.equal(view.campaign.readableSlots,1);assert.match(view.note,/newer game version/);assert.match(view.note,/unreadable data/);assert.equal(storage.writes,0);assert.equal(storage.removes,0);
 });
 test('partial read denial reports uncertainty beside a readable campaign',()=>{
@@ -104,7 +105,7 @@ test('storage becoming denied clears old preview but never calls it empty or sta
  assert.equal(ui.get('returningCampaign').hidden,true);assert.equal(ui.get('returningName').textContent,'');assert.equal(ui.get('returningTime').getAttribute('datetime'),null);assert.equal(ui.get('frontpageSaveNotice').hidden,false);assert.match(ui.get('frontpageSaveNotice').textContent,/may still exist/);assert.equal(ui.get('frontpagePlayLabel').textContent,'Review local saves');assert.equal(storage.writes,0);
 });
 test('all error and recovery UI states preserve raw bytes and show their warning',()=>{
- for(const kind of ['recovered','newer','unreadable']){const storage=new Storage();if(kind==='recovered')seed(storage);storage.data.set(checkpointSlotKey(1,kind==='recovered'?'b':'a'),kind==='newer'?'{"schema":"castledecks-local-checkpoint-3"}':'broken');const before=snapshot(storage),ui=surface(storage);createFrontpageCampaign(ui);assert.equal(ui.get('frontpageSaveNotice').hidden,false);assert.ok(ui.get('frontpageSaveNotice').textContent);assert.deepEqual(snapshot(storage),before);assert.equal(storage.writes,0);assert.equal(storage.removes,0);}
+ for(const kind of ['recovered','newer','unreadable']){const storage=new Storage();if(kind==='recovered')seed(storage);storage.data.set(checkpointSlotKey(1,kind==='recovered'?'b':'a'),kind==='newer'?'{"schema":"castledecks-local-checkpoint-4"}':'broken');const before=snapshot(storage),ui=surface(storage);createFrontpageCampaign(ui);assert.equal(ui.get('frontpageSaveNotice').hidden,false);assert.ok(ui.get('frontpageSaveNotice').textContent);assert.deepEqual(snapshot(storage),before);assert.equal(storage.writes,0);assert.equal(storage.removes,0);}
 });
 test('same-origin isolation reads only six existing Crownroad keys and no other save namespace',()=>{
  const a=new Storage(),b=new Storage();seed(a,{name:'Origin A'});b.data.set('castledecks:expedition:save','not a Crownroad checkpoint');assert.equal(readFrontpageCampaign(reader(a)).campaign.name,'Origin A');assert.equal(readFrontpageCampaign(reader(b)).status,'empty');assert.ok([...a.reads,...b.reads].every(key=>key.startsWith(LOCAL_STORAGE_PREFIX)));assert.equal(a.writes+b.writes,0);

@@ -4,7 +4,7 @@ import {createUploadJournal} from './cloud-upload-journal.mjs';
 import {createCloudGameBridge} from './cloud-game-bridge.mjs';
 import {createCloudAccountModel} from './cloud-account-model.mjs';
 import {mountCloudAccountPanel} from './cloud-account-panel.mjs';
-import {snapshotCampaign,parseLocalCheckpoint,LOCAL_CHECKPOINT_SCHEMA,LOCAL_DECK_CHECKPOINT_SCHEMA} from './local-campaign-store.mjs';
+import {snapshotCampaign,parseLocalCheckpoint,createLocalCheckpointEnvelope} from './local-campaign-store.mjs';
 import {restoreExpeditions} from './expedition-model.mjs';
 import {exportDeckCode,parseDeckCode} from './deck-presets-model.mjs';
 
@@ -21,7 +21,7 @@ export function createGameCloudAccounts({document,window,enabled=false,getState,
   if(kind==='wayfarer')return getState().profiles.exportBundle();
   if(kind==='decks')return exportDeckCode(getDecks());
   const payload=snapshotCampaign({...getState(),deckPresets:getProfileDecks()},'ready');if(!payload)throw new Error('Finish this field before using cloud checkpoints');
-  const key=JSON.stringify(payload);if(key!==cacheKey){cacheKey=key;cacheDocument=JSON.stringify({schema:Object.hasOwn(payload,'deckPresets')?LOCAL_DECK_CHECKPOINT_SCHEMA:LOCAL_CHECKPOINT_SCHEMA,revision:1,writtenAt:Date.now(),transaction:'cloud-capture',reason:'ready',payload});}return cacheDocument;
+  const key=JSON.stringify(payload);if(key!==cacheKey){cacheKey=key;cacheDocument=JSON.stringify(createLocalCheckpointEnvelope(payload,{revision:1,writtenAt:Date.now(),transaction:'cloud-capture',reason:'ready'}));}return cacheDocument;
  }});
  function sync(){entry.hidden=getState().temporarySession===true;entry.disabled=bridge.kinds().length===0;root.hidden=!open||!model||getState().temporarySession===true;const signature=bridge.kinds().join('|');if(signature!==lastKinds){lastKinds=signature;model?.sync();}}
  async function start(){open=true;sync();if(model||pending)return;const stamp=++attempt;pending=true;

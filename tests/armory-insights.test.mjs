@@ -16,8 +16,9 @@ const options=rank=>({rank,world:world(),random:()=>.5,x:100,y:100,vx:0,vy:0,hei
 const value=(facts,key)=>{const metric=facts.metrics.find(metric=>metric.key===key);assert.ok(metric,`${facts.id} is missing ${key}`);return metric.value;};
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-9,`${actual} differs from ${expected}`);
 
-test('all 26 collection cards have finite distinct compare-safe facts at every skill rank and difficulty',()=>{
- assert.equal(records.length,26);
+test('all 28 collection cards have finite distinct compare-safe facts at every skill rank and difficulty',()=>{
+ // Castle slice adds free, already-owned Classic plus Highwatch as the only new purchasable card.
+ assert.equal(records.length,28);
  const definitions=new Map();
  for(const difficulty of ['easy','medium','hard','insane'])for(let rank=0;rank<=10;rank++)for(const record of records){
   const facts=getCardInsights(record,{rank,heroRank:rank+1,difficulty});

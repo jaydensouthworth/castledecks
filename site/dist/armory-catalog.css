@@ -654,3 +654,9 @@
  #shopPanel .shop-card[data-card-type="army"] .card-name .card-mobile-deploy{color:#ddccb0;font-size:10px}
  #shopPanel .comparison-portrait{height:70px;max-width:120px}
 }
+
+/* Castle SVGs keep their common world scale; existing card paintings are unchanged. */
+#shopPanel .armory-castle-portrait{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0}
+#shopPanel .armory-castle-portrait>svg,#shopPanel svg[data-castle-preview]{display:block;width:100%;height:100%;object-fit:contain;max-width:100%;max-height:100%}
+#shopPanel .shop-card[data-card-type="castles"] .card-name small{display:block;white-space:normal;line-height:1.35}
+#shopPanel .armory-facts dd small{display:block;font-size:11px;line-height:1.45;margin-top:3px;font-weight:400}

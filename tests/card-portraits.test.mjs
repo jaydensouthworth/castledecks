@@ -8,8 +8,8 @@ import {COMPANIONS} from '../site/dist/engine/recruitment.mjs';
 import {loadGameUI} from './helpers/game-ui-harness.mjs';
 const records=buildArmoryRecords(SKILLS,COMPANIONS,{}),environment={};
 
-test('every real card has a unique atlas cell; no invented catalog card or rarity',()=>{
- assert.deepEqual(Object.keys(CARD_PORTRAITS).sort(),records.map(item=>item.id).sort());
+test('every ability/companion has a unique atlas cell; castles retain code-native art',()=>{
+ assert.deepEqual(Object.keys(CARD_PORTRAITS).sort(),records.filter(item=>item.kind!=='castle').map(item=>item.id).sort());
  assert.equal(new Set(Object.values(CARD_PORTRAITS).map(art=>`${art.sheet}:${art.index}`)).size,26);
  assert.equal(CARD_PORTRAITS.gorath.sheet,'martial');assert.equal(CARD_PORTRAITS.healWave.sheet,'arcane');assert.equal(CARD_PORTRAITS.bombWave.sheet,'beasts');
  for(const art of Object.values(CARD_PORTRAITS)){assert.ok(art.x>=0&&art.y>=0&&art.x+art.w<1448&&art.y+art.h<1086);assert.ok(art.w>450&&art.h>330);assert.ok(!('rarity'in art));}
@@ -20,7 +20,7 @@ test('three shared atlases respect the declared encoded and decoded bounds',asyn
  assert.equal(total,CARD_PORTRAIT_BUDGET.encodedBytes);assert.ok(total<660000);assert.ok(CARD_PORTRAIT_BUDGET.decodedBytes<8*1024*1024);
 });
 test('known portraits have one lazy decorative image and preserved trusted fallback',()=>{
- for(const {id}of records){const html=cardPortrait(id,'<svg data-original="yes"></svg>',{environment});assert.equal((html.match(/<img /g)??[]).length,1);assert.match(html,/loading="lazy" decoding="async" fetchpriority="low"/);assert.match(html,/alt=""/);assert.match(html,/width="960" height="720"/);assert.match(html,/data-original="yes"/);assert.doesNotMatch(html,/onerror|onload|preload|base64|<canvas/);}
+ for(const {id}of records.filter(item=>item.kind!=='castle')){const html=cardPortrait(id,'<svg data-original="yes"></svg>',{environment});assert.equal((html.match(/<img /g)??[]).length,1);assert.match(html,/loading="lazy" decoding="async" fetchpriority="low"/);assert.match(html,/alt=""/);assert.match(html,/width="960" height="720"/);assert.match(html,/data-original="yes"/);assert.doesNotMatch(html,/onerror|onload|preload|base64|<canvas/);}
 });
 test('unknown ids and save-data/forced-color environments retain icons without a network source',()=>{
  for(const env of [{navigator:{connection:{saveData:true}}},{matchMedia:q=>({matches:q==='(prefers-reduced-data: reduce)'})},{matchMedia:q=>({matches:q==='(forced-colors: active)'})}]){assert.equal(preferCardIcons(env),true);const html=cardPortrait('fireArrow','<svg></svg>',{environment:env});assert.doesNotMatch(html,/<img|src=/);assert.match(html,/<svg>/);}

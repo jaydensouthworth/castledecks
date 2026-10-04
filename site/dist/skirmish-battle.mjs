@@ -19,6 +19,7 @@ export function createSkirmishProfile(scenario,{shootingMode='classic'}={}){
  const profile=new PlayerProfile('Skirmish Practice'),kit=SKIRMISH_KIT;
  Object.assign(profile,{rank:kit.rank,gold:kit.gold,difficulty:scenario.difficulty,shootingMode,cheated:true});
  for(const id of kit.skills){const skill=profile.skills.find(item=>item.id===id)??profile.addSkill(id);skill.rank=id==='arrow'?kit.basicRank:kit.skillRank;skill.threshold=(skill.rank+1)*100;skill.cooldown=0;skill.autocast=kit.autoRecruit.includes(id);}
+ if(scenario.castlePractice){profile.castleLevels=new Map(scenario.castlePractice.supplied.map(({id,level})=>[id,level]));profile.castleId=scenario.castlePractice.selected.id;}
  suppliedProfiles.set(profile,scenario.code);return profile;
 }
 export class SkirmishProfiles extends CampaignProfiles{
@@ -40,6 +41,16 @@ export class SkirmishBattle extends CampaignBattle{
   super({profile:liveProfile,level:scenario.level,random:skirmishCombatRandom(scenario.descriptor),encounter:scenario.encounter,onEvent});
   this.terrain=new SkirmishHeightField(this.encounter.heights);
   usedProfiles.add(liveProfile);this.skirmish=scenario;Object.assign(liveProfile,progress);
+  if(scenario.castlePractice){
+   // These are actual tickets from the advertised finite roster. They start
+   // sheltered using the normal capacity API; their normal AI may leave when
+   // it cannot reach a target. No hold order, timer or stat is overridden.
+   for(let i=0;i<scenario.castlePractice.predeployedArchers;i++){
+    if(this.enemies.take('archer')!=='archer')throw new Error('Required home archer missing from finite company');
+    const unit=this.createUnit('archer');unit.x=this.badCastle.x;unit.y=this.elevationAt(unit.x);unit.facing=unit.forward;unit.vx=0;this.updateGeometry(unit);
+    if(!unit.attemptGarrison(this.badCastle))throw new Error('Required home archer could not enter the keep');
+   }
+  }
   if(scenario.descriptor.doctrine==='levy'){this.enemies=new LevyEncounterDirector({stages:scenario.levyStages,wave:this.wave,level:this.level});this.auxiliaries=new AuxiliaryController(this);}
   if(this.encounter.objective===BATTERY_OBJECTIVE){
    this.batteryObjective=new BatteryObjective(this);
@@ -61,7 +72,7 @@ export class SkirmishBattle extends CampaignBattle{
  get objectiveProgress(){return this.batteryObjective?.snapshot??null;}
  get objectiveMarkers(){return this.objectiveProgress?.targets??Object.freeze([]);}
  checkOutcome(){
-  if(this.skirmish?.descriptor.doctrine==='levy'){
+  if(this.skirmish?.descriptor.doctrine==='levy'||this.skirmish?.castlePractice){
    if(this.outcome||this.levyFrame)return;
    // Capture the actual terminal conditions at the authoritative whole-tick
    // check. Multiple simultaneous losses remain multiple causes; presentation
@@ -70,7 +81,7 @@ export class SkirmishBattle extends CampaignBattle{
    if(this.hero.dead||this.hero.hp<=0)causes.push('hero');
    if(this.ownFlag.status===FS.CAPTURED)causes.push('flag');
    if(!(this.goodCastle.hp>0))causes.push('keep');
-   if(causes.length){if(!Object.hasOwn(this,'levyDefeatCauses'))Object.defineProperty(this,'levyDefeatCauses',{value:Object.freeze(causes),enumerable:true});this.finishOutcome('defeat');return;}
+   if(causes.length){const key=this.skirmish.castlePractice?'castlePracticeDefeatCauses':'levyDefeatCauses';if(!Object.hasOwn(this,key))Object.defineProperty(this,key,{value:Object.freeze(causes),enumerable:true});this.finishOutcome('defeat');return;}
    if(!(this.badCastle.hp>0)&&this.enemies.remaining===0&&this.badTeam.length===0&&this.ownFlag.status===FS.AT_BASE)this.finishOutcome('victory');return;
   }
   if(this.encounter?.objective!==BATTERY_OBJECTIVE){super.checkOutcome();return;}
@@ -79,10 +90,10 @@ export class SkirmishBattle extends CampaignBattle{
   if(outcome)this.finishOutcome(outcome);
  }
  step(){
-  if(this.auxiliaries){
+  if(this.auxiliaries||this.skirmish?.castlePractice){
    if(this.paused||this.outcome||this.summary){super.step();return;}
    this.levyFrame=true;try{super.step();}finally{this.levyFrame=false;}
-   this.checkOutcome();this.auxiliaries.step();return;
+   this.checkOutcome();this.auxiliaries?.step();return;
   }
   if(!this.batteryObjective||this.paused||this.outcome||this.summary){super.step();return;}
   this.batteryFrame=true;try{super.step();}finally{this.batteryFrame=false;}

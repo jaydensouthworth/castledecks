@@ -1,26 +1,32 @@
+import {CASTLE_CATALOG} from './engine/castle-catalog.mjs';
+import {captureCastleCollection} from './castle-loadout-model.mjs';
 import {armyJobOptions,matchesArmyRole,cardTacticSearchText} from './card-tactics.mjs';
 import {cardRuleSearchText} from './card-rule-search.mjs';
 /** Catalog-only state. No game ticks, purchases, profile mutation, or DOM.
- * Records have stable IDs, kind (skill/companion), category, traits, price,
+ * Records have stable IDs, kind (skill/companion/castle), category, traits, price,
  * description and explicit gameplay facts. Adding content never requires a
  * new renderer. Synthetic benchmark records live only in the private tests.
  */
 export const ARMORY_PAGE_SIZE=12;
-export const ARMORY_CATEGORIES=Object.freeze([['all','All cards'],['arrows','Arrows'],['waves','Waves'],['army','Army'],['companions','Companions']]);
+export const ARMORY_CATEGORIES=Object.freeze([['all','All cards'],['arrows','Arrows'],['waves','Waves'],['army','Army'],['companions','Companions'],['castles','Castles']]);
 export const ARMORY_TRAITS=Object.freeze([['all','All effects & roles'],['fire','Fire'],['ice','Ice'],['poison','Poison'],['lightning','Lightning'],['explosive','Explosive'],['healing','Healing'],['airborne','Airborne'],['ground','Ground troops'],['siege','Siege']]);
 export const ARMORY_STATUSES=Object.freeze([['all','All ownership'],['available','Available to buy'],['owned','Owned'],['unowned','Not owned'],['unaffordable','Need more gold'],['equipped','Equipped'],['reserve','In reserve']]);
 export const ARMORY_SORTS=Object.freeze([['catalog','Catalog order'],['price','Price: low to high'],['price-desc','Price: high to low'],['name','Name: A–Z'],['reload','Reload: shortest']]);
 const normalize=value=>String(value??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const hasOption=(options,key)=>options.some(([id])=>id===key);
 export function createArmorySnapshot(profile){
- return {gold:Number(profile.gold)||0,heroRank:profile.rank??1,difficulty:profile.difficulty??'medium',skills:new Map(profile.skills.map(skill=>[skill.id,skill])),bindings:new Map(profile.skills.filter(skill=>skill.binding>=0).map(skill=>[skill.binding,skill])),owned:profile.owned,companionOwned:profile.companionOwned??new Set(),companionId:profile.companionId};
+ const castles=captureCastleCollection(profile);
+ return {castleLevels:new Map(castles.owned.map(({id,level})=>[id,level])),castleId:castles.selected,paletteId:profile.paletteId??'azure',gold:Number(profile.gold)||0,heroRank:profile.rank??1,difficulty:profile.difficulty??'medium',skills:new Map(profile.skills.map(skill=>[skill.id,skill])),bindings:new Map(profile.skills.filter(skill=>skill.binding>=0).map(skill=>[skill.binding,skill])),owned:profile.owned,companionOwned:profile.companionOwned??new Set(),companionId:profile.companionId};
 }
 export function armoryCardState(item,snapshot){
- const companion=item.kind==='companion',owned=(companion?snapshot.companionOwned:snapshot.owned).has(item.id),skill=companion?null:snapshot.skills.get(item.id);
- // Intentional modern rule: skills and companions use the displayed price.
- const purchaseBlockedReason=snapshot.purchaseBlockedReason??null;
- const eligible=!owned&&!purchaseBlockedReason&&snapshot.gold>=item.price;
- return {owned,eligible,purchaseBlockedReason,skill,equipped:companion?snapshot.companionId===item.id:(skill?.binding??-1)>=0,shortfall:Math.max(0,item.price-Math.floor(snapshot.gold))};
+ const companion=item.kind==='companion',castle=item.kind==='castle',skill=item.kind==='skill'?snapshot.skills.get(item.id):null;
+ let castleValid=true,castleOwned=false;
+ if(castle){try{const collection=captureCastleCollection(snapshot);castleValid=Object.hasOwn(CASTLE_CATALOG,item.id);castleOwned=collection.owned.some(entry=>entry.id===item.id&&entry.level===1);}catch{castleValid=false;}}
+ const owned=castle?castleOwned:(companion?snapshot.companionOwned:snapshot.owned).has(item.id);
+ // Every supported card uses its displayed price. Castle levels are not sold.
+ const purchaseBlockedReason=castle&&!castleValid?'This castle is unavailable.':snapshot.purchaseBlockedReason??null;
+ const eligible=!owned&&!purchaseBlockedReason&&snapshot.gold>=item.price&&(!castle||Number.isSafeInteger(snapshot.gold));
+ return {owned,eligible,purchaseBlockedReason,skill,equipped:castle?castleValid&&snapshot.castleId===item.id:companion?snapshot.companionId===item.id:(skill?.binding??-1)>=0,shortfall:Math.max(0,item.price-Math.floor(snapshot.gold))};
 }
 export class ArmoryCatalog {
  constructor(records,{pageSize=ARMORY_PAGE_SIZE,selectedId='fireArrow'}={}){
@@ -28,7 +34,8 @@ export class ArmoryCatalog {
   const ids=new Set();
   this.records=records.map((record,index)=>{
    if(!/^[a-zA-Z0-9_-]{1,100}$/.test(record.id)||ids.has(record.id))throw new TypeError('Catalog IDs must be unique and DOM-safe.');
-   if(!['skill','companion'].includes(record.kind)||!Number.isFinite(record.price)||record.price<0)throw new TypeError('Invalid catalog kind or price.');
+   if(!['skill','companion','castle'].includes(record.kind)||!Number.isFinite(record.price)||record.price<0)throw new TypeError('Invalid catalog kind or price.');
+   if(record.kind==='castle'&&!Object.hasOwn(CASTLE_CATALOG,record.id))throw new TypeError('Unknown castle catalog ID.');
    ids.add(record.id);const traits=[...new Set(record.traits??[])];
    return Object.freeze({...record,traits:Object.freeze(traits),order:index,search:normalize([record.name,record.description,record.department,record.role,record.category,...traits].join(' ')),ruleSearch:normalize(cardRuleSearchText(record)+' '+cardTacticSearchText(record))});
   });

@@ -1,3 +1,4 @@
+import {armoryCardState} from './armory-catalog-model.mjs';
 /** Editorial collections use existing cards at their full individual prices.
  * They are shopping plans, not discounted bundles or gameplay bonuses.
  */
@@ -9,9 +10,9 @@ export const ARMORY_PLANS=Object.freeze([
 ]);
 export function discoveryPlans(records,snapshot){
  const byId=new Map(records.map(item=>[item.id,item]));
- return ARMORY_PLANS.map(plan=>{const items=plan.ids.map(id=>byId.get(id)).filter(Boolean);const missing=items.filter(item=>!(item.kind==='companion'?snapshot.companionOwned:snapshot.owned).has(item.id));return {...plan,items,missing,total:missing.reduce((sum,item)=>sum+item.price,0),owned:items.length-missing.length};}).filter(plan=>plan.items.length===plan.ids.length);
+ return ARMORY_PLANS.map(plan=>{const items=plan.ids.map(id=>byId.get(id)).filter(Boolean);const missing=items.filter(item=>!armoryCardState(item,snapshot).owned);return {...plan,items,missing,total:missing.reduce((sum,item)=>sum+item.price,0),owned:items.length-missing.length};}).filter(plan=>plan.items.length===plan.ids.length);
 }
 export function budgetPicks(records,snapshot,budget,limit=4){
  const ceiling=Math.max(0,Number(budget)||0);
- return records.filter(item=>item.storefront!==false&&!(item.kind==='companion'?snapshot.companionOwned:snapshot.owned).has(item.id)&&item.price<=ceiling&&snapshot.gold>=item.price).sort((a,b)=>a.price-b.price||a.order-b.order).slice(0,Math.min(12,Math.max(0,limit)));
+ return records.filter(item=>item.storefront!==false&&armoryCardState(item,snapshot).eligible&&item.price<=ceiling).sort((a,b)=>a.price-b.price||a.order-b.order).slice(0,Math.min(12,Math.max(0,limit)));
 }

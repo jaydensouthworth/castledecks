@@ -1,8 +1,10 @@
-/** Device-local safe checkpoints. No account, network, live battlefield, or schema migration. */
+/** Device-local safe checkpoints. Explicit legacy readers; no account, network or live battlefield. */
 import {CampaignProfiles,MAX_PROFILE_BUNDLE_BYTES} from './engine/profile-manager.mjs';
 import {validateProfileDecks} from './deck-presets-model.mjs';
 export const LOCAL_CHECKPOINT_SCHEMA='castledecks-local-checkpoint-1';
 export const LOCAL_DECK_CHECKPOINT_SCHEMA='castledecks-local-checkpoint-2';
+export const LOCAL_CASTLE_CHECKPOINT_SCHEMA='castledecks-local-checkpoint-3';
+export const CURRENT_LOCAL_CHECKPOINT_SCHEMA=LOCAL_CASTLE_CHECKPOINT_SCHEMA;
 export const LOCAL_SLOT_COUNT=3;
 export const LOCAL_STORAGE_PREFIX='castledecks:campaign:checkpoint:v1:';
 export const MAX_LOCAL_CHECKPOINT_BYTES=MAX_PROFILE_BUNDLE_BYTES*2+8192;
@@ -29,11 +31,16 @@ export function validateLocalPayload(value){
 export function parseLocalCheckpoint(text){
  if(typeof text!=='string'||text.length>MAX_LOCAL_CHECKPOINT_BYTES||utf8(text)>MAX_LOCAL_CHECKPOINT_BYTES)throw new TypeError('Checkpoint is too large');
  const value=JSON.parse(text);shape(value,['schema','revision','writtenAt','transaction','reason','payload'],'local checkpoint');
- if(![LOCAL_CHECKPOINT_SCHEMA,LOCAL_DECK_CHECKPOINT_SCHEMA].includes(value.schema))throw new TypeError('Unsupported local checkpoint');
- if((value.schema===LOCAL_DECK_CHECKPOINT_SCHEMA)!==Object.hasOwn(value.payload??{},'deckPresets'))throw new TypeError('Checkpoint deck metadata does not match its version');
+ if(![LOCAL_CHECKPOINT_SCHEMA,LOCAL_DECK_CHECKPOINT_SCHEMA,LOCAL_CASTLE_CHECKPOINT_SCHEMA].includes(value.schema))throw new TypeError('Unsupported local checkpoint');
+ if(value.schema!==LOCAL_CASTLE_CHECKPOINT_SCHEMA&&(value.schema===LOCAL_DECK_CHECKPOINT_SCHEMA)!==Object.hasOwn(value.payload??{},'deckPresets'))throw new TypeError('Checkpoint deck metadata does not match its version');
  integer(value.revision,1,Number.MAX_SAFE_INTEGER,'checkpoint revision');integer(value.writtenAt,0,8640000000000000,'checkpoint date');
  if(typeof value.transaction!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(value.transaction)||!reasons.has(value.reason))throw new TypeError('Invalid checkpoint metadata');
+ if(value.schema!==LOCAL_CASTLE_CHECKPOINT_SCHEMA){const bundle=JSON.parse(value.payload?.bundle);if(bundle?.schema!=='bowmaster-reconstruction-profiles-1'||value.payload?.deckPresets&&value.payload.deckPresets.schema!=='castledecks-profile-decks-1')throw new TypeError('Castle content requires the newer checkpoint');}
  const {manager,provenance}=validateLocalPayload(value.payload);return {...value,manager,provenance};
+}
+export function createLocalCheckpointEnvelope(payload,{revision=1,writtenAt=Date.now(),transaction='snapshot',reason='ready'}={}){
+ const value={schema:CURRENT_LOCAL_CHECKPOINT_SCHEMA,revision,writtenAt,transaction,reason,payload};
+ parseLocalCheckpoint(JSON.stringify(value));return value;
 }
 export function snapshotCampaign({profiles,battle,started=false,destination='campaign',deckPresets},reason='ready'){
  if(destination!=='campaign')return null;
@@ -50,10 +57,23 @@ export function snapshotCampaign({profiles,battle,started=false,destination='cam
 }
 // An older open tab must never mistake a newer envelope for corrupt data.
 // Recognize its advertised family/version without interpreting future payloads.
-const supportedCheckpointVersion=2;
+const supportedCheckpointVersion=3;
 const newerEnvelope=text=>{
  if(typeof text!=='string')return false;
- try{const version=/^castledecks-local-checkpoint-(\d+)$/.exec(JSON.parse(text)?.schema??'');return !!version&&Number(version[1])>supportedCheckpointVersion;}catch{return false;}
+ try{
+  const value=JSON.parse(text);
+  const future=(schema,prefix,current)=>{if(typeof schema!=='string'||!schema.startsWith(prefix))return false;const version=schema.slice(prefix.length);return /^\d+$/.test(version)&&Number(version)>current;};
+  if(future(value?.schema,'castledecks-local-checkpoint-',supportedCheckpointVersion))return true;
+  // A future nested codec is not ordinary corruption. Preserve BOTH banks even
+  // when a newer writer accidentally retained a currently understood envelope.
+  if(future(value?.payload?.deckPresets?.schema,'castledecks-profile-decks-',2))return true;
+  const bundle=typeof value?.payload?.bundle==='string'?JSON.parse(value.payload.bundle):null;
+  if(future(bundle?.schema,'bowmaster-reconstruction-profiles-',2)||future(bundle?.schema,'bowmaster-reconstruction-',3))return true;
+  for(const records of [bundle?.profiles,bundle?.retired])if(Array.isArray(records))for(const record of records){
+   if(future(record?.profile?.schema,'bowmaster-reconstruction-',3))return true;
+  }
+  return false;
+ }catch{return false;}
 };
 const newerCheckpoint=()=>({ok:false,code:'newer-version',message:'This local slot contains a checkpoint from a newer game version. Reload this tab before continuing. Both checkpoint copies are kept. Export your current session if needed.'});
 const storageFailure=error=>({ok:false,code:error?.name==='QuotaExceededError'?'quota':'unavailable',message:error?.name==='QuotaExceededError'?'Local storage is full. Your last verified checkpoint is kept. Export a campaign file.':'Browser storage is unavailable. Keep a campaign file or code before closing.'});
@@ -70,7 +90,7 @@ export function createLocalCampaignStore({storage,locks,now=()=>Date.now(),id=lo
  const read=slot=>{
   try{
    const source=getStorage(),raw=['a','b'].map(bank=>source.getItem(checkpointSlotKey(slot,bank))),valid=[],invalid=[],newer=[];
-   raw.forEach((text,i)=>{if(text===null)return;if(newerEnvelope(text)){newer.push(i?'b':'a');return;}try{valid.push({...parseLocalCheckpoint(text),bank:i?'b':'a'});}catch{invalid.push(i?'b':'a');}});
+   raw.forEach((text,i)=>{if(text===null)return;if(newerEnvelope(text)){newer.push(i?'b':'a');return;}try{valid.push({...parseLocalCheckpoint(text),bank:i?'b':'a'});}catch(error){if(['unsupported-castle','unsupported-castle-level','unsupported-player-palette'].includes(error?.code))newer.push(i?'b':'a');else invalid.push(i?'b':'a');}});
    valid.sort((a,b)=>b.revision-a.revision||b.writtenAt-a.writtenAt);
    if(newer.length)return {ok:true,slot,raw,latest:null,previous:null,invalid,newer,status:'newer',message:newerCheckpoint().message};
    return {ok:true,slot,raw,latest:valid[0]??null,previous:valid[1]??null,invalid,status:invalid.length?(valid.length?'recovered':'corrupt'):valid.length?'ready':'empty'};
@@ -92,7 +112,7 @@ export function createLocalCampaignStore({storage,locks,now=()=>Date.now(),id=lo
    if(expected){if(!Array.isArray(expected)||expected.length!==2||expected.some((raw,i)=>raw!==current.raw[i]))return {ok:false,code:'conflict',message:'Another tab changed this local campaign. Autosave paused. Export your session or use a new slot.'};}
    else if(current.status!=='empty')return {ok:false,code:'occupied',message:'This local slot already has a campaign. Choose Continue, or use an empty slot.'};
    if(!current.latest&&current.status!=='empty')return {ok:false,code:'corrupt',message:'This slot contains unreadable data. It has been kept; choose another slot or export your session.'};
-   const bank=current.latest?.bank==='a'?'b':'a',value={schema:Object.hasOwn(payload,'deckPresets')?LOCAL_DECK_CHECKPOINT_SCHEMA:LOCAL_CHECKPOINT_SCHEMA,revision:(current.latest?.revision??0)+1,writtenAt:now(),transaction:id(),reason,payload};
+   const bank=current.latest?.bank==='a'?'b':'a',value=createLocalCheckpointEnvelope(payload,{revision:(current.latest?.revision??0)+1,writtenAt:now(),transaction:id(),reason});
    const text=JSON.stringify(value);parseLocalCheckpoint(text);
    const source=getStorage();source.setItem(checkpointSlotKey(slot,bank),text);
    // setItem atomically replaces one bank. Read it back before claiming success;

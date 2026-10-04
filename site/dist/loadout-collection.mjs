@@ -42,7 +42,7 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
   const {layout,selected,armed,bar,message,profile}=getState();if(!layout||layout.closed)return;
   if(lastLayout!==layout){lastLayout=layout;gridSignature='';}
   if(profileIdentity!==profile){profileIdentity=profile;model.setView({type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped'});gridSignature='';selectedDestination=null;closeInspect();}
-  $('#loadoutCompanionSummary').textContent=profile.companionId?`${records.find(item=>item.id===profile.companionId)?.name??'Companion'} · separate slot · ${controlLabel('companion')}`:`Companion · separate slot · ${controlLabel('companion')}`;
+  $('#loadoutCompanionSummary').textContent=`${profile.companionId?records.find(item=>item.id===profile.companionId)?.name??'Companion':'Companion'} · separate slot · ${controlLabel('companion')} · ${profile.castleId==='highwatch'?'Highwatch':'Classic'} castle · Heraldry`;
   const result=model.query(layout.dragIcons),active=doc.activeElement?.id,list=$('#ownedSkillList'),scrollTop=list.scrollTop;
   $('#skillsResources').textContent=`${Math.floor(profile.gold).toLocaleString()} gold · ${result.owned} owned abilities · ${result.equipped}/30 equipped · ${result.reserve} in reserve`;
   $('#loadoutFilters').innerHTML=LOADOUT_TYPES.map(([id,label])=>`<button data-loadout-type="${id}" aria-pressed="${model.view.type===id}">${esc(label)}<span>${result.counts.get(id)}</span></button>`).join('');

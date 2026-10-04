@@ -1,3 +1,5 @@
+import {resolvePlayerPalette} from './player-palette.mjs';
+import {drawFriendlyHeraldryCue} from './player-heraldry-render.mjs';
 /** Original procedural poses for the current JS engine, not recovered SWF art.
  * Engine actions/timers own pose progress. The controller only observes requests
  * and keeps presentation state; the renderer never writes into a unit.
@@ -220,7 +222,7 @@ export function createCombatPoseController() {
       for (const unit of [...battle.goodTeam, ...battle.badTeam]) observeUnit(unit, actorsAdvanced && elapsed > 0, elapsed);
     },
     pose(unit) { return combatPose(unit, records.get(unit), battle?.shooter); },
-    draw(ctx, unit) { return supportsCombatPose(unit) ? drawCombatTroop(ctx, unit, this.pose(unit)) : false; },
+    draw(ctx, unit, options) { return supportsCombatPose(unit) ? drawCombatTroop(ctx, unit, this.pose(unit), options) : false; },
   };
 }
 
@@ -349,11 +351,12 @@ function drawMount(ctx, unit, pose, palette) {
 
 /** Handles all supported units, including invisible/garrisoned units. Existing
  * renderer remains responsible for siege, air units, demons and boss geometry. */
-export function drawCombatTroop(ctx, unit, pose = combatPose(unit)) {
+export function drawCombatTroop(ctx, unit, pose = combatPose(unit), {paletteId='azure'}={}) {
   if (!supportsCombatPose(unit)) return false;
   if (!unit.visible || !Number.isFinite(unit.x) || !Number.isFinite(unit.y)) return true;
   const good = unit.team === 'good';
-  const palette = {cloth:good?'#548d9b':'#a45d59',dark:good?'#284951':'#572f37',light:good?'#a2c3bd':'#d3987e',edge:'#1b2c31',gold:'#d4b778',metal:'#bfbeab',skin:'#dcc59f',wood:'#bca578'};
+  const heraldry=resolvePlayerPalette(paletteId).tokens.troopPose;
+  const palette = {cloth:good?heraldry.cloth:'#a45d59',dark:good?heraldry.dark:'#572f37',light:good?heraldry.light:'#d3987e',edge:'#1b2c31',gold:'#d4b778',metal:'#bfbeab',skin:'#dcc59f',wood:'#bca578'};
   const height = HEIGHTS[unit.type];
   ctx.save();ctx.globalAlpha*=.22*pose.alpha;ctx.beginPath();ctx.ellipse(unit.x,unit.y+1,unit.type==='mount'?30:15,3,0,0,Math.PI*2);ctx.fillStyle='#162827';ctx.fill();ctx.restore();
   ctx.save(); ctx.translate(unit.x, unit.y);
@@ -362,6 +365,7 @@ export function drawCombatTroop(ctx, unit, pose = combatPose(unit)) {
   ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   if (unit.type === 'mount') drawMount(ctx, unit, pose, palette);
   else drawPerson(ctx, unit, pose, height, palette);
+  if(good&&!pose.dead)drawFriendlyHeraldryCue(ctx,0,-height*.55,{size:7});
   ctx.restore();
   if (unit.type !== 'hero' && unit.type !== 'mount' && !pose.dead && unit.hp<unit.maxHp) {
     ctx.save(); ctx.fillStyle = '#253124'; ctx.fillRect(unit.x - 14, unit.y - height - 11, 28, 3);

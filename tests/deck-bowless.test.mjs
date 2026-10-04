@@ -4,7 +4,7 @@ import {loadGameUI} from './helpers/game-ui-harness.mjs';
 import {MemoryStorage,TestLocks,settle} from './helpers/local-storage.mjs';
 import {captureDeck,exportDeckCode,parseDeckCode,previewDeck} from '../site/dist/deck-presets-model.mjs';
 import {createLocalCampaignStore} from '../site/dist/local-campaign-store.mjs';
-const empty=(name='Reserve all')=>({name,slots:Array(30).fill(null),companion:null});
+const empty=(name='Reserve all')=>({name,slots:Array(30).fill(null),companion:null,castle:{id:'classic',level:1}});
 const prepare=(ui,deck)=>{ui.get('deckImportCode').value=exportDeckCode([deck]);ui.click('deckImportPrepare');ui.click('deckConfirmAccept');};
 async function editor(t,options={}){const ui=await loadGameUI(t,options);ui.click('introLoadout');ui.click('openDeckPresets');return ui;}
 function shots(b){const arrow=b.profile.skills.find(s=>s.id==='arrow');b.queuePlayerShot({canFire:true,vx:6,vy:-3},arrow);b.queuedAim={canFire:true,vx:8,vy:-4};b.queuedSelection=0;b.shooter.intentSkill=arrow;b.input.mouseDown=true;}
@@ -30,8 +30,8 @@ test('bowless recovery is gated during active combat even through stale handlers
  const ui=await editor(t);prepare(ui,empty());ui.click('deckApply');const recovery=ui.get('loadoutRecoverArrow').onclick;ui.click('closeDeckPresets');ui.click('loadoutContinue');const p=ui.battle.profile,before=p.skills.map(s=>s.binding);recovery();assert.deepEqual(p.skills.map(s=>s.binding),before);assertBowless(ui);
 });
 
-test('v2 checkpoint restores deliberately empty deck and keeps free recovery at zero gold',async t=>{
- const storage=new MemoryStorage(),ui=await editor(t,{storage});prepare(ui,empty());ui.click('deckApply');await settle();const store=createLocalCampaignStore({storage,locks:new TestLocks()});assert.equal(store.read(1).latest.schema,'castledecks-local-checkpoint-2');ui.click('closeDeckPresets');ui.click('closeSkills');ui.click('introSave');ui.get('localSlots').querySelector('[data-local-continue="1"]').click();await settle();ui.click('localConfirmAccept');await settle();assertBowless(ui);assert.equal(ui.battle.profile.gold,0);ui.click('introLoadout');assert.equal(ui.visible('loadoutBowRecovery'),true);ui.click('loadoutRecoverArrow');assert.equal(ui.battle.activeSkill.id,'arrow');assert.equal(ui.battle.profile.gold,0);
+test('v3 checkpoint restores deliberately empty deck and keeps free recovery at zero gold',async t=>{
+ const storage=new MemoryStorage(),ui=await editor(t,{storage});prepare(ui,empty());ui.click('deckApply');await settle();const store=createLocalCampaignStore({storage,locks:new TestLocks()});assert.equal(store.read(1).latest.schema,'castledecks-local-checkpoint-3');ui.click('closeDeckPresets');ui.click('closeSkills');ui.click('introSave');ui.get('localSlots').querySelector('[data-local-continue="1"]').click();await settle();ui.click('localConfirmAccept');await settle();assertBowless(ui);assert.equal(ui.battle.profile.gold,0);ui.click('introLoadout');assert.equal(ui.visible('loadoutBowRecovery'),true);ui.click('loadoutRecoverArrow');assert.equal(ui.battle.activeSkill.id,'arrow');assert.equal(ui.battle.profile.gold,0);
 });
 
 test('Wayfarer deck metadata stays session-only and never changes campaign checkpoint banks',async t=>{

@@ -4,7 +4,7 @@ import {loadGameUI} from './helpers/game-ui-harness.mjs';
 import {MemoryStorage,settle} from './helpers/local-storage.mjs';
 import {exportDeckCode,parseDeckCode,captureDeck} from '../site/dist/deck-presets-model.mjs';
 import {CONTROL_STORAGE_KEY,DEFAULT_CONTROL_BINDINGS} from '../site/dist/control-bindings.mjs';
-const empty=(name='No bow')=>({name,slots:Array(30).fill(null),companion:null});
+const empty=(name='No bow')=>({name,slots:Array(30).fill(null),companion:null,castle:{id:'classic',level:1}});
 const save=(ui,name)=>{ui.get('deckNewName').value=name;ui.dispatch(ui.get('deckSaveForm'),'submit');};
 const books=ui=>{ui.click('deckShowExport');return parseDeckCode(ui.get('deckExportCode').value);};
 const prepare=(ui,d)=>{ui.get('deckImportCode').value=exportDeckCode([d]);ui.click('deckImportPrepare');ui.click('deckConfirmAccept');};

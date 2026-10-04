@@ -34,7 +34,7 @@ test('contract and companion ownership survive a defeat with no live roster in t
 });
 
 test('legacy schema 1 restores all existing troop ranks without retroactive losses or a save migration',()=>{
- const p=profile(),value=JSON.parse(serializeProfile(p));value.schema='bowmaster-reconstruction-1';delete value.companions;
+ const p=profile(),value=JSON.parse(serializeProfile(p));value.schema='bowmaster-reconstruction-1';delete value.companions;delete value.castles;delete value.appearance;
  const restored=restoreProfile(JSON.stringify(value));assert.deepEqual(contracts(restored),contracts(p));assert.equal(new CampaignBattle({profile:restored}).friendlyQueue.population,90);
 });
 

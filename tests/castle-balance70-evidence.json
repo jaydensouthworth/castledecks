@@ -1,0 +1,2871 @@
+{
+  "scope": "Deterministic engine examples; not native acceptance or broad human balance evidence.",
+  "invariant": "No stat, damage, HP, cooldown, protectedTesting, resource or outcome injection. Same seeded descriptor, supplied kit and scheduled input policy within each castle pair.",
+  "schedule": [
+    [
+      0,
+      "grunt"
+    ],
+    [
+      0,
+      "trebuchet"
+    ],
+    [
+      0,
+      "priest"
+    ],
+    [
+      0,
+      "archer"
+    ],
+    [
+      330,
+      "grunt"
+    ],
+    [
+      330,
+      "priest"
+    ],
+    [
+      330,
+      "archer"
+    ],
+    [
+      660,
+      "grunt"
+    ],
+    [
+      660,
+      "priest"
+    ],
+    [
+      660,
+      "archer"
+    ]
+  ],
+  "auto": "High arc, 100% supplied default power, Basic only; press the fixed enemy keep point (1800, keep ground Y minus110) every32 ticks; release one tick later. No target or damage feedback drives the input.",
+  "sourceHashes": {
+    "../site/dist/engine/first-battle.mjs": "c1f36f89923f295e9e8504c56770d625bf881c1092df760d7b19e47178a7e089",
+    "../site/dist/engine/castle-catalog.mjs": "f3e0b619f6845cbf5a6d903d0b7a1cc737f2d28796dbb167fbc6e1a3f417e893",
+    "../site/dist/engine/ranged-troop.mjs": "1b59186c7d3ebd3e98aba9d91ce12dde6ddec6bba5e646bdfaceceefc0af1ad5",
+    "../site/dist/skirmish-model.mjs": "7974a397bd2bb925f74720df698af2f34514ff7d0002fb6aaf18530bec3f766b",
+    "../site/dist/skirmish-battle.mjs": "0982c5877f03417201f31b2cf95b9746c67553c5eb19734723c78d3919365602",
+    "./castle-balance70-harness.mjs": "7fdddfb1ed240ae82123581c4da0d4ef234e47f5480aae3cb5f642b5053d4b38"
+  },
+  "manual": [
+    {
+      "castleId": "classic",
+      "drag": [
+        -158,
+        59
+      ],
+      "launch": {
+        "origin": {
+          "x": 350,
+          "y": 500
+        },
+        "vx": 20.013333333333332,
+        "vy": -7.473333333333334
+      },
+      "ridge": {
+        "x": 950.3999999999996,
+        "y": 406.29999999999995,
+        "terrain": 402.91666666666663,
+        "active": false
+      },
+      "reason": "ground",
+      "last": {
+        "x": 950.3999999999996,
+        "y": 406.29999999999995
+      },
+      "enemyKeepDamage": 0,
+      "shots": 1,
+      "goldSpent": 0,
+      "goldEarned": 0,
+      "tick": 153,
+      "protectedTesting": false
+    },
+    {
+      "castleId": "highwatch",
+      "drag": [
+        -158,
+        59
+      ],
+      "launch": {
+        "origin": {
+          "x": 350,
+          "y": 450
+        },
+        "vx": 20.013333333333332,
+        "vy": -7.473333333333334
+      },
+      "ridge": {
+        "x": 950.3999999999996,
+        "y": 356.29999999999995,
+        "terrain": 402.91666666666663,
+        "active": true
+      },
+      "reason": "target",
+      "last": {
+        "x": 1750.9333333333325,
+        "y": 651.3666666666664
+      },
+      "enemyKeepDamage": 22,
+      "shots": 1,
+      "goldSpent": 0,
+      "goldEarned": 10,
+      "tick": 153,
+      "protectedTesting": false
+    },
+    {
+      "castleId": "classic",
+      "drag": [
+        -158,
+        75
+      ],
+      "launch": {
+        "origin": {
+          "x": 350,
+          "y": 500
+        },
+        "vx": 20.013333333333332,
+        "vy": -9.500000000000002
+      },
+      "ridge": {
+        "x": 950.3999999999996,
+        "y": 345.5,
+        "terrain": 402.91666666666663,
+        "active": true
+      },
+      "reason": "target",
+      "last": {
+        "x": 1750.9333333333325,
+        "y": 559.4999999999999
+      },
+      "enemyKeepDamage": 22,
+      "shots": 1,
+      "goldSpent": 0,
+      "goldEarned": 10,
+      "tick": 153,
+      "protectedTesting": false
+    }
+  ],
+  "siege": [
+    {
+      "castleId": "classic",
+      "startHP": 8400,
+      "destroyedAt": 21043,
+      "exposedAt": 21044,
+      "firstDamageAt": 1730,
+      "damageHits": 21,
+      "at10318": {
+        "homeKeepHP": 4800,
+        "heroHP": 310,
+        "sheltered": true
+      },
+      "outcome": "defeat",
+      "tick": 25774,
+      "heroHP": -28,
+      "goldSpent": 0,
+      "shots": 0
+    },
+    {
+      "castleId": "highwatch",
+      "startHP": 6720,
+      "destroyedAt": 10317,
+      "exposedAt": 10318,
+      "firstDamageAt": 1728,
+      "damageHits": 17,
+      "at10318": {
+        "homeKeepHP": 0,
+        "heroHP": 310,
+        "sheltered": false
+      },
+      "outcome": "defeat",
+      "tick": 17182,
+      "heroHP": -124,
+      "goldSpent": 0,
+      "shots": 0
+    }
+  ],
+  "stagedGallery": [
+    {
+      "castleId": "classic",
+      "stagedPositions": {
+        "enemyArchers": 1800,
+        "paidRider": 1300
+      },
+      "paid": true,
+      "goldSpent": 30,
+      "reserveSpent": 4,
+      "finiteEnemyReserve": 0,
+      "first": {
+        "occupancy": 3,
+        "exposedArchers": 0
+      },
+      "peak": 3,
+      "galleryShots": [
+        {
+          "tick": 270,
+          "x": 1800,
+          "y": 500,
+          "damage": 27
+        },
+        {
+          "tick": 270,
+          "x": 1800,
+          "y": 500,
+          "damage": 23
+        },
+        {
+          "tick": 270,
+          "x": 1800,
+          "y": 500,
+          "damage": 31
+        },
+        {
+          "tick": 555,
+          "x": 1800,
+          "y": 500,
+          "damage": 26
+        },
+        {
+          "tick": 555,
+          "x": 1800,
+          "y": 500,
+          "damage": 25
+        },
+        {
+          "tick": 555,
+          "x": 1800,
+          "y": 500,
+          "damage": 26
+        }
+      ],
+      "riderHP": 27,
+      "tick": 601,
+      "outcome": "observation-only"
+    },
+    {
+      "castleId": "highwatch",
+      "stagedPositions": {
+        "enemyArchers": 1800,
+        "paidRider": 1300
+      },
+      "paid": true,
+      "goldSpent": 30,
+      "reserveSpent": 4,
+      "finiteEnemyReserve": 0,
+      "first": {
+        "occupancy": 2,
+        "exposedArchers": 1
+      },
+      "peak": 2,
+      "galleryShots": [
+        {
+          "tick": 270,
+          "x": 1800,
+          "y": 450,
+          "damage": 27
+        },
+        {
+          "tick": 270,
+          "x": 1800,
+          "y": 450,
+          "damage": 23
+        },
+        {
+          "tick": 555,
+          "x": 1800,
+          "y": 450,
+          "damage": 23
+        },
+        {
+          "tick": 555,
+          "x": 1800,
+          "y": 450,
+          "damage": 25
+        }
+      ],
+      "riderHP": 51,
+      "tick": 601,
+      "outcome": "observation-only"
+    }
+  ],
+  "scenarios": [
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "unresolved-at-observation-limit",
+      "tick": 30000,
+      "secondsAt33Hz": 909.0909090909091,
+      "homeKeepHP": 9452,
+      "homeKeepDamage": 948,
+      "enemyKeepHP": 3047,
+      "enemyKeepDamage": 313,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": null,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 5,
+      "enemyDeaths": 15,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 30,
+      "peakObjects": 37,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "unresolved-at-observation-limit",
+      "tick": 30000,
+      "secondsAt33Hz": 909.0909090909091,
+      "homeKeepHP": 8083,
+      "homeKeepDamage": 237,
+      "enemyKeepHP": 3047,
+      "enemyKeepDamage": 313,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": null,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 4,
+      "enemyDeaths": 15,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 30,
+      "peakObjects": 37,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 4240,
+      "secondsAt33Hz": 128.4848484848485,
+      "homeKeepHP": 10163,
+      "homeKeepDamage": 237,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 3360,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 1544,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 360,
+      "gold": 1280,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 133,
+      "hits": 45,
+      "friendlyDeaths": 8,
+      "enemyDeaths": 14,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 29,
+      "peakObjects": 40,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 4151,
+      "secondsAt33Hz": 125.78787878787878,
+      "homeKeepHP": 8083,
+      "homeKeepDamage": 237,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 3360,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 1547,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 360,
+      "gold": 1280,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 130,
+      "hits": 45,
+      "friendlyDeaths": 9,
+      "enemyDeaths": 14,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 29,
+      "peakObjects": 40,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 8416,
+      "secondsAt33Hz": 255.03030303030303,
+      "homeKeepHP": 10138,
+      "homeKeepDamage": 262,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 3360,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 1575,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 368,
+      "gold": 1568,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 263,
+      "hits": 46,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 4,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 5,
+      "peakObjects": 15,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 91,
+        "biome": "oaks",
+        "threat": "scout",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 3360,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 554.82
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 8416,
+      "secondsAt33Hz": 255.03030303030303,
+      "homeKeepHP": 8063,
+      "homeKeepDamage": 257,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 3360,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 1578,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 368,
+      "gold": 1568,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 263,
+      "hits": 46,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 4,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 5,
+      "peakObjects": 14,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 10750,
+      "secondsAt33Hz": 325.75757575757575,
+      "homeKeepHP": 9350,
+      "homeKeepDamage": 1050,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 10750,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 10,
+      "enemyDeaths": 21,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 2,
+      "homeArcherTicks": 277,
+      "homeGalleryShots": 1,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 32,
+      "peakObjects": 40,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 9524,
+      "secondsAt33Hz": 288.6060606060606,
+      "homeKeepHP": 6745,
+      "homeKeepDamage": 1575,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 9524,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 8,
+      "enemyDeaths": 21,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 2,
+      "homeArcherTicks": 1108,
+      "homeGalleryShots": 4,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 32,
+      "peakObjects": 40,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 4922,
+      "secondsAt33Hz": 149.15151515151516,
+      "homeKeepHP": 9875,
+      "homeKeepDamage": 525,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2183,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 670,
+      "gold": 1590,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 154,
+      "hits": 67,
+      "friendlyDeaths": 10,
+      "enemyDeaths": 18,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 32,
+      "peakObjects": 44,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 4134,
+      "secondsAt33Hz": 125.27272727272727,
+      "homeKeepHP": 6745,
+      "homeKeepDamage": 1575,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2185,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 660,
+      "gold": 1580,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 130,
+      "hits": 66,
+      "friendlyDeaths": 5,
+      "enemyDeaths": 17,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 31,
+      "peakObjects": 43,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 6878,
+      "secondsAt33Hz": 208.42424242424244,
+      "homeKeepHP": 9709,
+      "homeKeepDamage": 691,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2183,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 650,
+      "gold": 1850,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 215,
+      "hits": 65,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 6,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 7,
+      "peakObjects": 17,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 73421,
+        "biome": "oaks",
+        "threat": "standard",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 4800,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 544.98
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 6878,
+      "secondsAt33Hz": 208.42424242424244,
+      "homeKeepHP": 7647,
+      "homeKeepDamage": 673,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 4800,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2187,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 650,
+      "gold": 1850,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 215,
+      "hits": 65,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 6,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 7,
+      "peakObjects": 17,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 10003,
+      "secondsAt33Hz": 303.1212121212121,
+      "homeKeepHP": 10400,
+      "homeKeepDamage": 0,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 10003,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 12,
+      "enemyDeaths": 28,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 4,
+      "homeArcherTicks": 2624,
+      "homeGalleryShots": 15,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 37,
+      "peakObjects": 44,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 9171,
+      "secondsAt33Hz": 277.90909090909093,
+      "homeKeepHP": 7456,
+      "homeKeepDamage": 864,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 9171,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 0,
+      "gold": 920,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 0,
+      "hits": 0,
+      "friendlyDeaths": 12,
+      "enemyDeaths": 28,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 2,
+      "homeArcherTicks": 6506,
+      "homeGalleryShots": 10,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 37,
+      "peakObjects": 44,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 5881,
+      "secondsAt33Hz": 178.21212121212122,
+      "homeKeepHP": 10400,
+      "homeKeepDamage": 0,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2572,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 972,
+      "gold": 1892,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 184,
+      "hits": 81,
+      "friendlyDeaths": 11,
+      "enemyDeaths": 28,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 2,
+      "homeArcherTicks": 2494,
+      "homeGalleryShots": 9,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 35,
+      "peakObjects": 47,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "army-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [
+        {
+          "tick": 0,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "trebuchet",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 0,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "id": "archer",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "grunt",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "priest",
+          "accepted": true
+        },
+        {
+          "tick": 660,
+          "id": "archer",
+          "accepted": true
+        }
+      ],
+      "outcome": "victory",
+      "tick": 4787,
+      "secondsAt33Hz": 145.06060606060606,
+      "homeKeepHP": 6592,
+      "homeKeepDamage": 1728,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2158,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 3,
+      "goldSpent": 280,
+      "goldEarned": 804,
+      "gold": 1724,
+      "reserveLeft": 39,
+      "reserveSpent": 31,
+      "shots": 150,
+      "hits": 67,
+      "friendlyDeaths": 12,
+      "enemyDeaths": 21,
+      "enemyAlive": 0,
+      "enemyReserve": 0,
+      "homePeak": 2,
+      "homeArcherTicks": 831,
+      "homeGalleryShots": 3,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 35,
+      "peakObjects": 48,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "classic",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 10400,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 5639,
+      "secondsAt33Hz": 170.87878787878788,
+      "homeKeepHP": 9397,
+      "homeKeepDamage": 1003,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2539,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 912,
+      "gold": 2112,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 177,
+      "hits": 76,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 6,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 7,
+      "peakObjects": 18,
+      "protectedTesting": false
+    },
+    {
+      "descriptor": {
+        "version": 2,
+        "seed": 814,
+        "biome": "oaks",
+        "threat": "veteran",
+        "doctrine": "highwatch"
+      },
+      "castleId": "highwatch",
+      "plan": "bow-auto",
+      "initial": {
+        "rank": 6,
+        "gold": 1200,
+        "reserve": 70,
+        "skills": [
+          [
+            "arrow",
+            5,
+            0
+          ],
+          [
+            "fireArrow",
+            2,
+            0
+          ],
+          [
+            "iceArrow",
+            2,
+            0
+          ],
+          [
+            "bombArrow",
+            2,
+            0
+          ],
+          [
+            "flakArrow",
+            2,
+            0
+          ],
+          [
+            "grunt",
+            2,
+            0
+          ],
+          [
+            "archer",
+            2,
+            0
+          ],
+          [
+            "priest",
+            2,
+            0
+          ],
+          [
+            "mount",
+            2,
+            0
+          ],
+          [
+            "trebuchet",
+            2,
+            0
+          ]
+        ],
+        "friendlyHP": 8320,
+        "enemyHP": 5600,
+        "enemyGarrison": 2,
+        "heroHP": 360
+      },
+      "target": {
+        "x": 1800,
+        "y": 533.25
+      },
+      "receipts": [],
+      "outcome": "defeat",
+      "tick": 5639,
+      "secondsAt33Hz": 170.87878787878788,
+      "homeKeepHP": 7372,
+      "homeKeepDamage": 948,
+      "enemyKeepHP": 0,
+      "enemyKeepDamage": 5600,
+      "heroHP": 360,
+      "heroDamage": 0,
+      "enemyKeepDownAt": 2543,
+      "homeKeepDownAt": null,
+      "ownFlagStatus": 4,
+      "goldSpent": 0,
+      "goldEarned": 912,
+      "gold": 2112,
+      "reserveLeft": 70,
+      "reserveSpent": 0,
+      "shots": 177,
+      "hits": 76,
+      "friendlyDeaths": 0,
+      "enemyDeaths": 0,
+      "enemyAlive": 6,
+      "enemyReserve": 0,
+      "homePeak": 1,
+      "homeArcherTicks": 0,
+      "homeGalleryShots": 0,
+      "enemyPeakAfterOpening": 0,
+      "enemyGarrisonTicksAfterOpening": 0,
+      "enemyGalleryShots": 0,
+      "peakActors": 7,
+      "peakObjects": 18,
+      "protectedTesting": false
+    }
+  ]
+}
