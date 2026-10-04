@@ -8,3 +8,8 @@
 #battleReportStatus { min-height: 1.45em; color: var(--gilt); }
 @media (max-height: 500px) and (orientation: landscape) { #battleReportText { min-height: 130px; height: 35vh; } #battleReportPanel .menu-body { gap: 8px; } }
 @media (max-width: 440px) { #battleReportPanel .battle-report-actions button { flex-basis: 120px; } }
+
+#battleReportPanel .render-profile-controls { margin: 0; padding: 12px; border: 1px solid var(--brass); border-radius: 4px; min-width: 0; }
+#battleReportPanel .render-profile-controls legend { padding: 0 6px; color: var(--gilt); }
+#battleReportPanel .render-profile-controls select { display: block; width: 100%; min-height: 44px; margin: 8px 0; }
+#renderProfileStatus { margin-bottom: 0; color: var(--gilt); }

@@ -12,9 +12,11 @@ export function armyPosition(unit){
 }
 export function armySnapshot(battle){
  const queue=battle.friendlyQueue,counts={field:0,garrison:0,arriving:0,clearing:0},groups=new Map();
- for(const unit of battle.goodTeam){if(unit===battle.hero||unit.isCompanion)continue;const position=armyPosition(unit),id=armyContractId(unit);counts[position]++;if(!groups.has(id))groups.set(id,{id,total:0,field:0,garrison:0,arriving:0,clearing:0});const group=groups.get(id);group.total++;group[position]++;}
- return {counts,groups:[...groups.values()],occupied:battle.regularArmyCount,cap:queue.cap,reserve:queue.population,waiting:queue.queue.length,queueGate:queue.capacity,spent:battle.stats.goldSpent??0,gold:battle.profile.gold,living:counts.field+counts.garrison+counts.arriving,free:Math.max(0,queue.cap-battle.regularArmyCount),nextEntrySeconds:Math.max(0,Math.floor(queue.timer/2)+1)/33};
+ for(const unit of battle.goodTeam){if(unit===battle.hero||unit.isCompanion||battle.auxiliaries?.owns(unit))continue;const position=armyPosition(unit),id=armyContractId(unit);counts[position]++;if(!groups.has(id))groups.set(id,{id,total:0,field:0,garrison:0,arriving:0,clearing:0});const group=groups.get(id);group.total++;group[position]++;}
+ const levies=battle.auxiliaries?.snapshot;
+ return {...(levies?{levies:{...levies,groups:LEVY_GROUPS(levies.units)}}:{}),counts,groups:[...groups.values()],occupied:battle.regularArmyCount,cap:queue.cap,reserve:queue.population,waiting:queue.queue.length,queueGate:queue.capacity,spent:battle.stats.goldSpent??0,gold:battle.profile.gold,living:counts.field+counts.garrison+counts.arriving,free:Math.max(0,queue.cap-battle.regularArmyCount),nextEntrySeconds:Math.max(0,Math.floor(queue.timer/2)+1)/33};
 }
+function LEVY_GROUPS(units){const groups=new Map();for(const unit of units){const id=`levy:${unit.auxiliaryIdentity.wave}:${unit.auxiliaryIdentity.type}`,position=armyPosition(unit);if(!groups.has(id))groups.set(id,{id,type:unit.auxiliaryIdentity.type,wave:unit.auxiliaryIdentity.wave,rank:unit.auxiliaryIdentity.rank,total:0,field:0,garrison:0,arriving:0,clearing:0});const group=groups.get(id);group.total++;group[position]++;}return [...groups.values()];}
 export function armyBinding(skill){return Number.isInteger(skill?.binding)&&skill.binding>=0&&skill.binding<30?`Bar ${Math.floor(skill.binding/10)+1} · key ${skill.binding%10===9?'0':skill.binding%10+1}`:'Not on an action bar';}
 export function armyRecruitState(skill,{profile,battle,started}){
  const config=SKILLS[skill?.id]?.summon,queue=battle.friendlyQueue,equipped=!!skill&&Number.isInteger(skill.binding)&&skill.binding>=0&&skill.binding<30&&battle.hotbar.bars[Math.floor(skill.binding/10)]?.[skill.binding%10]===skill;

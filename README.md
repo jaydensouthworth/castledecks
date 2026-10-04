@@ -44,7 +44,7 @@ The check validates source syntax, local asset references, packaging hygiene and
 
 ## Current scope
 
-See [release 66 candidate notes](docs/releases/66.md) for this snapshot and its known limits. The returning-player Crownroad Hall and explicit save-chooser entry are awaiting native acceptance. Release 65 passed its native trial correction checks and is the known-good rollback.
+See [release 67 candidate notes](docs/releases/67.md) for this snapshot and its known limits. Optional finite levy defense, a bounded local profiler and an explicitly synthetic test field await native acceptance. Release 66 passed its native Hall, save-chooser and trial-reminder checks and is the known-good rollback.
 
 The prototype includes a 30-field campaign atlas, a live preparation table, a separate Wayfarer Charter expedition mode, seeded Skirmish practice, optional guided Training, remappable controls, named deck presets, campaign profile import/export, device-local checkpoints, three action-bar pages, a shared full-viewport card discovery and deck workspace, an Army command ledger, 12 regular recruit types and a companion. Allied field caps grow with campaign progress, with quick Advance/Rally commands and fixed Rear/Center/Forward lines. Wayfarer now has a six-field branching route board, and recruited allied trebuchets can target hostile buildings when no distant troop target remains. Balance, presentation and mobile input are still under development.
 

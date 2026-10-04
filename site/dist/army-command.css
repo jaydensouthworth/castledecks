@@ -204,3 +204,9 @@
  #queuePanel .army-card-auto .army-auto-light{display:none}
  #queuePanel .army-card-auto>span:last-child{margin:0;font-size:11px;line-height:14px}
 }
+
+/* Optional encounter content scrolls inside the existing Muster surface. */
+#queuePanel .army-levies{padding:12px;margin-bottom:16px;border:1px solid #90bba879;border-radius:10px;background:#1a302945}
+#queuePanel .army-levies p{font-size:12px;line-height:1.45;margin:7px 0}
+#queuePanel #armyLevyStage{color:#e8cd93}
+#queuePanel #armyCallLevies{width:100%;min-height:44px}

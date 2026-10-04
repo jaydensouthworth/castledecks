@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T00:25:33.926428+00:00",
-  "stage": "returning-crownroad-command-hall",
-  "internal_tests_passing": 1762,
+  "updated": "2026-10-04T01:09:10.241316+00:00",
+  "stage": "finite-levies-and-controlled-battle-lab",
+  "internal_tests_passing": 1867,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Native acceptance of returning-player command hall and read-only chooser entry",
+    "Native acceptance of finite levy defense, local profiling and synthetic load field",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -38,14 +38,15 @@
     "Build55\u201357 six-field Wayfarer board, locked inspection, reset focus, earned QA branch choice without reward replay and explicit Start",
     "Build55\u201357 native Rear/Center/Forward selector, R release/reapply, paused Army orders, portrait/740x320 safe-inset aim, corrected route/Army/Build rails",
     "Build56 imported earned siege QA: ordinary Auto recruitment costs and real rendered siege engines; no native siege-to-victory claim",
-    "Build65 disposable unowned card trials: delayed Fire Dragon deployment and actual damage, Priest healing, Trebuchet keep damage, reset and exact original card/cart/wishlist return"
+    "Build65 disposable unowned card trials: delayed Fire Dragon deployment and actual damage, Priest healing, Trebuchet keep damage, reset and exact original card/cart/wishlist return",
+    "Build66 actual returning-player frontier preview, unchanged checkpoint timestamp across chooser cancellation, explicit Continue without auto-start, cross-tab refresh, narrow362px layout and trial-only flag reminder clearance"
   ],
   "latest_gameplay_fix": "Try any of12Army contracts in a disposable real field with500trialgold, normal troop costs/damage, a protected hero, and exact return to the original card/session.",
-  "build": 66,
+  "build": 67,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
-  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes. The frontpage previews validated same-origin local Crownroad checkpoints with actual frontier artwork; the explicit chooser entry never creates or restores a campaign without a choice.",
+  "extension_scope": "Modern recruitment, companions, reactive squads, Auto range assist, optional named Rally lines, allied siege building targeting, and separate branching Wayfarer charter use recreation rules. Optional supplied Skirmish Battery interception uses two marked ordinary trebuchets, finite escorts and home-flag recovery; legacy doctrines and earned saves remain unchanged. Independent battle-only Frontline/Support companies use real-range movement/healing and explicit all-ground override. Disposable Armory contract trials supply only temporary practice profiles and never unlock or export campaign progress. Trial fixture targets wait for the first real squad arrival; normal queue timing, costs, damage and AI resume without campaign changes. The frontpage previews validated same-origin local Crownroad checkpoints with actual frontier artwork; the explicit chooser entry never creates or restores a campaign without a choice. Optional levy defense adds 20 finite temporary tickets with 10 separate field slots, ordinary role orders and explicit finite enemy stages. Existing paid caps and saved contracts stay unchanged. The optional local 30-second profiler and clearly synthetic 44/48-troop lab create no campaign rewards or exports; factory counts are not device-performance evidence.",
   "deck_presets": {
     "per_profile_limit": 12,
     "ability_slots": 30,
@@ -57,7 +58,7 @@
     "seed_format": "SK1",
     "biomes": 4,
     "threat_tiers": 3,
-    "doctrines": 4,
+    "doctrines": 5,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
   "test_evidence": "Company63 canonical1656 and portable1664 checks passed; exactGitHubCI/Docker and native marker/receipt corrections accepted. Trial model/session29 focused checks pass including all12 real contract effects, origin restoration, queue readiness and protected-hero disclosure; final64 combined/native gate pending."

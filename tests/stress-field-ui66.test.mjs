@@ -1,0 +1,55 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {loadGameUI,deferredFile} from './helpers/game-ui-harness.mjs';
+import {CampaignProfiles} from '../site/dist/engine/profile-manager.mjs';
+import {stressFieldSnapshot} from '../site/dist/stress-field.mjs';
+class Storage{constructor(){this.data=new Map();}getItem(k){return this.data.get(k)??null;}setItem(k,v){this.data.set(k,String(v));}removeItem(k){this.data.delete(k);}}
+const state=b=>JSON.stringify({profile:b.profile,owned:[...b.profile.owned],tick:b.tick,stats:b.stats,good:b.goodTeam.map(u=>[u.type,u.hp,u.x,u.y]),bad:b.badTeam.map(u=>[u.type,u.hp,u.x,u.y]),queue:b.friendlyQueue.queue,population:b.friendlyQueue.population,summary:b.summary,outcome:b.outcome});
+const stage=(ui,preset='Standard')=>{ui.click('introTesting');ui.click('stress'+preset);};
+test('Testing stages paused44troops, arms forced fixture profiler and ordinary pointer controls',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui);const b=ui.battle;ui.frames(3);assert.equal(stressFieldSnapshot(b).troops.alive,44);assert.equal(b.paused,true);assert.equal(b.tick,201);assert.equal(ui.visible('pauseOverlay'),true);assert.match(ui.get('battleTitle').textContent,/Synthetic/);
+ ui.click('pauseBattleReport');assert.equal(ui.get('renderProfileKind').value,'controlled-fixture');assert.equal(ui.get('renderProfileKind').disabled,true);ui.get('renderProfileKind').value='natural-play';ui.click('renderProfileStart');assert.match(ui.get('renderProfileStatus').textContent,/Armed/);ui.click('closeBattleReport');ui.click('resumeGame');ui.frames(5);assert.ok(b.tick>201);const tick=b.tick;
+ ui.pointer('pointerdown',1,{x:350,y:465});ui.pointer('pointermove',1,{x:200,y:550});ui.pointer('pointerup',1,{x:200,y:550});ui.frames(5);assert.ok(b.tick>tick);ui.click('battlePause');ui.click('pauseBattleReport');assert.match(ui.get('battleReportText').value||ui.get('battleReportText').textContent,/Controlled fixture/i);
+});
+test('repeat/reset/return preserves exact live origin and rejects stale reset',async t=>{
+ const storage=new Storage(),ui=await loadGameUI(t,{search:'?mode=test',storage});ui.click('start');ui.frames(50);ui.click('battlePause');ui.click('pauseTesting');const origin=ui.battle,before=state(origin),saved=[...storage.data];
+ for(let n=0;n<2;n++){
+  ui.click('stressVeteran');const old=ui.battle;assert.equal(stressFieldSnapshot(old).troops.alive,48);ui.click('resumeGame');ui.frames(90);ui.click('battlePause');ui.click('pauseTesting');const stale=ui.get('stressReset').onclick;ui.click('stressReset');assert.notEqual(ui.battle,old);assert.equal(old.stressField.stopped,true);assert.equal(ui.battle.tick,201);assert.equal(ui.battle.paused,true);ui.click('pauseLobby');ui.frames();assert.equal(ui.battle,origin);assert.equal(state(origin),before);assert.equal(ui.visible('testingPanel'),true);assert.equal(ui.document.activeElement.id,'stressVeteran');stale();ui.frames(5);assert.equal(ui.battle,origin);assert.equal(state(origin),before);assert.deepEqual([...storage.data],saved);
+ }
+});
+test('role/company commands remain interactive and retain normal pause semantics',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui);ui.click('openQueue');const b=ui.battle,root=ui.get('armyOrders'),select=root.querySelector('.army-company-select');select.value='support';ui.dispatch(select,'change');root.querySelector('[data-rally-position="rear"]').click();assert.equal(b.armyOrder.groups.support.mode,'rally');assert.equal(b.armyOrder.groups.frontline.mode,'advance');select.value='frontline';ui.dispatch(select,'change');root.querySelector('[data-rally-position="center"]').click();assert.equal(b.armyOrder.mode,'split');const tick=b.tick;ui.frames(10);assert.equal(b.tick,tick);ui.click('closeQueue');ui.click('resumeGame');ui.frames(40);assert.ok(b.tick>tick);
+});
+test('temporary campaign/deck/file transfer and local restore handlers cannot cross the lab boundary',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui);const b=ui.battle,before=state(b);ui.click('showSaveCode');assert.equal(ui.get('saveCode').value,'');ui.get('loadCode').value=new CampaignProfiles({defaultName:'Forbidden'}).exportBundle();ui.click('importCode');let read=false;await ui.load({size:1,text:()=>{read=true;return Promise.resolve('{}');}});assert.equal(read,false);
+ ui.click('deckShowExport');assert.equal(ui.get('deckExportCode').value,'');ui.get('deckImportCode').value='{}';ui.click('deckImportPrepare');assert.equal(ui.visible('deckConfirm'),false);ui.click('localContinue');ui.click('localNew');ui.click('localConfirmAccept');ui.click('introProfiles');ui.frames();assert.equal(ui.battle,b);assert.equal(state(b),before);assert.equal(ui.visible('profilesPanel'),false);
+});
+test('late origin import and assisted mutation handlers cannot replace or modify staged supplies',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introLoad');const deferred=deferredFile(),reading=ui.load(deferred.file);ui.click('closeSave');stage(ui);const b=ui.battle;deferred.resolve(new CampaignProfiles({defaultName:'Late'}).exportBundle());await reading;ui.frames();const before=state(b);
+ for(const id of ['testGoldLarge','testUnlock','testReady','testLevelApply','testVictory','testDefeat'])ui.get(id).onclick();ui.get('testProtection').checked=true;ui.dispatch(ui.get('testProtection'),'change');ui.frames();assert.equal(ui.battle,b);assert.equal(state(b),before);assert.equal(b.protectedTesting,false);ui.click('pauseLobby');ui.frames();assert.equal(ui.battle.profile.name,'Playground');
+});
+
+test('profile mutations, level preparation and automatic recruitment cannot replace or replenish the fixture',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui,'Veteran');const b=ui.battle;
+ ui.get('profileSelect').value='0';ui.get('newProfileName').value='Unexpected';for(const id of ['switchProfile','createProfile','deleteProfile','confirmDelete'])ui.get(id).onclick();ui.frames();assert.equal(ui.battle,b);assert.equal(ui.visible('deleteConfirm'),false);
+ ui.click('openQueue');for(const skill of b.profile.skills.filter(s=>s.id==='grunt'||s.id==='archer')){const button=ui.get('armyAuto-'+skill.id);button.click();assert.equal(skill.autocast,true);}
+ const before=b.goodTeam.length;ui.click('closeQueue');ui.click('resumeGame');ui.frames(150);assert.ok(b.goodTeam.length<=before);assert.equal(b.friendlyQueue.population,0);assert.equal(b.friendlyQueue.queue.length,0);assert.equal(b.stats.goldSpent,0);assert.equal(b.auxiliaries.snapshot.wavesCalled,2);
+ ui.click('battlePause');ui.click('pauseTesting');assert.match(ui.get('stressFieldDetail').textContent,/staged|ordinary/i);ui.get('testLevel').value='30';ui.get('testLevelApply').onclick();ui.frames();assert.equal(ui.battle,b);assert.equal(b.level,8);ui.click('stressReturn');ui.frames();assert.equal(ui.battle.profile.name,'Playground');
+});
+test('synthetic timeout leaves Reset, report and exact Return usable, never reward results',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});const origin=ui.battle;stage(ui);const b=ui.battle;b.tick=b.stressField.runStartTick+b.stressField.durationTicks-1;ui.click('resumeGame');ui.frames(2);assert.equal(b.stressField.stopped,true);assert.equal(ui.visible('pauseOverlay'),true);assert.equal(ui.get('resumeGame').disabled,true);const stoppedTick=b.tick;ui.get('resumeGame').onclick();ui.get('battlePause').onclick();ui.key('keydown','p');ui.key('keyup','p');ui.frames(8);assert.equal(b.tick,stoppedTick);assert.equal(b.paused,true);assert.equal(ui.visible('ending'),false);assert.equal(b.summary,null);ui.click('pauseBattleReport');assert.equal(ui.get('renderProfileStart').disabled,true);ui.click('closeBattleReport');ui.click('pauseLobby');ui.frames();assert.equal(ui.battle,origin);assert.equal(ui.get('resumeGame').disabled,false);assert.equal(ui.visible('testingPanel'),true);
+});
+
+test('cached campaign and Training origin survive disposable lab plus Hall destination return',async t=>{
+ const storage=new Storage(),ui=await loadGameUI(t,{storage});const campaign=ui.battle;campaign.profile.gold=732;ui.click('introSave');await ui.settle();ui.click('closeSave');const before=state(campaign);
+ ui.get('hubDestinations').querySelector('[data-hub-destination="training"]').click();ui.click('start');ui.frames();const playground=ui.battle;playground.profile.gold=914;stage(ui);const lab=ui.battle;ui.click('resumeGame');ui.frames(40);ui.click('battlePause');ui.click('pauseLobby');ui.frames();assert.equal(ui.battle,playground);assert.equal(playground.profile.gold,914);assert.equal(state(campaign),before);assert.equal(lab.stressField.stopReason,'Disposed');await ui.settle();assert.ok([...storage.data.values()].every(value=>!value.includes('Synthetic field')));
+ ui.click('closeTesting');ui.click('pauseLobby');ui.get('hubDestinations').querySelector('[data-hub-destination="campaign"]').click();ui.click('start');if(ui.visible('switchSessionConfirm'))ui.click('confirmSessionSwitch');ui.frames();assert.equal(ui.battle,campaign);assert.equal(state(campaign),before);
+});
+test('ordinary playground transfer works again after exact Return and synthetic report cannot survive reset',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui);ui.click('pauseBattleReport');ui.click('renderProfileStart');ui.click('closeBattleReport');ui.click('pauseTesting');ui.click('stressReset');ui.click('pauseBattleReport');assert.match(ui.get('battleReportText').value,/State: idle/);ui.click('closeBattleReport');ui.click('pauseLobby');ui.frames();ui.click('closeTesting');ui.click('introSave');ui.click('showSaveCode');assert.equal(CampaignProfiles.fromBundle(ui.get('saveCode').value).active.name,'Playground');
+ const loaded=new CampaignProfiles({defaultName:'Returned'});ui.get('loadCode').value=loaded.exportBundle();ui.click('importCode');ui.frames();assert.equal(ui.battle.profile.name,'Returned');
+});
+
+test('cancelled demo navigation and same-destination handlers retain fixture and armed sample until explicit departure',async t=>{
+ const ui=await loadGameUI(t,{search:'?mode=test'});stage(ui);const b=ui.battle;ui.click('pauseBattleReport');ui.click('renderProfileStart');ui.click('closeBattleReport');ui.click('pauseDemo');assert.equal(ui.visible('switchSessionConfirm'),true);ui.frames();assert.equal(ui.battle,b);assert.equal(b.stressField.stopped,false);ui.click('cancelSessionSwitch');ui.click('pauseBattleReport');assert.match(ui.get('battleReportText').value,/State: armed/);ui.click('closeBattleReport');
+ ui.get('hubDestinations').querySelector('[data-hub-destination="training"]').click();ui.get('start').onclick();ui.frames();assert.equal(ui.battle,b);ui.click('pauseBattleReport');assert.match(ui.get('battleReportText').value,/State: armed/);ui.click('closeBattleReport');ui.click('pauseDemo');ui.click('confirmSessionSwitch');ui.frames();assert.notEqual(ui.battle,b);assert.equal(b.stressField.stopReason,'Disposed');assert.equal(ui.battle.level,13);ui.click('introBattleReport');assert.match(ui.get('battleReportText').value,/State: idle/);
+});

@@ -1,3 +1,4 @@
+import {levyArmyState,callLeviesFromArmy} from './levy-presentation.mjs';
 import {modalFocusCandidates} from './modal-focus.mjs';
 import {ArmyRoster,ARMY_ROLES,armySnapshot,armyBinding,armyRecruitState,recruitFromArmy} from './army-command-model.mjs';
 import {cardIdentity} from './armory-presentation.mjs';
@@ -29,7 +30,16 @@ export function createArmyCommandUI({root,records,getState,icon,onChanged=()=>{}
   $('#armyInspectFacts').innerHTML=facts.metrics.filter(metric=>!['summonGold','squadUnits','reserveCost','reloadSeconds'].includes(metric.key)).map(metric=>`<div><dt>${esc(metric.label)}</dt><dd>${n(metric.value)} ${esc(metric.unit)}</dd><small>${esc(metric.scope)}</small></div>`).join('');
   $('#armyInspectNotes').innerHTML=[...facts.tactics,...facts.notes,facts.progression.description].map(text=>`<p>${esc(text)}</p>`).join('');
  }
+ function renderLevies(state,snapshot){
+  const host=$('#armyLevies');if(!host)return;const levy=levyArmyState(state);host.classList.toggle('hidden',!levy);if(!levy)return;
+  $('#armyLevyCounts').textContent=`Your army ${snapshot.occupied}/${snapshot.cap} · Levies ${levy.occupied}/${levy.cap} · ${levy.pending} arriving · ${levy.wavesLeft} waves left`;
+  $('#armyLevyStage').textContent=levy.stage;$('#armyLevyDetail').textContent=levy.detail;
+  $('#armyCallLevies').textContent=`Call 5 levies · ${levy.wavesLeft} waves left`;$('#armyCallLevies').disabled=!levy.canCall;
+  $('#armyCallLevies').onclick=()=>{const now=getState();if(callLeviesFromArmy(state,now,levy.nextWave)){message='Five temporary levies committed. Resume to deploy; no gold or reserve spent.';onChanged();}if(now.battle===state.battle&&now.profile===state.profile)render();};
+  $('#armyLevyRoster').innerHTML=snapshot.levies.groups.map(group=>`<article class="army-field-tile" data-card-tone="steel"><span class="army-field-icon skill-icon" aria-hidden="true">${icon(group.type)}</span><div><strong>L · Wave ${group.wave} ${esc(roster.byId.get(group.type)?.name??group.type)}</strong><span>Temporary rank ${group.rank} · ${positions.filter(([id])=>group[id]).map(([id,label])=>`${group[id]} ${label.toLowerCase()}`).join(' · ')}</span></div><b>${group.total}</b></article>`).join('');
+ }
  function renderMuster(state,snapshot){
+  renderLevies(state,snapshot);
   $('#armyPositionCounts').innerHTML=positions.map(([id,label])=>`<span><b>${snapshot.counts[id]}</b>${label}</span>`).join('');
   $('#armyFieldRoster').innerHTML=snapshot.groups.length?snapshot.groups.map(group=>{const item=roster.byId.get(group.id),identity=item?cardIdentity(item):{tone:'steel',label:'Keep guard'};return `<article class="army-field-tile" data-card-tone="${identity.tone}"><span class="army-field-icon skill-icon" aria-hidden="true">${icon(group.id)}</span><div><strong>${esc(item?.name??group.id)}</strong><span>${positions.filter(([id])=>group[id]).map(([id,label])=>`${group[id]} ${label.toLowerCase()}`).join(' · ')}</span></div><b>${group.total}</b></article>`;}).join(''):'<p class="army-empty-note">No regular troops hold field slots yet. Keep guards, arriving recruits and fallen bodies appear here.</p>';
   const queue=state.battle.friendlyQueue,tickets=[...queue.queue];
@@ -56,7 +66,7 @@ export function createArmyCommandUI({root,records,getState,icon,onChanged=()=>{}
    if($('#armyEmptyAction'))$('#armyEmptyAction').onclick=()=>result.owned?view({query:'',role:'all',state:'all'},'armySearch'):onArmory();$('#armyRoster').scrollTop=scroll;
   }
   for(const id of ['#armyLoadout','#armyInspectLoadout','#armyArmory'])$(id).disabled=!!state.readOnly;
-  $('#armyContractsView').classList.toggle('hidden',tab!=='contracts');$('#armyMusterView').classList.toggle('hidden',tab!=='muster');$('#armyContractsTab').setAttribute('aria-pressed',String(tab==='contracts'));$('#armyMusterTab').setAttribute('aria-pressed',String(tab==='muster'));$('#armyMusterTab').textContent=`Muster · ${snapshot.occupied+snapshot.waiting}`;
+  $('#armyContractsView').classList.toggle('hidden',tab!=='contracts');$('#armyMusterView').classList.toggle('hidden',tab!=='muster');$('#armyContractsTab').setAttribute('aria-pressed',String(tab==='contracts'));$('#armyMusterTab').setAttribute('aria-pressed',String(tab==='muster'));$('#armyMusterTab').textContent=`Muster · ${snapshot.occupied+snapshot.waiting+(snapshot.levies?.occupied??0)+(snapshot.levies?.pending??0)}`;
   renderMuster(state,snapshot);if(active&&$('#'+active)!==doc.activeElement)$('#'+active)?.focus?.({preventScroll:true});renderInspector();
  }
  $('#armySearchForm').onsubmit=event=>{event.preventDefault();view({query:$('#armySearch').value},'armySearch');};$('#armySearch').oninput=()=>view({query:$('#armySearch').value},'armySearch');

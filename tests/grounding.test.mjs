@@ -3,6 +3,7 @@ import {CampaignBattle} from '../site/dist/engine/first-battle.mjs';
 import {drawFortification,fortificationGeometry,fortificationFooting,garrisonStation} from '../site/dist/fortress-art.mjs';
 import {combatPose,personRig} from '../site/dist/combat-poses.mjs';
 import {createWorldCamera,worldToScreen} from '../site/dist/world-camera.mjs';
+
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 function fixture(level=1){return new CampaignBattle({level,random:()=>.5});}
 

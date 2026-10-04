@@ -29,7 +29,7 @@ export function createDeckPresetsUI({controlLabel=defaultControlLabel,root,getSt
  }
  function context(){const state=getState();return {started:state.started,paused:state.battle.paused,summary:!!state.battle.summary,activeCompanion:!!state.battle.companions.unit};}
  function change(decks,message){setDecks(decks);cancelPending();onChange();render();status(message);}
- function safe(action){try{action();}catch(error){status(error instanceof SyntaxError?'Deck code is not valid JSON. No decks were changed.':error.message||'This deck could not be changed.');}}
+ function safe(action){if(getState().blocked){cancelPending();status('Return from the synthetic field before using saved decks.');return;}try{action();}catch(error){status(error instanceof SyntaxError?'Deck code is not valid JSON. No decks were changed.':error.message||'This deck could not be changed.');}}
  function render(){
   if(!opened)return;
   const {profile,readOnly=false,closeLabel}=getState();$('closeDeckPresets').textContent=closeLabel||'Back to collection';if(identity!==profile){identity=profile;reset();}

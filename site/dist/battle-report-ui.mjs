@@ -1,11 +1,13 @@
 import {formatBattleReport} from './battle-report.mjs';
+import {createBattleRenderProfilerUI} from './battle-render-profiler-ui.mjs';
 /** User-initiated presentation/clipboard/download only. The supplied recorder
  * owns a bounded local history. This adapter never reads editable user text. */
 export function createBattleReportUI({document,window,getState,onClose}){
  const $=id=>document.querySelector(id);
  let currentText='',generation=0;
+ const renderProfileUI=createBattleRenderProfilerUI({document,getState,now:()=>performance.now(),onChange:()=>{render();status('Rendering sample updated. Nothing is sent automatically.');}});
  const status=text=>$('#battleReportStatus').textContent=text;
- function render(){const {battle,recorder,context}=getState();currentText=formatBattleReport(recorder.snapshot(battle,context));$('#battleReportText').value=currentText;$('#battleReportRecording').checked=recorder.enabled;}
+ function render(){const {battle,recorder,context}=getState();currentText=formatBattleReport(recorder.snapshot(battle,context))+'\n\n'+renderProfileUI.render();$('#battleReportText').value=currentText;$('#battleReportRecording').checked=recorder.enabled;}
  function open(){generation++;render();status('Snapshot ready. Nothing is sent automatically.');}
  function close(){generation++;onClose();}
  $('#closeBattleReport').onclick=close;

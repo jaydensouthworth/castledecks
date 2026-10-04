@@ -2,6 +2,7 @@
  * A seed fixes terrain, finite company, light and towers; combat still reacts to
  * the player's actions. The sampled Auto check is not a promise of an easy win.
  */
+import {levyStages} from './engine/levy-encounter.mjs';
 import {seededRandom} from './engine/combat.mjs';
 import {validateBattleEncounter} from './engine/battle-encounter.mjs';
 import {BATTERY_OBJECTIVE} from './engine/battery-objective.mjs';
@@ -19,6 +20,7 @@ export const SKIRMISH_THREATS=Object.freeze({
  veteran:Object.freeze({name:'Veteran company',level:8,difficulty:'hard',base:33,variance:9,keepHP:7400,description:'More reserves and faster pressure. Counters and flag defense matter.'}),
 });
 export const SKIRMISH_DOCTRINES=Object.freeze({
+ levy:Object.freeze({name:'Levy defense',description:'Four manual five-unit levy waves join an ordinary paid army. Hold against a timed rider and siege counterattack, break their keep, then clear the field. Losing your hero, home flag or home keep defeats this practice attempt.'}),
  vanguard:Object.freeze({name:'Vanguard',description:'Mounted flag runners backed by heavy infantry. Watch the ground lanes.'}),
  skywatch:Object.freeze({name:'Skywatch',description:'A smaller ground escort with aerial pressure. Lead flyers and keep elemental counters ready.'}),
  siege:Object.freeze({name:'Siege train',description:'Slow artillery and healer-supported infantry. Disrupt the escort before it reaches your keep.'}),
@@ -41,7 +43,7 @@ export function validateSkirmishDescriptor(value){
 export function encodeSkirmishDescriptor(value){const d=validateSkirmishDescriptor(value);return `SK${d.version}:${d.seed.toString(36).toUpperCase()}:${d.biome}:${d.threat}:${d.doctrine}`;}
 export function decodeSkirmishDescriptor(text){
  if(typeof text!=='string'||text.length>100)throw new TypeError('Enter a Skirmish seed code under 100 characters.');
- const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege|battery)$/i.exec(text.trim());
+ const match=/^SK([1-9][0-9]*):([0-9A-Z]{1,7}):(oaks|lowlands|pines|wasteland):(scout|standard|veteran):(vanguard|skywatch|siege|battery|levy)$/i.exec(text.trim());
  if(!match)throw new TypeError('That is not a complete Skirmish seed code.');
  const seed=parseInt(match[2],36),value=validateSkirmishDescriptor({version:Number(match[1]),seed,biome:match[3].toLowerCase(),threat:match[4].toLowerCase(),doctrine:match[5].toLowerCase()});
  if(encodeSkirmishDescriptor(value).split(':')[1]!==match[2].toUpperCase())throw new TypeError('Seed code has a noncanonical number.');
@@ -110,8 +112,8 @@ export function createSkirmish(value=DEFAULT_SKIRMISH){
  let heights,reach,attempt=0;
  for(const scale of [1,.72,.4,0]){heights=makeTerrain(descriptor,scale);reach=sampledReach(heights,towers);attempt++;if(reach.ok)break;}
  if(!reach.ok)throw new Error('The bounded fallback did not pass the sampled reach check.');
- const company=makeCompany(descriptor),light=['dawn','noon','dusk'][Math.floor(r()*3)],enemyKeepHP=Math.round(spec.keepHP*(.9+r()*.2)/100)*100;
- const code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:descriptor.doctrine==='battery'?BATTERY_OBJECTIVE:'standard'});
+ const levy=descriptor.doctrine==='levy',stages=levy?levyStages(descriptor.threat):null,company=levy?{roster:stages.flatMap(s=>s.types),counts:Object.fromEntries([...new Set(stages.flatMap(s=>s.types))].map(type=>[type,stages.flatMap(s=>s.types).filter(t=>t===type).length]))}:makeCompany(descriptor),light=['dawn','noon','dusk'][Math.floor(r()*3)],enemyKeepHP=Math.round(spec.keepHP*(.9+r()*.2)/100)*100;
+ const code=encodeSkirmishDescriptor(descriptor),encounter=validateBattleEncounter({id:`skirmish-${descriptor.seed.toString(36)}-${descriptor.biome}-${descriptor.threat}-${descriptor.doctrine}`,scenery:descriptor.biome,timeOfDay:light,heights,roster:company.roster,towers,enemyKeepHP,objective:descriptor.doctrine==='battery'?BATTERY_OBJECTIVE:levy?'break-keep':'standard'});
  const nameR=stream(descriptor,'name'),prefix=['Amber','Broken','Hidden','Last','Quiet','Silver','Windward','Red'],suffix=['Crossing','Watch','Hollow','Rise','Causeway','Pass','Reach','Vale'];
- return Object.freeze({descriptor,code,name:`${prefix[Math.floor(nameR()*prefix.length)]} ${suffix[Math.floor(nameR()*suffix.length)]}`,level:spec.level,difficulty:spec.difficulty,encounter,counts:Object.freeze({...company.counts}),reach:Object.freeze({...reach,attempts:attempt}),kit:SKIRMISH_KIT});
+ return Object.freeze({descriptor,code,name:`${prefix[Math.floor(nameR()*prefix.length)]} ${suffix[Math.floor(nameR()*suffix.length)]}`,level:spec.level,difficulty:spec.difficulty,encounter,counts:Object.freeze({...company.counts}),reach:Object.freeze({...reach,attempts:attempt}),kit:SKIRMISH_KIT,...(levy?{levyStages:stages}:{})});
 }

@@ -1,3 +1,5 @@
+// Reconstructed levy65 adds only two opt-in engine modules. All 35 existing
+// engine files match accepted65; fresh focused and parity tests cover additions.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
@@ -184,5 +186,5 @@ test('wording describes slowing and core engine matches reviewed gameplay bounda
  // seed/level cases. See company-orders61 and the isolated parity report.
  const candidate=new URL('../site/dist/engine/',import.meta.url),hash=createHash('sha256');
  for(const name of readdirSync(candidate).sort())hash.update(name+'\0').update(readFileSync(new URL(name,candidate))).update('\0');
- assert.equal(hash.digest('hex'),'1c4049c02976521a913f2e90878c34dc548d45d54f08281746544e891c025091','reviewed engine boundary');
+ assert.equal(hash.digest('hex'),'02f77b93877f5d2210bbfce93645155bf41d9a4bff80c1cf109cfc18df2ebf18','reviewed engine boundary');
 });
