@@ -148,6 +148,8 @@ Preserve Crownroad's authored 1200 by 360 proportions, responsive panning and ce
 
 Cloud-load review stays inline in Saves with captured-source and current identity/revision checks. New navigation/import intent and cancellation invalidate old final handlers; repeated clicks dispatch one guarded final operation. Preserve empty-slot safety, session-only choices, charter/deck semantics, pending writes and uncertain-write reconciliation. The developer Cloud Review Lab is visibly synthetic, network-blocked and storage-free with inert authentication/upload controls. Test it for layout and lifecycle only; it cannot certify real provider or cloud-save behavior.
 
+Directory Map inspection must bind its return marker to the exact battle, profile, destination and stage. Both panel Back controls and Escape restore the prior visible directory view, query, page, selection, scroll and focus. Explicit global Hall, unrelated workspace navigation, real route preparation or restart, and session replacement invalidate the marker. Exercise both Crownroad and Wayfarer; passing one does not establish the other's return behavior.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

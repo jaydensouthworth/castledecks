@@ -7,7 +7,7 @@ import {cardPortrait,bindCardPortraits} from './card-portraits.mjs';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const stateByDocument=new WeakMap();
 /** All commands delegate to battle.mjs. This module owns only inspection state. */
-export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,onReviewScout,sessionIds=[],sessions=[]}) {
+export function syncCommandHall({document,selected,activeDestination,selectedDestination,started,summary,profile,battle,run=null,decks=[],onInspectCampaign,onInspectCharter,onReviewScout,sessionIds=[],sessions=[]}) {
  const hall=document.querySelector('#intro');if(!hall||!selected)return;
  const $=s=>document.querySelector(s);let state=stateByDocument.get(document);if(!state){state={card:null};stateByDocument.set(document,state);}
  hall.setAttribute('data-selected-destination',hallRealm(selectedDestination));hall.setAttribute('data-active-destination',activeDestination);hall.setAttribute('data-session-phase',summary?'settled':started?'paused':'ready');
@@ -43,7 +43,7 @@ export function syncCommandHall({document,selected,activeDestination,selectedDes
  $('#hallPrepTest').onclick=()=>{const button=destinations.querySelector('[data-hub-destination="training"]');button?.click();$('#start').focus();};
  hall.onkeydown=event=>{if(event.key==='Escape'&&state.card){$('#hallCloseCard').click();event.stopPropagation?.();event.preventDefault?.();}};
  $('#hallReturnCurrent').classList.toggle('hidden',isCurrent);
- syncHallPlayerHome({document,state,activeDestination,selectedDestination,profile,battle,run,sessions,view,onInspectCampaign});
+ syncHallPlayerHome({document,state,activeDestination,selectedDestination,profile,battle,run,sessions,view,onInspectCampaign,onInspectCharter});
  if(state.destination&&state.destination!==selectedDestination)$('#start').focus?.();state.destination=selectedDestination;
 }
 

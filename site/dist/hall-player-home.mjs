@@ -3,7 +3,7 @@ import {hallCampaignCatalog} from './hall-campaign-browser-model.mjs';
 const family=id=>['campaign','expedition'].includes(id)?'campaigns':'practice';
 /** Presentation only: transitions delegate to the existing destination and
  * workspace buttons, including their session and settlement guards. */
-export function syncHallPlayerHome({document,state,activeDestination,selectedDestination,profile,battle,run,sessions,view,onInspectCampaign}){
+export function syncHallPlayerHome({document,state,activeDestination,selectedDestination,profile,battle,run,sessions,view,onInspectCampaign,onInspectCharter}){
  const $=id=>document.querySelector('#'+id),destinations=$('hubDestinations');
  if(!state.browser)state.browser=createHallCampaignBrowser({host:$('hallCampaignBrowser')});
  for(const [id,label] of [['hallCampaignDestinations','Campaigns'],['hallPracticeDestinations','Supplied practice']]){
@@ -42,7 +42,7 @@ export function syncHallPlayerHome({document,state,activeDestination,selectedDes
  const charter=activeDestination==='expedition'?run:sessions.find(session=>session.id==='expedition')?.run??null;
  if(family(selectedDestination)==='campaigns'){
   $('hallCampaignBrowser').classList.remove('hidden');
-  state.browser.sync({catalog:hallCampaignCatalog({profile:campaignProfile,run:charter}),campaignId:selectedDestination,activeDestination,activeLevel:battle.level,onInspectCampaign,onInspectCharter:()=>$('introRoute').click()});
+  state.browser.sync({catalog:hallCampaignCatalog({profile:campaignProfile,run:charter}),campaignId:selectedDestination,activeDestination,activeLevel:battle.level,onInspectCampaign,onInspectCharter});
  }else $('hallCampaignBrowser').classList.add('hidden');
  apply();
 }

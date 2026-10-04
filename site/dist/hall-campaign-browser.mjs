@@ -30,7 +30,7 @@ export function createHallCampaignBrowser({host}){
   for(const button of host.querySelectorAll('[data-hall-region-page]'))button.onclick=()=>{state.regionPage+=Number(button.getAttribute('data-hall-region-page'));render({focus:'[data-hall-browser-region]'});};
   const changePage=delta=>{state.page+=delta;state.stageId=null;render({focus:'[data-hall-stage]'});};
   host.querySelector('#hallFieldsPrevious').onclick=()=>changePage(-1);host.querySelector('#hallFieldsNext').onclick=()=>changePage(1);
-  const inspect=host.querySelector('#hallInspectField');if(inspect)inspect.onclick=()=>{if(!active||!inspected)return;campaign.id==='campaign'?onInspectCampaign?.(Number(inspected.id)):onInspectCharter?.();};
+  const inspect=host.querySelector('#hallInspectField');if(inspect)inspect.onclick=()=>{if(!active||!inspected)return;campaign.id==='campaign'?onInspectCampaign?.(Number(inspected.id)):onInspectCharter?.(inspected.id);};
   if(searchFocus)host.querySelector('#hallStageSearch')?.focus?.({preventScroll:true});else if(focus)host.querySelector(focus)?.focus?.({preventScroll:true});
  }
  return {sync(value){context=value;render();},get selection(){return {...state};}};
