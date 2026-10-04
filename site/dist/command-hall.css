@@ -74,3 +74,14 @@
 .command-hall .hall-scout-roster button{min-height:44px;font-size:14px;padding:8px 10px;white-space:normal;text-align:left}
 .command-hall .hall-scout-roster button[aria-pressed="true"]{border-color:#eac682;background:#564326}
 .command-hall #hallScoutReview{min-height:44px;font-size:14px;white-space:normal;width:100%}
+
+/* A scout report is a focused reading state, with an explicit way back to prepare. */
+.command-hall .hall-scout{grid-column:1/-1;min-width:0}
+.command-hall .hall-scout[open]>summary{position:sticky;top:0;z-index:2;background:#29191f;border-bottom:1px solid #bda26a55}
+@media(max-width:650px) and (orientation:portrait),(max-height:600px) and (orientation:landscape){
+ .command-hall .preparation-body:has(#hallScout[open]){grid-template-columns:minmax(0,1fr)}
+ .command-hall .preparation-body:has(#hallScout[open]) .hall-room{display:none}
+ .command-hall .preparation-body:has(#hallScout[open]) .hall-orders{flex:1;max-height:none;min-height:0;border-left:0}
+ .command-hall .preparation-body:has(#hallScout[open]) .hall-launch{display:none}
+ .command-hall .hall-scout[open]>summary{font-weight:600}
+}

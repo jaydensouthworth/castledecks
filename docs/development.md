@@ -130,6 +130,8 @@ Portrait two-line card labels must not flex-shrink. Preserve the 48px target bud
 
 Scout preparation is a read-only bridge from the actual starting roster to shared atlas advice and exact card inspection. Preserve battle-identity-scoped selection across contract trials, invalidate it for new fields, and retain browsed destination and return focus. Equipped, reserve and unowned status must use real ownership and bindings. Inspection must never buy, equip, arm placement or start a field. Keep the disclosure closed by default inside the orders scroll and verify native wrapping, reachability and inspector/cart/trial return at phone proportions.
 
+An open Scout report spans the orders grid. On compact portrait and short landscape it temporarily replaces the room/departure stack with the orders reading area. Preserve the sticky minimum-44-pixel exit, prior orders-scroll restoration and live summary focus after Close. Native acceptance must compare actual reading viewport and report width against header size, then verify complete roster/advice reachability and exact owned/unowned inspector returns at 360/412 portrait and 740/915 landscape. Source layout assertions alone do not establish readability.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

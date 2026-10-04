@@ -21,7 +21,16 @@ export function syncHallScout({document,profile,battle,threats,onReview,readOnly
  if(!state||state.profile!==profile){state={battle,profile,id:null,open:false};session.byBattle.set(battle,state);}
  if(session.current!==state){if(session.current)session.current.open=host.getAttribute('open')!==null;session.current=state;if(state.open)host.setAttribute('open','');else host.removeAttribute('open');}
  if(!threats.some(t=>t.id===state.id))state.id=threats[0]?.id??null;
- $('hallScoutSummary').textContent=`Scout company · ${threats.length} ${threats.length===1?'type':'types'}`;
+ const summary=$('hallScoutSummary'),scroll=document.querySelector('.hall-orders-scroll');
+ const label=()=>{summary.textContent=host.getAttribute('open')!==null?'Close scout report · Back to preparation':`Scout company · ${threats.length} ${threats.length===1?'type':'types'}`;};
+ summary.onclick=()=>{if(host.getAttribute('open')===null)state.returnScroll=scroll?.scrollTop??0;};
+ host.ontoggle=()=>{
+  if(session.current!==state)return;
+  const expanded=host.getAttribute('open')!==null;label();if(state.expanded===expanded)return;state.expanded=expanded;
+  if(expanded){if(scroll){const a=summary.getBoundingClientRect(),b=scroll.getBoundingClientRect();scroll.scrollTop+=a.top-b.top;}}
+  else{if(scroll)scroll.scrollTop=state.returnScroll??0;summary.focus?.({preventScroll:true});}
+ };
+ label();
  const render=()=>{
   $('hallScoutRoster').innerHTML=threats.map(t=>`<button type="button" data-scout-threat="${esc(t.id)}" aria-pressed="${t.id===state.id}">${esc(t.name)} <b>${t.count??'?'}</b></button>`).join('');
   const selected=threats.find(t=>t.id===state.id),{intel,card}=scoutThreat(profile,battle,state.id);
