@@ -150,6 +150,8 @@ Cloud-load review stays inline in Saves with captured-source and current identit
 
 Directory Map inspection must bind its return marker to the exact battle, profile, destination and stage. Both panel Back controls and Escape restore the prior visible directory view, query, page, selection, scroll and focus. Explicit global Hall, unrelated workspace navigation, real route preparation or restart, and session replacement invalidate the marker. Exercise both Crownroad and Wayfarer; passing one does not establish the other's return behavior.
 
+Banner customization must remain draft-only until Apply. Cancel, Back, Escape, navigation, profile replacement and session changes must invalidate stale commits without changing unrelated gameplay or resources. Reuse the existing name/palette fields and safe checkpoint path; preserve untouched longer imported names. Check all palette previews, actual allied rendering, 32-character names across Hall/Profiles/Saves, destination-only compact headings, wrapping save/history names, and the zero-inset 48-pixel action bar at desktop, portrait and short landscape sizes. Retain both Crownroad and Wayfarer directory return behavior.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.
