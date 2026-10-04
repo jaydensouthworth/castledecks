@@ -13,7 +13,8 @@ def start(name,*args):
  containers.append(name);return run('run','-d','--name',name,*args)
 def port(name):return run('port',name,'80/tcp').rsplit(':',1)[1]
 with tempfile.TemporaryDirectory() as tmp:
- tmp=pathlib.Path(tmp);(tmp/'index.html').write_text('ci-static-ok');(tmp/'probe.mjs').write_text('export const probe=true;')
+ # Nginx workers must traverse the bind-mounted disposable static root.
+ tmp=pathlib.Path(tmp);tmp.chmod(0o755);(tmp/'index.html').write_text('ci-static-ok');(tmp/'probe.mjs').write_text('export const probe=true;')
  policy=tmp/'policy.json';policy.write_text(json.dumps({'backupHours':24,'tombstoneHours':48,'maxRecords':1000}))
  env={**os.environ,'STATIC_DIST':str(tmp)}
  # Validates the real profile/override structure without starting it.
@@ -36,7 +37,8 @@ with tempfile.TemporaryDirectory() as tmp:
      if fetch(p)[0]==200:break
     except OSError:pass
     time.sleep(.1)
-   assert fetch(p)==(200,b'ci-static-ok')
+   static_response=fetch(p)
+   assert static_response==(200,b'ci-static-ok'), (mode,static_response)
    assert fetch(p,'/probe.mjs')[0]==200
    if mode=='off':assert fetch(p,'/api/health')[0]==503
    else:
