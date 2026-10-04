@@ -132,6 +132,8 @@ Scout preparation is a read-only bridge from the actual starting roster to share
 
 An open Scout report spans the orders grid. On compact portrait and short landscape it temporarily replaces the room/departure stack with the orders reading area. Preserve the sticky minimum-44-pixel exit, prior orders-scroll restoration and live summary focus after Close. Native acceptance must compare actual reading viewport and report width against header size, then verify complete roster/advice reachability and exact owned/unowned inspector returns at 360/412 portrait and 740/915 landscape. Source layout assertions alone do not establish readability.
 
+Short-landscape adaptive dock rules are bounded to 700–1000px width and at most 500px height, excluding Battery Intercept. Preserve immutable card-count/container fit thresholds, the page-button reserve, and stable safe-lane width for command-bearing arsenals. Cooldown, resource and selected-caption text must not move the controls. Source models do not certify native sparse geometry or solve the known full-kit aim crowding.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.
