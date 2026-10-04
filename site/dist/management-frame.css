@@ -157,3 +157,16 @@
  #managementFrame #intro .hall-atlas-board .hub-destinations strong{max-width:100%;white-space:normal;overflow-wrap:anywhere}
  #managementFrame #intro .hall-atlas-board .hub-destinations small,#managementFrame #intro .hall-atlas-board .hub-destinations span{max-width:100%;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
 }
+/* Legal saved-deck names must not become the Hall's intrinsic minimum width.
+   Keep the action in a bounded column and give the full count its own line. */
+#managementFrame #intro .hall-deck-workbench>header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px}
+#managementFrame #intro .hall-deck-workbench>header>div{min-width:0}
+#managementFrame #intro .hall-deck-workbench h3{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#managementFrame #intro #hallDeckCount{grid-column:1/-1;grid-row:2;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#managementFrame #intro .hall-deck-workbench>header>button{grid-column:2;grid-row:1;min-height:44px;align-self:start;white-space:normal}
+/* The deck row owns horizontal scrolling. Individual cards keep their complete
+   names in natural-height bands; no text or action escapes into the Hall. */
+#managementFrame #intro .hall-card-spread{min-width:0;max-width:100%;min-height:0;display:flex;justify-content:flex-start;align-items:stretch;gap:8px;padding:12px 4px 8px;overflow-x:auto;overflow-y:hidden;scroll-padding:4px}
+#managementFrame #intro .hall-playing-card{flex:0 0 84px;width:84px;min-width:84px;height:auto;min-height:120px;margin-left:0;overflow:visible;transform:none;justify-content:flex-start}
+#managementFrame #intro .hall-playing-card .card-portrait{flex:none;max-height:none}
+#managementFrame #intro .hall-playing-card>span:not(.card-portrait){flex:none;min-width:0;max-width:100%;max-height:none;overflow:visible;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.35}

@@ -1,6 +1,6 @@
 {
-  "updated": "2026-10-04T20:15:30Z",
-  "stage": "landscape-content-readability-repair",
+  "updated": "2026-10-04T20:49:00Z",
+  "stage": "hall-long-label-readability-repair",
   "internal_tests_passing": 2382,
   "campaign_layouts": 30,
   "skill_families": 25,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build89 populated/empty/max-owned/long-label native content acceptance before custom-site update",
+    "Build90 full affected-content native acceptance before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -54,7 +54,7 @@
     "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 89,
+  "build": 90,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -73,6 +73,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build88 passed2416 canonical and2424 portable/CI but subsequent independent populated-content audit found critical Army/Build/Skirmish cascade regressions; custom frontend was rolled back to86 with backend unchanged. Build89 restores content-sized Army rows and native compact cards, reserves both Build rails, gives Skirmish an explicit body scroll owner, and wraps readable slot/region/refinement/Hall text in more space. All40 engine modules and all cloud-account files remain byte-identical to88. Final89 gate is recorded separately; native fullaffected content cases must pass before custom forwarding. No saveformat, backendprotocol, authentication or data-transfer changes. internal_tests_passing belongs to internal_tests_build.",
+  "test_evidence": "Build89 passed2423 canonical and2431 portable/CI and native checks repaired all three severe88 content regressions. Independent native audit still blocked promotion on a legal40-character Hall deck name and clipped miniature card titles. Build90 narrowly bounds and wraps that header and gives miniature cards natural-height title bands in their own scrolling row. Engine, cloud-account and save protocols remain unchanged. Final90 gate is recorded separately; full affected native checks must pass before custom forwarding. internal_tests_passing belongs to internal_tests_build.",
   "internal_tests_build": 86
 }

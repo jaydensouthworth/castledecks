@@ -140,6 +140,8 @@ Capture the previous workspace navigation scroll before hiding it; after restora
 
 Army content rows must size to their actual cards. In short-landscape Build, reserve both shared and secondary rails and allow real labels to wrap without hiding facts. Fixed Skirmish frames must have an explicit shrinking body scroller. Native acceptance must inspect empty, populated and maximum-owned affected content and full action rectangles, including actual long names; passing shared-frame geometry alone is insufficient.
 
+Hall deck headers must wrap legal 40-character names inside their own grid without pushing counts or actions out of bounds. Miniature cards own a horizontal scrolling row and natural-height, fully visible title bands. Recheck short and long names, populated rows, inspection focus return and the previously repaired Army, Build and Skirmish surfaces in the native browser; source assertions are not layout acceptance.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

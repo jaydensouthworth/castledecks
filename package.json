@@ -1,6 +1,6 @@
 {
   "name": "castledecks",
-  "version": "0.89.0",
+  "version": "0.90.0",
   "private": true,
   "description": "A browser archery and army campaign prototype",
   "type": "module",
