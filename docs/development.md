@@ -90,6 +90,12 @@ Grounded-flag impossibility is a separate conservative proof. Preserve recoverer
 
 Castle Equip should retain focus on the same card choice and its stable accessible name while aria-pressed changes. Reselecting the current choice must return before invoking the host, rerendering, announcing or writing a checkpoint. Preserve unowned, live, read-only and stale-profile guards, pane offsets and all ability identities. The bounded keyboard harness models the resulting native button click explicitly; real keyboard activation, tab order and visible focus still require native acceptance.
 
+## Short-landscape Build collection
+
+Keep one inventory scroll owner in short landscape, with search, complete card rows and pagination in ordinary flow. The card list itself no longer owns a tiny nested viewport in this scope. Register inventory with the existing drag-scroll mechanism and retain placement scrolling independently. Search/page transitions reset both applicable offsets; inspection and castle updates preserve the inventory element and current offset. Read-only resources may use the header center only within the explicit minimum-width/short-landscape media condition; keep navigation and Back clear.
+
+Verify real browser dimensions and native mouse/keyboard assignment in addition to source-cascade tests. Entire cards should be scroll-reachable with their 44-pixel controls intact, without granting ownership, spending gold or changing bindings during mere navigation. Preserve portrait/desktop rules and existing castle focus/scroll behavior.
+
 ## Dormant account frontend
 
 Account UI/client/model/codec/journal modules are included with feature-off defaults and no visible or network footprint. This repository contains no Go service or configured production provider. Do not activate accounts as part of static deployment.
