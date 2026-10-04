@@ -152,6 +152,8 @@ Directory Map inspection must bind its return marker to the exact battle, profil
 
 Banner customization must remain draft-only until Apply. Cancel, Back, Escape, navigation, profile replacement and session changes must invalidate stale commits without changing unrelated gameplay or resources. Reuse the existing name/palette fields and safe checkpoint path; preserve untouched longer imported names. Check all palette previews, actual allied rendering, 32-character names across Hall/Profiles/Saves, destination-only compact headings, wrapping save/history names, and the zero-inset 48-pixel action bar at desktop, portrait and short landscape sizes. Retain both Crownroad and Wayfarer directory return behavior.
 
+Card-led Discover must use actual visible catalog records, illustrations, prices and ownership state, with deterministic fallback rather than invented merchandising claims. Preserve the existing Inspect, reversible cart, wishlist and comparison paths and live-battle acquisition gate. Capture Discover/collection comparison origins and both vertical and horizontal shelf offsets before navigation; nested inspection and pin removal must restore the right view and focus. Keep new Shopfront text at least 14 pixels across sizes, wrapping labels, natural card height and 44-pixel controls. Verify actual text and full action reachability in eight native viewport configurations, including short-landscape local shelf scrolling. Synthetic funded sessions are test fixtures, not real purchases or saved-user acceptance.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

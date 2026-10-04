@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T22:56:00Z",
-  "stage": "visible-banner-customization",
-  "internal_tests_passing": 2516,
+  "updated": "2026-10-04T23:35:03.165250+00:00",
+  "stage": "card-led-armory-shopfront",
+  "internal_tests_passing": 2550,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,15 +9,14 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build93 native banner preview/apply/cancel and32-character names across workspaces before custom-site update",
+    "Build94 native card-led Discover, collection, cart and return-flow acceptance before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
     "Original-runtime comparison",
     "Independent real-provider and cloud-save acceptance beyond the player-reported first sign-in and saved slot",
     "Production recovery and operational acceptance beyond the deployment preparation checks",
-    "Physical-device and future authored-content expansion remain separate; no invented stages or PvP",
-    "Card-led Discover/shopfront refinement using real catalog prices and ownership"
+    "Physical-device and future authored-content expansion remain separate; no invented stages or PvP"
   ],
   "historical_tests_passing": 554,
   "historical_test_suite_available": false,
@@ -52,10 +51,11 @@
     "Build78 contextual Build comparison at360/412portrait,740/915landscape,1280desktop: reserve replacement, equipped swap, explicit arming then commit, Escape/focus, numeric disclosure, native drag and original arrangement restoration.",
     "Build79 actual live Frontline/Support orders, role-specific world markers and troop cohorts, current-state readout, native keyboard focus/Tab-R, immediate receipt clearing, paused Army edits, real aiming and clean assisted-session return across360/390portrait and740/915landscape.",
     "Build81 actual-host Inspector and disclosure diagnostic correction: exposed controls count, inert and closed content excluded; genuine live HUD warnings remain.",
-    "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged."
+    "Build83 portrait48px action labels contained with matched34.3% HUD area/9.6% occupied zone/0aim samples at360x640bottom24; landscape bounds unchanged.",
+    "Build93 banner customization: eight layouts, 24 editor exits, profile/session invalidation, 16 campaign-map returns, and actual paused-battle allied palette propagation; supplied sessions only"
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 93,
+  "build": 94,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -74,6 +74,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build92 passed2516 canonical/2524 portable and exact CI plus the native Wayfarer return correction; its delivery receipts are separate. Build93 adds a visible Hall banner identity card and dedicated draft editor with real standard/selected-keep previews, existing heraldry palettes, name editing, explicit Apply/Cancel/Back and navigation/profile/session invalidation. New names are limited to32 characters at the UI boundary; unchanged imported names and existing profile/cloud codecs are preserved. Applying uses the existing safe settings checkpoint path, with no stat, gold, castle, card, enemy or status-color changes. The owner merged bounded lifecycle hunks with the92 directory fix and keeps the48px action bar inside its scrollport. Final aggregate and native visual/interaction acceptance remain separate; no real-provider or physical-device claim. The compact Hall heading now identifies the destination; the full profile identity remains visible in the banner card, with explicit long-name wrapping in save/history summaries.",
-  "internal_tests_build": 92
+  "test_evidence": "Build93 passed 2550 canonical and 2558 portable/exact CI checks, plus bounded native customization acceptance. Build94 makes Discover card-led using actual catalog illustrations, prices, ownership, cart, wishlist and comparison state. Four real card representatives lead the page, followed by department entrances and illustrated collections. Short landscape uses a local horizontal shelf with readable card widths; portrait uses two columns. Nested inspection, cart and comparison preserve their origin and scroll. There are no invented offers or direct purchase shortcuts, and live-battle acquisition remains blocked. Ten new targeted tests passed in the isolated prototype; integrated aggregate and native acceptance remain pending. Engine, prices, save/cloud protocols and banner customization are unchanged.",
+  "internal_tests_build": 93
 }
