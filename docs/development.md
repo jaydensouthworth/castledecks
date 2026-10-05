@@ -156,6 +156,8 @@ Card-led Discover must use actual visible catalog records, illustrations, prices
 
 Read outgoing stage scroll before applying display:none or replacing its content. Native hidden layouts report scrollTop as zero; the general fake DOM does not emulate that boundary automatically. Preserve the explicit native-hidden-scroll regressions and verify nonzero vertical offsets through Discover, collection, cart and nested comparison returns in a real browser. Retain horizontal shelf offsets and return focus. At portrait widths up to 620 pixels, collection-detail cards must remain one column with wider actions; no-overflow alone is not evidence that action text is readable. Reuse prior visual/purchase evidence only for byte-unchanged code and with an explicit evidence boundary.
 
+Restore active-stage scroll only after every applicable renderer has populated its content, including the comparison renderer. An assignment to an empty native layout clamps to zero even when the retained value is nonzero. Preserve both hidden-layout reads and empty-stage setter behavior in the focused regression. Repeat nested comparison inspection with explicit Back and Escape, checking the comparison owner's own nonzero offset as well as outer source, horizontal shelf and focus restoration. Retain the earlier outgoing capture-before-hide correction.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

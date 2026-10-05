@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T00:06:16.887976+00:00",
-  "stage": "shopfront-scroll-return-repair",
-  "internal_tests_passing": 2561,
+  "updated": "2026-10-05T00:35:47.303182+00:00",
+  "stage": "shopfront-nested-comparison-return",
+  "internal_tests_passing": 2564,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build95 native outgoing-stage scroll restoration acceptance before custom-site update",
+    "Build96 native nested comparison scroll and affected return acceptance before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -55,7 +55,7 @@
     "Build93 banner customization: eight layouts, 24 editor exits, profile/session invalidation, 16 campaign-map returns, and actual paused-battle allied palette propagation; supplied sessions only"
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 95,
+  "build": 96,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -74,6 +74,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build94 passed2561 canonical/2569 portable checks and its initial eight-size card-led composition/readability plus actual temporary acquisition and paused-battle guard checks. Native inspection, cart, wishlist and comparison found vertical-scroll reset when leaving Discover;94 was not forwarded to the custom domain. Build95 captures outgoing stage scroll before display:none resets native layout metrics. Two new regression tests emulate hidden-stage scrollTop0 and cover Discover, collection, cart and nested comparison returns; both failed on94 and passed after the bounded fix. Card-led presentation,14px new labels, engine, prices, save/cloud protocols and banner customization remain unchanged. Full aggregate and targeted native return acceptance are pending. Final94 native also found three-column illustrated collection cards too narrow at412 portrait despite no geometric overflow. Build95 uses a one-column collection-detail grid throughout the portrait phone range, with normal-size labels and actions. A third regression guards that breakpoint repair; all other presentation is unchanged.",
-  "internal_tests_build": 94
+  "test_evidence": "Build95 passed2564 canonical/2572 portable and exact CI checks. Native testing verified outgoing Discover scroll restoration across inspection/cart/wishlist/comparison, readable one-column collection details at360\u2013620 portrait, and nested collection/cart returns. A deeper comparison inspection still reset its own nonzero scroll: refresh assigned scroll before comparison content existed. Build96 restores active-stage scroll after all renderers, preserving the95 capture-before-hide correction. The native-layout model now also clamps assignments on empty stages; its existing nested test failed on95 at0 versus126 and passes after the fix for both Back and Escape. Presentation, prices, gameplay, save/cloud protocols and banner customization remain unchanged. Final aggregate and native nested return acceptance remain separate; custom93 remains the accepted baseline until those gates complete.",
+  "internal_tests_build": 95
 }

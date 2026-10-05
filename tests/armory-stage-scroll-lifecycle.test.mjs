@@ -4,8 +4,9 @@ import {readFileSync} from 'node:fs';
 import {loadGameUI} from './helpers/game-ui-harness.mjs';
 
 // Real browsers report zero layout scroll metrics after display:none. The
-// general fake DOM retains the assigned value, so model that boundary here.
-function nativeHiddenScroll(node){let top=0;Object.defineProperty(node,'scrollTop',{configurable:true,get(){return node.classList.contains('hidden')?0:top;},set(value){top=value;}});}
+// general fake DOM retains assigned values even before content exists. Model
+// hidden reads and empty-stage assignment clamping at the native boundary.
+function nativeHiddenScroll(node){let top=0;Object.defineProperty(node,'scrollTop',{configurable:true,get(){return node.classList.contains('hidden')?0:top;},set(value){top=node.children.length?value:0;}});}
 async function setup(t){const ui=await loadGameUI(t,{search:'?mode=test'});ui.click('introTesting');ui.click('testGoldLarge');ui.click('closeTesting');ui.click('introArmory');for(const id of ['shopDiscover','shopPlanView','shopCartView','shopCompareView'])nativeHiddenScroll(ui.get(id));return ui;}
 
 test('Discover captures native vertical scroll before hiding for inspection, cart, wishlist and comparison',async t=>{
@@ -22,7 +23,7 @@ test('collection, cart and comparison preserve scroll across nested native-hidde
  const ui=await setup(t);ui.click('plan-open-frost-and-fire');const plan=ui.get('shopPlanView');plan.scrollTop=172;
  ui.click('plan-inspect-iceArrow');ui.key('keydown','Escape');assert.equal(plan.scrollTop,172);
  ui.click('plan-compare-iceArrow');ui.click('plan-compare-fireArrow');ui.click('shopCompareOpen');const compare=ui.get('shopCompareView');compare.scrollTop=126;
- ui.click('comparison-inspect-iceArrow');ui.key('keydown','Escape');assert.equal(compare.scrollTop,126);ui.key('keydown','Escape');assert.equal(plan.scrollTop,172);
+ ui.click('comparison-inspect-iceArrow');ui.click('shopCloseDetails');assert.equal(compare.scrollTop,126);compare.scrollTop=114;ui.click('comparison-inspect-fireArrow');ui.key('keydown','Escape');assert.equal(compare.scrollTop,114);ui.key('keydown','Escape');assert.equal(plan.scrollTop,172);
  ui.click('plan-cart-iceArrow');ui.click('shopCartOpen');const cart=ui.get('shopCartView');cart.scrollTop=121;ui.click('cart-inspect-iceArrow');ui.key('keydown','Escape');assert.equal(cart.scrollTop,121);ui.key('keydown','Escape');assert.equal(plan.scrollTop,172);
 });
 
