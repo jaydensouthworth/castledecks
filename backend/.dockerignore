@@ -1,0 +1,9 @@
+**/*test*
+**/*.log
+**/*.jsonl
+**/HISTORICAL*
+**/SOURCE_MANIFEST.json
+**/frontend
+**/*.sqlite*
+**/.env*
+**/secrets

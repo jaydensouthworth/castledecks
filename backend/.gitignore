@@ -1,0 +1,6 @@
+deploy/bin/*.test
+*.sqlite*
+.env
+secrets/
+__pycache__/
+*.pyc
