@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T01:37:52.666395+00:00",
-  "stage": "shop-and-build-continuity",
-  "internal_tests_passing": 2564,
+  "updated": "2026-10-05T02:48:07.296966+00:00",
+  "stage": "cart-container-readability",
+  "internal_tests_passing": 2574,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build97 native Wishlist/Cart/Build filters, shop search/spotlight and Hall save disclosure acceptance",
+    "Build98 narrow Cart container readability repair; native full management, shopping and Build gate pending",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -55,7 +55,7 @@
     "Build93 banner customization: eight layouts, 24 editor exits, profile/session invalidation, 16 campaign-map returns, and actual paused-battle allied palette propagation; supplied sessions only"
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 97,
+  "build": 98,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -74,6 +74,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Accepted96 passed2564 canonical/2572 portable and exact CI plus complete nested Shopfront return/native custom-host acceptance. Build97 keeps Catalog/Collection card presentation and Build placement intact while adding exposed type/current-bar/reserve finding, consistent secondary navigation counts and resource ordering, focused Wishlist, illustrated Cart, searchable Discover and a real ownership-aware collection spotlight. Hall saves move into a secondary disclosure; saving/failure attention remains visible on its summary and Start still requires explicit choice for existing local saves. Ten new tests cover500 synthetic cards, no mutation/autoacquisition, cross-profile cart counts, save failure attention and actual catalog queries. Deeper heraldry and SupplyLines remain separate isolated prototypes; no new save format or engine mechanic is included. Integrated aggregate/native gates are pending.",
-  "internal_tests_build": 96
+  "test_evidence": "Build97 canonical2574 and exact portableCI2582 pass. Native97 failed cramped landscape Cart labels, custom96 remains accepted. Build98 corrective CSS gate pending.",
+  "internal_tests_build": 97
 }
