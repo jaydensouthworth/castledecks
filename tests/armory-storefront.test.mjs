@@ -11,7 +11,7 @@ async function armory(t,{gold=20000,unlock=false}={}){const ui=await loadGameUI(
 
 // Castle slice adds free, already-owned Classic plus Highwatch as the only new purchasable card.
 test('Discover exposes real departments and useful pathways, then remembers the returning catalog',async t=>{
- const ui=await armory(t);assert.equal(ui.visible('shopDiscover'),true);assert.equal(ui.visible('shopBrowseView'),false);assert.equal(ui.get('shopDiscover').querySelectorAll('[data-discover-department]').length,4);assert.match(ui.get('shopDiscover').textContent,/12 cards/);assert.match(ui.get('shopDiscover').textContent,/1 cards/);
+ const ui=await armory(t);assert.equal(ui.visible('shopDiscover'),true);assert.equal(ui.visible('shopBrowseView'),false);assert.equal(ui.get('shopDiscover').querySelectorAll('[data-discover-department]').length,4);assert.match(ui.get('shopDiscover').textContent,/12 cards/);assert.match(ui.get('shopDiscover').textContent,/1 card/);
  ui.get('shopDiscover').querySelector('[data-discover-department="army"]').click();assert.equal(ui.visible('shopBrowseView'),true);assert.equal(ui.get('shopDepartmentCompact').value,'army');assert.equal(ui.get('shopGrid').querySelectorAll('article').length,12);search(ui,'dragon');change(ui,'shopSort','name');ui.click('closeShop');ui.click('endingShop');assert.equal(ui.visible('shopDiscover'),false);assert.equal(ui.get('shopSearch').value,'dragon');assert.equal(ui.get('shopSort').value,'name');
  ui.click('shopDiscoverTab');ui.click('shopResumeBrowse');assert.equal(ui.get('shopSearch').value,'dragon');assert.equal(ui.get('shopDepartmentCompact').value,'army');
 });

@@ -660,3 +660,118 @@
 #shopPanel .armory-castle-portrait>svg,#shopPanel svg[data-castle-preview]{display:block;width:100%;height:100%;object-fit:contain;max-width:100%;max-height:100%}
 #shopPanel .shop-card[data-card-type="castles"] .card-name small{display:block;white-space:normal;line-height:1.35}
 #shopPanel .armory-facts dd small{display:block;font-size:11px;line-height:1.45;margin-top:3px;font-weight:400}
+
+/* Card-led Discover. Shared portraits and catalog state; no merchandising data. */
+#shopPanel .market-shopfront-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #bf985b50}
+#shopPanel .market-shopfront-heading h3{font:400 clamp(28px,3vw,42px)/1.1 Georgia,serif;color:#f8e2b6;margin:5px 0 0}
+#shopPanel .market-shopfront-heading .eyebrow{font-size:14px;color:#c8a777;letter-spacing:.18em}
+#shopPanel .market-shopfront-account{display:flex;align-items:center;gap:15px;flex-wrap:wrap;justify-content:flex-end;font:14px/1.4 system-ui,sans-serif;color:#e1c38d;min-width:0}
+#shopPanel .market-shopfront-account button{min-height:44px;padding:9px 15px;font-size:14px;background:#422633;border-color:#c39d5e80;white-space:normal}
+#shopPanel .market-featured-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}
+#shopPanel .market-playing-card{position:relative;padding:5px;border:1px solid #bd975c;border-radius:7px;background:linear-gradient(140deg,#9b73442b,var(--card-wash) 35%,#21151ef5 80%);box-shadow:inset 0 0 0 3px #f1cf7e0c,0 8px 18px #11090e55;min-width:0;overflow-wrap:anywhere}
+#shopPanel .market-playing-card:before{content:'';position:absolute;inset:3px;border:1px solid #d7b77929;border-radius:4px;pointer-events:none}
+#shopPanel .market-playing-card .market-mini-inspect{display:flex;flex-direction:column;align-items:stretch;padding:0;gap:0;text-align:left;border-radius:3px;white-space:normal}
+#shopPanel .market-playing-card .market-playing-art{display:block;position:relative;width:100%;height:146px;overflow:hidden;border-bottom:1px solid #c9aa6566;border-radius:3px 3px 0 0;background:radial-gradient(ellipse,var(--card-wash),#1b151d)}
+#shopPanel .market-playing-art .card-portrait-window{width:118%;left:-9%}
+#shopPanel .market-playing-copy{display:block;padding:12px 10px 7px;min-width:0}
+#shopPanel .market-playing-copy strong{font:400 24px/1.12 Georgia,serif;color:#ffe8bd;margin:5px 0 9px}
+#shopPanel .market-playing-copy small{font-size:14px;letter-spacing:.08em;line-height:1.4}
+#shopPanel .market-playing-copy b{font:600 14px/1.35 system-ui,sans-serif;color:#efd19a;display:block}
+#shopPanel .market-playing-copy .market-inspect-label{display:block;margin-top:9px;font:14px/1.4 system-ui,sans-serif;color:#cdbb9b}
+#shopPanel .market-card-state{font:14px/1.45 system-ui,sans-serif;color:#c8b696;min-height:33px;padding:0 10px 7px;margin:0}
+#shopPanel .market-card-state[data-state=owned]{color:#c3d6af}
+#shopPanel .market-card-state[data-state=available]{color:#f0cf92}
+#shopPanel .market-card-state[data-state=unaffordable]{color:#d5b1a9}
+#shopPanel .market-card-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:0 4px 4px;margin-top:auto}
+#shopPanel .market-card-tools button{font-size:14px;min-width:0;min-height:44px;padding:5px 3px;white-space:normal;background:#1d141b44;border-color:#b68c4938;color:#d9c09b}
+#shopPanel .market-card-tools button[aria-pressed=true],#shopPanel .market-playing-card .market-mini-action[aria-pressed=true]{color:#ffe8b7;border-color:#e1ba76;background:#644338}
+#shopPanel .market-playing-card .market-mini-action{min-height:44px;margin:0 4px 4px;padding:8px 6px;border:1px solid #b68c4966;border-radius:2px;background:#492a34;white-space:normal;font-size:14px}
+#shopPanel .market-playing-card .market-mini-action:disabled{background:#201b20;border-color:#b68c4928;color:#b6bca6}
+#shopPanel .market-window-note{font:14px/1.5 system-ui,sans-serif;color:#c3af90;margin:14px 0 0}
+#shopPanel .market-shopfront-departments{margin-top:24px;padding-top:20px}
+#shopPanel .market-shopfront-departments .armory-department-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#shopPanel .market-shopfront-departments .market-department-door{display:flex;flex-direction:row;align-items:stretch;justify-content:flex-start;gap:10px;min-width:0;min-height:132px;padding:10px;text-align:left;white-space:normal;background:linear-gradient(120deg,#45243266,#261b2399);border-color:#b5915355}
+#shopPanel .market-department-portrait{display:block;align-self:center;flex:0 0 58px;width:58px;height:78px;overflow:hidden;border:1px solid #bd9a6177;border-radius:3px}
+#shopPanel .market-department-portrait .card-portrait-window{width:175%;left:-37.5%}
+#shopPanel .market-department-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+#shopPanel .market-department-copy strong{font:400 20px/1.15 Georgia,serif;color:#f1d9aa;overflow-wrap:anywhere}
+#shopPanel .market-department-copy>span{font:14px/1.45 system-ui,sans-serif;color:#c1ae90}
+#shopPanel .market-department-copy small{font:14px/1.4 system-ui,sans-serif;color:#bda787}
+#shopPanel .market-department-copy b{font:14px/1.4 system-ui,sans-serif;color:#e6c693;margin-top:auto}
+#shopPanel .market-shopfront-collections{margin-top:30px;padding-top:24px;border-top:1px solid #b68c493c}
+#shopPanel .market-shopfront-collections .market-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;overflow:visible;padding:0}
+#shopPanel .market-shopfront-collections .market-illustrated-collection{display:flex;flex-direction:column;gap:9px;padding:18px;min-width:0;border-radius:5px;box-shadow:inset 0 0 0 4px #c5a76b06}
+#shopPanel .market-collection-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:stretch;margin-bottom:8px;padding:0 2px}
+#shopPanel .market-collection-card{min-width:0;border:1px solid #b7985b80;border-radius:4px;padding:4px;background:linear-gradient(145deg,var(--card-wash),#251b22 70%);box-shadow:0 5px 9px #120c1355}
+#shopPanel .market-collection-art{display:block;height:94px;overflow:hidden;border-radius:2px;border-bottom:1px solid #bfa16c44}
+#shopPanel .market-collection-card strong{display:block;font:400 15px/1.25 Georgia,serif;color:#f3dfb9;padding:7px 3px 3px;overflow-wrap:anywhere}
+#shopPanel .market-collection-card small{display:block;font:14px/1.4 system-ui,sans-serif;color:#c5b795;padding:3px}
+#shopPanel .market-illustrated-collection>button{width:100%;margin-top:auto}
+#shopPanel .market-plan-content .market-plan-cards{margin-bottom:22px}
+#shopPanel .market-plan-content .market-plan-explanation{margin:0}
+#shopPanel .market-shelf-link{margin-top:14px;min-height:44px;font-size:14px;padding:8px 13px}
+#shopPanel .market-playing-card button:focus-visible,#shopPanel .market-department-door:focus-visible,#shopPanel .market-illustrated-collection button:focus-visible{outline:2px solid #ffe0a1;outline-offset:2px}
+@media(max-width:1100px){
+ #shopPanel .market-featured-grid{gap:12px}
+ #shopPanel .market-playing-card .market-playing-art{height:124px}
+ #shopPanel .market-playing-copy strong{font-size:22px}
+ #shopPanel .market-shopfront-departments .armory-department-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #shopPanel .market-shopfront-departments .market-department-door{min-height:108px}
+ #shopPanel .market-department-portrait{flex-basis:62px;width:62px;height:82px}
+}
+@media(max-width:620px) and (orientation:portrait){
+ /* Full-width collection cards keep prices and actions readable on every phone. */
+ #shopPanel .market-plan-content .market-plan-cards{grid-template-columns:minmax(0,1fr);gap:14px}
+ #shopPanel .market-shopfront-heading{display:block;margin-bottom:16px;padding-bottom:12px}
+ #shopPanel .market-shopfront-heading h3{font-size:30px}
+ #shopPanel .market-shopfront-account{justify-content:space-between;margin-top:12px;gap:8px;font-size:14px}
+ #shopPanel .market-shopfront-account button{font-size:14px;padding:8px 10px}
+ #shopPanel .market-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 10px}
+ #shopPanel .market-playing-card .market-playing-art{height:116px}
+ #shopPanel .market-playing-copy{padding:9px 6px 7px}
+ #shopPanel .market-playing-copy strong{font-size:22px}
+ #shopPanel .market-playing-copy small{font-size:14px}
+ #shopPanel .market-playing-copy b{font-size:14px}
+ #shopPanel .market-card-state{padding-inline:6px;font-size:14px;min-height:37px}
+ #shopPanel .market-shopfront-departments .armory-department-cards{grid-template-columns:1fr}
+ #shopPanel .market-shopfront-departments .market-department-door{min-height:112px;gap:15px}
+ #shopPanel .market-department-copy strong{font-size:23px}
+ #shopPanel .market-department-copy>span{font-size:14px}
+ #shopPanel .market-shopfront-collections .market-plan-grid{grid-template-columns:1fr;gap:16px}
+ #shopPanel .market-shopfront-collections .market-illustrated-collection{padding:13px}
+ #shopPanel .market-collection-cards{gap:6px;padding:0}
+ #shopPanel .market-collection-art{height:88px}
+ #shopPanel .market-collection-card strong{font-size:14px}
+ #shopPanel .market-pick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #shopPanel .market-plan-cards .market-playing-card .market-mini-inspect{flex-direction:column;align-items:stretch;text-align:left}
+}
+@media(max-height:600px) and (orientation:landscape){
+ #shopPanel .market-shopfront-heading{gap:12px;margin-bottom:11px;padding-bottom:9px}
+ #shopPanel .market-shopfront-heading h3{font-size:27px;margin-top:3px}
+ #shopPanel .market-shopfront-account{font-size:14px;gap:10px}
+ #shopPanel .market-shopfront-account button{font-size:14px;padding:7px 10px}
+ #shopPanel .market-featured-grid{gap:10px}
+ #shopPanel .market-playing-card{padding:4px}
+ #shopPanel .market-playing-card .market-playing-art{height:98px}
+ #shopPanel .market-playing-copy{padding:8px 6px 6px}
+ #shopPanel .market-playing-copy strong{font-size:21px;margin:5px 0 7px}
+ #shopPanel .market-playing-copy small{font-size:14px}
+ #shopPanel .market-playing-copy b{font-size:14px}
+ #shopPanel .market-playing-copy .market-inspect-label{margin-top:6px}
+ #shopPanel .market-card-state{padding-inline:6px;min-height:36px;font-size:14px}
+ #shopPanel .market-window-note{font-size:14px;margin-top:11px}
+ #shopPanel .market-shopfront-departments,#shopPanel .market-shopfront-collections{margin-top:20px;padding-top:17px}
+ #shopPanel .market-shopfront-collections .market-plan-grid{gap:12px}
+ #shopPanel .market-shopfront-collections .market-illustrated-collection{padding:12px}
+ #shopPanel .market-collection-art{height:82px}
+ #shopPanel .market-collection-card strong{font-size:14px}
+ #shopPanel .market-plan-cards .market-playing-card .market-mini-inspect{flex-direction:column;align-items:stretch;text-align:left}
+}
+@media(max-width:700px) and (orientation:landscape){#shopPanel .market-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(forced-colors:active){#shopPanel .market-playing-card,#shopPanel .market-collection-card{border-color:CanvasText;box-shadow:none}#shopPanel .market-card-state,#shopPanel .market-playing-copy b{color:CanvasText}#shopPanel .market-card-tools button[aria-pressed=true]{outline:2px solid Highlight}}
+@media(max-height:600px) and (orientation:landscape){
+ /* Keep card faces readable; the shelf scrolls locally, never the whole page. */
+ #shopPanel .market-featured-grid{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;scrollbar-width:thin;padding:3px 3px 11px;scroll-padding:3px}
+ #shopPanel .market-featured-grid>.market-playing-card{flex:0 0 clamp(180px,26vw,240px);scroll-snap-align:start}
+ #shopPanel .market-featured-grid>.market-empty-note{flex:1;min-width:0}
+}
