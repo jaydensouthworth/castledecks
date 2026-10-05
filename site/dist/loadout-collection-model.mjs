@@ -10,13 +10,14 @@ export class LoadoutCollection {
   this.records=records.filter(item=>item.kind==='skill').map((item,order)=>({...item,order,search:normalized([item.name,item.description,item.category,item.role,...item.traits??[]].join(' ')),ruleSearch:normalized(cardRuleSearchText(item)+' '+cardTacticSearchText(item))}));
   this.byId=new Map(this.records.map(item=>[item.id,item]));
   this.pageSize=Math.min(24,Math.max(1,Math.floor(pageSize)||LOADOUT_PAGE_SIZE));
+  this.actionBar=0;
   this.view={type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped',page:0};
  }
  setView(patch){
   const next={...this.view,...patch};next.query=String(next.query).slice(0,200);
   if(!LOADOUT_TYPES.some(([id])=>id===next.type))next.type='all';
   if(!LOADOUT_SORTS.some(([id])=>id===next.sort))next.sort='equipped';
-  if(!['all','equipped','reserve'].includes(next.status))next.status='all';
+  if(!['all','bar','equipped','reserve'].includes(next.status))next.status='all';
   if('type'in patch&&patch.type!==this.view.type){if(!('role'in patch))next.role='all';if(!('trait'in patch))next.trait='all';}
   const changed=['type','query','role','trait','status','sort'].some(key=>next[key]!==this.view[key]);
   next.page=changed?0:Math.max(0,Math.floor(Number(next.page)||0));this.view=next;
@@ -27,7 +28,7 @@ export class LoadoutCollection {
   const roles=[...new Set(pool.map(item=>item.role).filter(role=>role&&role!=='bow'))],traits=[...new Set(pool.flatMap(item=>item.traits??[]))],jobs=armyJobOptions(pool);
   if(!roles.includes(this.view.role)&&!jobs.some(([id])=>id===this.view.role))this.view.role='all';if(!traits.includes(this.view.trait))this.view.trait='all';
   const tokens=normalized(this.view.query).trim().split(/\s+/).filter(Boolean);
-  const eligible=pool.filter(item=>{const wrapper=owned.get(item.id),v=this.view;return matchesArmyRole(item,v.role)&&(v.trait==='all'||item.traits.includes(v.trait))&&(v.status==='all'||(v.status==='equipped')===(wrapper.binding>=0));});
+  const eligible=pool.filter(item=>{const wrapper=owned.get(item.id),v=this.view;return matchesArmyRole(item,v.role)&&(v.trait==='all'||item.traits.includes(v.trait))&&(v.status==='all'||(v.status==='bar'?wrapper.binding>=0&&Math.floor(wrapper.binding/10)===this.actionBar:(v.status==='equipped')===(wrapper.binding>=0)));});
   let matches=eligible.filter(item=>tokens.every(token=>item.search.includes(token)));
   if(!matches.length)matches=eligible.filter(item=>tokens.every(token=>(item.search+' '+item.ruleSearch).includes(token)));
   const byName=(a,b)=>a.name.localeCompare(b.name)||a.order-b.order;

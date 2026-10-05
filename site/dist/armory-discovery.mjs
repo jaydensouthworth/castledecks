@@ -31,3 +31,9 @@ export function shopfrontCards(records,departments,limit=4){
  }
  return chosen.slice(0,Math.min(4,Math.max(0,Math.floor(Number(limit)||0))));
 }
+
+/** Prefer a real incomplete collection already started; otherwise stable editorial order. */
+export function collectionSpotlight(plans){
+ const started=plans.filter(plan=>plan.owned>0&&plan.missing.length).sort((a,b)=>b.owned-a.owned||a.total-b.total);
+ return started[0]??plans.find(plan=>plan.missing.length)??plans[0]??null;
+}
