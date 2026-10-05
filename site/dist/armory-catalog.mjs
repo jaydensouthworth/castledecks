@@ -69,11 +69,12 @@ export function createArmoryCatalogUI({root,records,getSnapshot,getSessionKey=()
  }
  function dismissFilters(){if($('#shopFilterToggle').getAttribute('aria-expanded')==='true')setFilterOpen(false,{cancel:compactFilters(),focusBack:false});}
  function showStage(){
+  // Capture outgoing layout before display:none makes native scrollTop zero.
+  for(const [view,id]of Object.entries(stageIds))if(view!==mode&&$('#'+id).children.length){stageScroll[view]=$('#'+id).scrollTop??0;$('#'+id).innerHTML='';}
   $('#shopDiscover').classList.toggle('hidden',mode!=='discover');$('#shopBrowseView').classList.toggle('hidden',!isBrowse(mode));$('#shopCompareView').classList.toggle('hidden',mode!=='compare');
   $('#shopDetailDrawer').classList.toggle('hidden',!drawerOpen||!isBrowse(mode));$('.armory-stage').classList.toggle('detail-open',drawerOpen&&isBrowse(mode));
   for(const [id,value]of [['shopDiscoverTab','discover'],['shopCatalogTab','catalog'],['shopCollectionTab','collection'],['shopWishlistTab','wishlist'],['shopCartOpen','cart']])$('#'+id).setAttribute('aria-pressed',String(mode===value));
   $('#shopPlanView').classList.toggle('hidden',mode!=='plan');$('#shopCartView').classList.toggle('hidden',mode!=='cart');$('#shopCartCount').textContent=String(cart.size);$('#shopWishlistCount').textContent=String(wishlist.size);
-  for(const [view,id]of Object.entries(stageIds))if(view!==mode&&$('#'+id).children.length){stageScroll[view]=$('#'+id).scrollTop??0;$('#'+id).innerHTML='';}
   $('#shopCompareOpen').setAttribute('aria-pressed',String(mode==='compare'));$('#shopCompareOpen').setAttribute('aria-disabled',String(compareIds.size<2));$('#shopCompareCount').textContent=`${compareIds.size}/2`;
  }
  function changeMode(next,{department,query,focusId}={}){

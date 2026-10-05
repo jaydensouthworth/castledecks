@@ -720,6 +720,8 @@
  #shopPanel .market-department-portrait{flex-basis:62px;width:62px;height:82px}
 }
 @media(max-width:620px) and (orientation:portrait){
+ /* Full-width collection cards keep prices and actions readable on every phone. */
+ #shopPanel .market-plan-content .market-plan-cards{grid-template-columns:minmax(0,1fr);gap:14px}
  #shopPanel .market-shopfront-heading{display:block;margin-bottom:16px;padding-bottom:12px}
  #shopPanel .market-shopfront-heading h3{font-size:30px}
  #shopPanel .market-shopfront-account{justify-content:space-between;margin-top:12px;gap:8px;font-size:14px}

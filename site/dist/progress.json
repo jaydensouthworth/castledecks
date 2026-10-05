@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T23:35:03.165250+00:00",
-  "stage": "card-led-armory-shopfront",
-  "internal_tests_passing": 2550,
+  "updated": "2026-10-05T00:06:16.887976+00:00",
+  "stage": "shopfront-scroll-return-repair",
+  "internal_tests_passing": 2561,
   "campaign_layouts": 30,
   "skill_families": 25,
   "reference_runtime_verified": false,
@@ -9,7 +9,7 @@
   "original_assets_included": false,
   "save_mode": "Device-local Crownroad checkpoints plus portable campaign files; separate Wayfarer charter files",
   "pending": [
-    "Build94 native card-led Discover, collection, cart and return-flow acceptance before custom-site update",
+    "Build95 native outgoing-stage scroll restoration acceptance before custom-site update",
     "Physical Android touch, orientation and lifecycle",
     "Extended browser stability",
     "Native portable save-file round trip",
@@ -55,7 +55,7 @@
     "Build93 banner customization: eight layouts, 24 editor exits, profile/session invalidation, 16 campaign-map returns, and actual paused-battle allied palette propagation; supplied sessions only"
   ],
   "latest_gameplay_fix": "archers on both teams exclude dead or destroyed enemies when starting a new ranged target acquisition, including flag-carrier priority. Already committed windups and launched projectiles retain their existing behavior.",
-  "build": 94,
+  "build": 95,
   "regular_recruit_types": 12,
   "companions": 1,
   "reference_scope": "Preserved SWF static comparison, distinct from missing historical official hash. Original media and recovered code are not included.",
@@ -74,6 +74,6 @@
     "doctrines": 7,
     "progression": "Disposable assisted practice; campaign checkpoints unchanged"
   },
-  "test_evidence": "Build93 passed 2550 canonical and 2558 portable/exact CI checks, plus bounded native customization acceptance. Build94 makes Discover card-led using actual catalog illustrations, prices, ownership, cart, wishlist and comparison state. Four real card representatives lead the page, followed by department entrances and illustrated collections. Short landscape uses a local horizontal shelf with readable card widths; portrait uses two columns. Nested inspection, cart and comparison preserve their origin and scroll. There are no invented offers or direct purchase shortcuts, and live-battle acquisition remains blocked. Ten new targeted tests passed in the isolated prototype; integrated aggregate and native acceptance remain pending. Engine, prices, save/cloud protocols and banner customization are unchanged.",
-  "internal_tests_build": 93
+  "test_evidence": "Build94 passed2561 canonical/2569 portable checks and its initial eight-size card-led composition/readability plus actual temporary acquisition and paused-battle guard checks. Native inspection, cart, wishlist and comparison found vertical-scroll reset when leaving Discover;94 was not forwarded to the custom domain. Build95 captures outgoing stage scroll before display:none resets native layout metrics. Two new regression tests emulate hidden-stage scrollTop0 and cover Discover, collection, cart and nested comparison returns; both failed on94 and passed after the bounded fix. Card-led presentation,14px new labels, engine, prices, save/cloud protocols and banner customization remain unchanged. Full aggregate and targeted native return acceptance are pending. Final94 native also found three-column illustrated collection cards too narrow at412 portrait despite no geometric overflow. Build95 uses a one-column collection-detail grid throughout the portrait phone range, with normal-size labels and actions. A third regression guards that breakpoint repair; all other presentation is unchanged.",
+  "internal_tests_build": 94
 }
