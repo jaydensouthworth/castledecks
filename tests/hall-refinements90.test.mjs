@@ -86,10 +86,10 @@ test('read-only local slots without safe autosave retain a usable Session only c
  ui.click('start');await ui.settle();assert.equal(ui.document.activeElement.disabled,false);assert.equal(ui.document.activeElement.getAttribute('data-local-continue'),'1');assert.equal(ui.get('localNewVault').disabled,true);ui.click('localSessionOnlyVault');ui.click('closeSave');ui.click('start');ui.frames(2);assert.ok(ui.battle.tick>0);assert.deepEqual([...storage.data],before);
 });
 
-test('compact mission title precedes metadata and the full objective remains in the reading section; pending choices lead Home',async()=>{
+test('compact mission title precedes metadata and the full objective remains in the reading section; pending choices remain available in secondary save disclosure',async()=>{
  const html=await readFile(new URL('../site/dist/battle.html',import.meta.url),'utf8'),css=await readFile(new URL('../site/dist/hall-home.css',import.meta.url),'utf8');
  assert.match(html,/<div id="hallFieldPainting"[^>]*><h3 id="hallOrderTitle"><\/h3><p class="eyebrow" id="hallOrderRegion"><\/p><p class="hall-current-banner" id="hallCurrentBanner"><\/p><\/div><div class="hall-mission-details"><p id="hallOrderObjective"><\/p>/);
- assert.match(css,/\.hall-field-painting\{min-height:0;padding:12px;justify-content:flex-start\}/);assert.match(css,/#hallCurrentBanner\{margin:4px 0 0\}/);assert.match(css,/\.hall-save-state:has\(#localHubChoices:not\(\.hidden\)\)\{order:-1/);assert.match(css,/#start\{min-height:48px/);
+ assert.match(css,/\.hall-field-painting\{min-height:0;padding:12px;justify-content:flex-start\}/);assert.match(css,/#hallCurrentBanner\{margin:4px 0 0\}/);assert.doesNotMatch(css,/\.hall-save-state:has\(#localHubChoices:not\(\.hidden\)\)\{order:-1/);assert.match(html,/<details class="local-hub hall-save-state"/);assert.match(css,/#start\{min-height:48px/);
  assert.doesNotMatch(css,/text-overflow:ellipsis|line-clamp|transform:scale|font-size:(?:[6-9]|10|11)px/);
 });
 

@@ -158,6 +158,8 @@ Read outgoing stage scroll before applying display:none or replacing its content
 
 Restore active-stage scroll only after every applicable renderer has populated its content, including the comparison renderer. An assignment to an empty native layout clamps to zero even when the retained value is nonzero. Preserve both hidden-layout reads and empty-stage setter behavior in the focused regression. Repeat nested comparison inspection with explicit Back and Escape, checking the comparison owner's own nonzero offset as well as outer source, horizontal shelf and focus restoration. Retain the earlier outgoing capture-before-hide correction.
 
+Keep Hall save disclosure secondary and keyboard-focusable, with visible failure attention and existing Start save protection. Build finding must remain nonmutating, bounded to twelve rendered cards, and scoped to the current profile. Shopping counts, Wishlist artwork and Cart artwork must come from existing shared state/renderers; ownership-based Discover spotlight must use real collection data. Test empty, populated and cross-profile states without synthetic runtime inventory or new save schemas.
+
 ## Local checks
 
 Run `npm start` for a loopback-only development server. It supports the same extensionless HTML routes used by the deployed game. `PORT=8080 npm start` selects another port.

@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
 import {loadGameUI} from './helpers/game-ui-harness.mjs';
-const css=readFileSync(new URL('../site/dist/game-shell.css',import.meta.url),'utf8'),portrait=css.slice(css.indexOf('/* Portrait Build uses'));
+const css=readFileSync(new URL('../site/dist/game-shell.css',import.meta.url),'utf8'),portrait=css.slice(css.indexOf('/* Portrait Build uses'),css.indexOf('/* The same secondary Deck navigation'));
 // Structural cascade guards and actual UI callbacks; native painting is separate.
 test('portrait compact cards are scoped to Build at620px and preserve the independent placement grid',()=>{
  assert.match(portrait,/@media\(max-width:620px\) and \(orientation:portrait\)/);assert.equal((portrait.match(/@media/g)||[]).length,2);assert.doesNotMatch(portrait,/#shopPanel|\.shop-card|\.loadout-placement\{/);

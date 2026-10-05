@@ -11,7 +11,7 @@
 #managementFrame #intro .hall-orders-scroll .eyebrow{font:12px/1.4 system-ui;letter-spacing:.12em;color:#daba82}
 #managementFrame #intro .hall-orders-scroll button{min-height:44px;white-space:normal;line-height:1.35;font-size:14px}
 #managementFrame #intro #hallHome{display:flex;flex-direction:column}
-#managementFrame #intro .hall-save-state:has(#localHubChoices:not(.hidden)){order:-1;margin:0 0 16px;border-color:#d6b274;background:linear-gradient(110deg,#4d3429,#291c23)}
+/* Save choices stay in the secondary disclosure; the Hall leads with your company. */
 #managementFrame #intro .hall-home-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
 #managementFrame #intro .hall-home-mission{display:block;min-width:0;overflow:visible;padding:0;border:1px solid #b68b4959;background:#21171b;box-shadow:0 7px 18px #0004}
 #managementFrame #intro .hall-field-painting{min-height:220px;display:flex;flex-direction:column;justify-content:flex-start;padding:24px 22px 18px;background-position:center;background-size:cover;border-bottom:1px solid #b8985944;text-shadow:0 2px 4px #0008}
@@ -212,3 +212,9 @@
 @media(min-width:651px){
  #managementFrame #intro .hall-scout-workspace{grid-template-columns:minmax(160px,220px) minmax(0,1fr);max-width:1080px}
 }
+
+#managementFrame #intro details.hall-save-state{padding:0;border:0;border-top:1px solid #ad8c5244;background:transparent;margin-top:12px}
+#managementFrame #intro .hall-save-state>summary{padding:12px 0;min-height:44px;box-sizing:border-box;cursor:pointer;font:14px/1.4 system-ui;color:#cbb992}
+#managementFrame #intro .hall-save-state[open]>.hall-save-heading{padding-top:8px}
+#managementFrame #intro .hall-save-state[open]{padding-bottom:14px}
+#managementFrame #intro #hallSaveSummary[data-attention=true]{color:#f0bf8b}

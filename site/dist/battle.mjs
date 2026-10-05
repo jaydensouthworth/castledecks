@@ -136,7 +136,7 @@ const demoAim=new URLSearchParams(window.location?.search??'').get('aim');
 let demoLaunch=demoMode?makeDemo({shootingMode:['classic','anywhere','point_aim','auto_aim'].includes(demoAim)?demoAim:'classic'}):null;
 if(demoMode)document.title='Castledecks · Midgame demo';if(expeditionMode)document.title='Castledecks · Wayfarer Charter';if(skirmishMode)document.title='Castledecks · Seeded Skirmish';
 let testingProtection=false,testingCollision=false;
-const GAME_BUILD='96';
+const GAME_BUILD='98';
 let profiles=skirmishMode?new SkirmishProfiles(createSkirmish(skirmishDescriptor)):expeditionMode?new ExpeditionProfiles():new CampaignProfiles({profiles:demoLaunch?[demoLaunch.profile]:[],defaultName:testingMode?'Playground':demoMode?'Midgame Demo':'Castledecks'});
 const profileDecks=createProfileDecks();
 let localCampaign=null,cloudAccounts=null;
@@ -661,7 +661,8 @@ const deckPresets=createDeckPresetsUI({controlLabel,root:$('#skillsPanel'),getSt
  if(result.castleChanged||!hasEquippedBow())clearInput();
  visualDirty=true;loadoutDrag.cancel();const refresh=bindingLayout.onRefresh;bindingLayout.close();bindingLayout=new ActionBarLayout(profile.skills,{refresh});selectedWrapper=bindingLayout.dragIcons.find(w=>w.skill===battle.activeSkill)??bindingLayout.dragIcons[0];bindingArmed=false;bindingMessage=`“${deck.name}” applied. Omitted cards remain in reserve.`;barSignature='';drawHotbar();drawOwnedSkills();localCampaign?.checkpoint('loadout').then(()=>deckPresets.render());return result;
 }});
-function drawOwnedSkills(){companionUI.renderLoadout();castleLoadout.render();if(!bindingLayout||bindingLayout.closed)return;selectedWrapper=bindingLayout.dragIcons.includes(selectedWrapper)?selectedWrapper:bindingLayout.dragIcons[0];loadoutCollection.render();$('#loadoutBowRecovery').classList[hasEquippedBow()?'add':'remove']('hidden');deckPresets.render();}
+function syncBuildMarketTabs(){const counts=armoryCatalog?.navigationCounts;if(!counts)return;$('#buildWishlistCount').textContent=String(counts.wishlist);$('#buildCartCount').textContent=String(counts.cart);$('#buildCompareCount').textContent=counts.compare+'/2';$('#build-compare').setAttribute('aria-disabled',String(counts.compare<2));}
+function drawOwnedSkills(){syncBuildMarketTabs();companionUI.renderLoadout();castleLoadout.render();if(!bindingLayout||bindingLayout.closed)return;selectedWrapper=bindingLayout.dragIcons.includes(selectedWrapper)?selectedWrapper:bindingLayout.dragIcons[0];loadoutCollection.render();$('#loadoutBowRecovery').classList[hasEquippedBow()?'add':'remove']('hidden');deckPresets.render();}
 const loadoutDrag=createLoadoutDrag({root:$('#skillsPanel'),
  getAbility:id=>bindingLayout?.dragIcons.some(w=>w.skill.id===id)?{name:SKILLS[id].name,icon:skillIcon(id)}:null,
  onStart:id=>{selectedWrapper=bindingLayout.dragIcons.find(w=>w.skill.id===id);bindingArmed=true;},

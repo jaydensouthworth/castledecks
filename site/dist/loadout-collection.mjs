@@ -107,11 +107,14 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
   if(lastLayout!==layout){if(lastLayout)closeInspect();lastLayout=layout;gridSignature='';}
   if(profileIdentity!==profile){profileIdentity=profile;model.setView({type:'all',query:'',role:'all',trait:'all',status:'all',sort:'equipped'});gridSignature='';selectedDestination=null;closeInspect();}
   $('#loadoutCompanionSummary').textContent=`${profile.companionId?records.find(item=>item.id===profile.companionId)?.name??'Companion':'Companion'} · separate slot · ${controlLabel('companion')} · ${profile.castleId==='highwatch'?'Highwatch':'Classic'} castle · Heraldry`;
+  if(model.actionBar!==bar){model.actionBar=bar;if(model.view.status==='bar')model.setView({page:0});}
   const result=model.query(layout.dragIcons),active=doc.activeElement?.id,list=$('#ownedSkillList'),scrollTop=list.scrollTop;
   $('#skillsResources').textContent=`${Math.floor(profile.gold).toLocaleString()} gold · ${result.owned} owned abilities · ${result.equipped}/30 equipped · ${result.reserve} in reserve`;
   $('#loadoutFilters').innerHTML=LOADOUT_TYPES.map(([id,label])=>`<button data-loadout-type="${id}" aria-pressed="${model.view.type===id}">${esc(label)}<span>${result.counts.get(id)}</span></button>`).join('');
   for(const button of $('#loadoutFilters').querySelectorAll('button'))button.onclick=()=>{view({type:button.getAttribute('data-loadout-type')});$('#loadoutFilters').querySelector(`[data-loadout-type="${model.view.type}"]`)?.focus?.();};
   $('#loadoutSearch').value=model.view.query;
+  $('#loadoutTypeQuick').innerHTML=options(LOADOUT_TYPES.map(([id,label])=>[id,`${label} · ${result.counts.get(id)}`]),model.view.type);
+  $('#loadoutFilterContext').textContent=model.view.status==='bar'?`Showing cards on Bar ${bar+1}. Changing bars follows your selection.`:model.view.status==='reserve'?`${result.reserve} owned cards in reserve. Search by name, effect or role.`:`${result.total} matching cards · 12 per page. Search or choose a type to narrow the collection.`;
   $('#loadoutRole').innerHTML=options([['all','All roles'],...result.roles.map(id=>[id,labels[id]??id])],model.view.role)+(result.jobs.length?`<optgroup label="Battlefield jobs">${options(result.jobs,model.view.role)}</optgroup>`:'');$('#loadoutRole').value=model.view.role;$('#loadoutRoleField').classList[model.view.type==='army'?'remove':'add']('hidden');
   $('#loadoutTrait').innerHTML=options([['all','All effects'],...result.traits.map(id=>[id,labels[id]??id])],model.view.trait);
   $('#loadoutState').value=model.view.status;$('#loadoutSort').value=model.view.sort;
@@ -141,7 +144,7 @@ export function createLoadoutCollectionUI({root,controlLabel=defaultControlLabel
  $('#loadoutSort').innerHTML=options(LOADOUT_SORTS,'equipped');
  $('#loadoutSearchForm').onsubmit=event=>{event.preventDefault();view({query:$('#loadoutSearch').value},'loadoutSearch');};
  $('#loadoutSearch').oninput=()=>view({query:$('#loadoutSearch').value},'loadoutSearch');
- for(const [id,key]of [['loadoutRole','role'],['loadoutTrait','trait'],['loadoutState','status'],['loadoutSort','sort']])$('#'+id).onchange=()=>view({[key]:$('#'+id).value},id);
+ for(const [id,key]of [['loadoutTypeQuick','type'],['loadoutRole','role'],['loadoutTrait','trait'],['loadoutState','status'],['loadoutSort','sort']])$('#'+id).onchange=()=>view({[key]:$('#'+id).value},id);
  $('#loadoutPrevious').onclick=()=>view({page:model.view.page-1},'loadoutPrevious');$('#loadoutNext').onclick=()=>view({page:model.view.page+1},'loadoutNext');
  $('#loadoutClearFilters').onclick=()=>view({type:'all',query:'',role:'all',trait:'all',status:'all'},'loadoutSearch');$('#loadoutCloseInspector').onclick=closeInspect;
  root.addEventListener('keydown',event=>{if(!inspectedId||event.key!=='Tab')return;const items=modalFocusCandidates($('#loadoutInspector'));if(!items.length)return;const index=items.indexOf(doc.activeElement);if(event.shiftKey&&index<=0){items.at(-1).focus();event.preventDefault();}else if(!event.shiftKey&&(index<0||index===items.length-1)){items[0].focus();event.preventDefault();}event.stopPropagation();});

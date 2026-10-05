@@ -38,6 +38,7 @@ export function createLocalCampaignUI({document,window,getState,onRestore,openVa
  function render(){
   const enabled=campaign(),session=enabled?initialize():null;
   const text=message();$('localHubStatus').textContent=text;$('localVaultStatus').textContent=text;
+  const summary=$('hallSaveSummary');if(summary){const attention=enabled&&(session.error||store.list().some(slot=>slot.status==='newer'));summary.textContent=attention?'Save needs attention':enabled&&session.pending?'Saving checkpoint…':'Save status & backups';summary.setAttribute('data-attention',String(!!attention));}
   $('localHubChoices').classList[enabled&&session.decision==='pending'?'remove':'add']('hidden');
   $('localSaveManager').classList[enabled?'remove':'add']('hidden');$('localSessionOnlyVault').classList[enabled&&session.decision==='pending'?'remove':'add']('hidden');
   $('localBrowserNote').textContent=storageNote;if(!enabled)return;
